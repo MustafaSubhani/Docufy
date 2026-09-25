@@ -57,6 +57,16 @@ def main(argv: list[str] | None = None) -> int:
         help="Insert the Why Choose Us section before the contact banner.",
     )
     parser.add_argument(
+        "--spark-content",
+        action="store_true",
+        help="Client document: add Spark company intro, Why Choose Us page, and contact banner.",
+    )
+    parser.add_argument(
+        "--no-spark-content",
+        action="store_true",
+        help="Internal document: remove Spark company sections and contact banners.",
+    )
+    parser.add_argument(
         "--legacy-chrome",
         action="store_true",
         help="Use legacy inner-page logo, footer, and top bar (not ADICC sample style).",
@@ -96,10 +106,14 @@ def main(argv: list[str] | None = None) -> int:
     if args.no_contact:
         meta.show_contact = False
         blocks = [b for b in blocks if b.get("kind") != "contact"]
-    if args.company_intro:
+    if args.company_intro or args.spark_content:
         meta.include_company_intro = True
-    if args.company_outro:
+    if args.company_outro or args.spark_content:
         meta.include_company_outro = True
+    if args.no_spark_content:
+        meta.include_company_intro = meta.include_company_outro = False
+        meta.strip_spark_content = True
+        meta.show_contact = False
     if args.legacy_chrome:
         meta.inner_logo = True
         meta.inner_footer = True

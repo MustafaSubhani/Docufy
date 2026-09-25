@@ -344,12 +344,133 @@ def _emit(doc: Document, block: dict, meta: Meta) -> None:
         return
     if kind == "pagebreak":
         doc.add_page_break()
+        return
+    if kind == "label":
+        p = doc.add_paragraph()
+        run = p.add_run((block.get("text") or "").strip("*"))
+        _font(run, 10, BODY, bold=True)
+        p.paragraph_format.space_after = Pt(4)
+        return
+    if kind in {"tight", "large"}:
+        for child in block.get("blocks") or []:
+            if child.get("kind") == "para":
+                p = doc.add_paragraph()
+                _add_inline(p, child.get("text") or "")
+                p.paragraph_format.space_after = Pt(5)
+            else:
+                _emit(doc, child, meta)
+        return
+    if kind == "steps":
+        steps = block.get("steps") or []
+        if not steps:
+            return
+        table = doc.add_table(rows=1, cols=len(steps))
+        for i, st in enumerate(steps):
+            cell = table.rows[0].cells[i]
+            _shade(cell, "EEF2F8")
+            _set_cell_padding(cell, 140)
+            cell.text = ""
+            p = cell.paragraphs[0]
+            p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            _font(p.add_run(f"{i + 1:02d}"), 20, PURPLE, bold=True)
+            p = cell.add_paragraph()
+            p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            _font(p.add_run(re.sub(r"^\d{1,2}\s+", "", st.get("title") or "")), 11, NAVY, bold=True)
+            if st.get("body"):
+                p = cell.add_paragraph()
+                p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                _font(p.add_run(st["body"]), 9.5, RGBColor(0x55, 0x55, 0x55))
+        doc.add_paragraph()
+        return
+    if kind in {"roadmap", "commercial"}:
+        headers = block.get("headers") or []
+        rows = list(block.get("rows") or [])
+        total = block.get("total")
+        ncols = max(len(headers), 1)
+        head_fill = "1E293B" if kind == "commercial" else "EEF4FB"
+        table = doc.add_table(rows=1 + len(rows) + (1 if total else 0), cols=ncols)
+        table.style = "Table Grid"
+        all_rows = [headers] + rows + ([total] if total else [])
+        for r_i, row in enumerate(all_rows):
+            for c_i in range(ncols):
+                cell = table.rows[r_i].cells[c_i]
+                val = row[c_i] if c_i < len(row) else ""
+                cell.text = ""
+                p = cell.paragraphs[0]
+                is_head = r_i == 0 or (total and r_i == len(all_rows) - 1)
+                if kind == "commercial":
+                    if is_head:
+                        _shade(cell, head_fill)
+                        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                        _font(p.add_run(_plain(val)), 10, WHITE, bold=True)
+                    else:
+                        _add_inline(p, val)
+                else:
+                    _shade(cell, head_fill)
+                    if r_i == 0:
+                        _font(p.add_run(_plain(val)), 13, RGBColor(0x64, 0x74, 0x8B), bold=True)
+                    elif c_i == 1:
+                        _font(p.add_run(_plain(val)), 10, RGBColor(0x6C, 0x3F, 0xE0), bold=True)
+                    else:
+                        _font(p.add_run(_plain(val)), 11, RGBColor(0, 0, 0))
+        doc.add_paragraph()
+        return
+    if kind == "kpis":
+        table = doc.add_table(rows=1, cols=1)
+        cell = table.cell(0, 0)
+        _shade(cell, "EEF4FB")
+        _set_cell_padding(cell, 160)
+        cell.text = ""
+        first = True
+        for group in block.get("groups") or []:
+            if group.get("title"):
+                p = cell.paragraphs[0] if first else cell.add_paragraph()
+                first = False
+                _font(p.add_run(group["title"]), 11, RGBColor(0x43, 0x43, 0x43), bold=True)
+            for item in group.get("items") or []:
+                p = cell.add_paragraph(style="List Bullet")
+                _font(p.add_run(item), 11, RGBColor(0x43, 0x43, 0x43))
+        doc.add_paragraph()
+        return
+    if kind == "addendum":
+        f = block.get("fields") or {}
+        doc.add_page_break()
+        p = doc.add_paragraph()
+        _font(p.add_run((f.get("label") or "ADDENDUM").upper()), 9, PURPLE, bold=True)
+        p = doc.add_paragraph()
+        _font(p.add_run(f.get("title") or meta.title), 32, NAVY, bold=True)
+        if f.get("subtitle"):
+            p = doc.add_paragraph()
+            _font(p.add_run(f["subtitle"]), 16, RGBColor(0x44, 0x44, 0x44))
+        _hr(doc, "C8C8C8", "8")
+        for label, value in (("Prepared for", f.get("prepared_for")), ("Prepared by", f.get("prepared_by")), ("Date", f.get("date"))):
+            if value:
+                p = doc.add_paragraph()
+                _font(p.add_run(f"{label}:  "), 10, NAVY, bold=True)
+                _font(p.add_run(value), 10, BODY)
+        if f.get("note"):
+            table = doc.add_table(rows=1, cols=1)
+            cell = table.cell(0, 0)
+            cell.text = ""
+            _font(cell.paragraphs[0].add_run(f["note"]), 9, RGBColor(0x88, 0x88, 0x88), italic=True)
+            _set_cell_padding(cell, 120)
+        doc.add_page_break()
+        return
 
 
 def _image_size(path: Path, block: dict) -> tuple[float, float]:
     asset_scale = float(block.get("asset_scale") or 1)
     is_diagram = bool(block.get("diagram"))
     wide = bool(block.get("diagram_wide"))
+    if block.get("width"):
+        try:
+            from PIL import Image as PILImage
+
+            with PILImage.open(path) as img:
+                w = min(float(block["width"]), 475.0)
+                return w, img.height * w / img.width
+        except Exception:
+            pass
     try:
         from PIL import Image as PILImage
 

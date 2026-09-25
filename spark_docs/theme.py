@@ -77,6 +77,7 @@ class Meta:
     contact: dict = field(default_factory=lambda: dict(DEFAULT_CONTACT))
     include_company_intro: bool = False
     include_company_outro: bool = False
+    strip_spark_content: bool = False
     company_intro_path: str = ""
     company_outro_path: str = ""
     inner_logo: bool = False

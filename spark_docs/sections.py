@@ -1,4 +1,11 @@
-"""Optional company intro/outro blocks (ADICC proposal pattern)."""
+"""Spark company content (intro, Why Choose Us, contact banners) and section numbering.
+
+The "Include Spark content" switch:
+  - include_company_intro  -> About Spark Technologies (Who We Are + Solution Areas) after section 01
+  - include_company_outro  -> Why Spark Technologies page (Why Choose Us + contact) at the very end
+  - strip_spark_content    -> remove company sections and contact banners already in the source
+Blocks inserted from templates are tagged origin=spark_content.
+"""
 
 from __future__ import annotations
 
@@ -8,50 +15,100 @@ from pathlib import Path
 from .parser import parse_blocks
 
 TEMPLATES = Path(__file__).resolve().parent / "templates"
+SPARK_SECTION_RE = re.compile(r"(about spark|why spark|who we are|why choose us)", re.I)
 
 
 def apply_company_sections(meta, blocks: list[dict]) -> list[dict]:
-    intro = _load_template(meta.company_intro_path or TEMPLATES / "company_intro.md")
-    outro = _load_template(meta.company_outro_path or TEMPLATES / "company_outro.md")
+    out = list(blocks)
+    if getattr(meta, "strip_spark_content", False):
+        out = strip_spark_content(out)
+    has_intro = any(is_heading(b, "who we are") for b in out)
+    has_outro = any(is_heading(b, "why choose us") for b in out)
+    changed = False
 
-    if not meta.include_company_intro and not meta.include_company_outro:
-        return blocks
+    if meta.include_company_intro and not has_intro:
+        intro = tag(fill_placeholders(_load_template(meta.company_intro_path or TEMPLATES / "company_intro.md"), meta))
+        sections = split_h1_sections(out)
+        if sections:
+            out = sections[0] + intro + [b for s in sections[1:] for b in s]
+        else:
+            out = intro + out
+        changed = True
 
-    sections = _split_h1_sections(blocks)
-    if not sections:
-        merged = list(blocks)
-    else:
-        merged: list[dict] = []
-        for i, section in enumerate(sections):
-            merged.extend(section)
-            if i == 0 and meta.include_company_intro and intro:
-                merged.extend(intro)
-        if meta.include_company_outro and outro:
-            contact_idx = next(
-                (i for i, b in enumerate(merged) if b.get("kind") == "contact"),
-                len(merged),
-            )
-            merged[contact_idx:contact_idx] = outro
+    if meta.include_company_outro and not has_outro:
+        outro = tag(fill_placeholders(_load_template(meta.company_outro_path or TEMPLATES / "company_outro.md"), meta))
+        if meta.show_contact and out and out[-1].get("kind") == "contact" and any(b.get("kind") == "contact" for b in outro):
+            out = out[:-1]  # the outro brings its own banner
+        out = out + outro
+        changed = True
 
-    return renumber_h1_sections(merged)
+    return renumber_h1_sections(out) if changed or getattr(meta, "strip_spark_content", False) else out
 
 
-def _load_template(path: Path | None) -> list[dict]:
+def is_heading(block: dict, text: str) -> bool:
+    return block.get("kind") == "heading" and text in (block.get("text") or "").lower()
+
+
+def tag(blocks: list[dict]) -> list[dict]:
+    for b in blocks:
+        b["origin"] = "spark_content"
+    return blocks
+
+
+def client_name(meta) -> str:
+    return (meta.client or meta.prepared_for or "").strip()
+
+
+def fill_placeholders(blocks: list[dict], meta) -> list[dict]:
+    name = client_name(meta)
+    values = {
+        "client": name or "The client",
+        "client_possessive": f"{name}'s" if name else "the client's",
+    }
+
+    def sub(text: str) -> str:
+        return re.sub(r"\{\{\s*(\w+)\s*\}\}", lambda m: values.get(m.group(1), m.group(0)), text)
+
+    def walk(node):
+        if isinstance(node, dict):
+            return {k: walk(v) for k, v in node.items()}
+        if isinstance(node, list):
+            return [walk(v) for v in node]
+        if isinstance(node, str):
+            return sub(node)
+        return node
+
+    return [walk(b) for b in blocks]
+
+
+def strip_spark_content(blocks: list[dict]) -> list[dict]:
+    """Drop company sections (About/Why Spark, Who We Are, Why Choose Us) and contact banners."""
+    out: list[dict] = []
+    skipping = False
+    for b in blocks:
+        if b.get("kind") == "heading" and b.get("level") == 1:
+            skipping = bool(SPARK_SECTION_RE.search(b.get("text") or "")) or b.get("origin") == "spark_content"
+        if skipping or b.get("kind") == "contact" or b.get("origin") == "spark_content":
+            continue
+        out.append(b)
+    return out
+
+
+def _load_template(path: Path | str | None) -> list[dict]:
     if path is None or not Path(path).is_file():
         return []
-    return parse_blocks(Path(path).read_text(encoding="utf-8").split("\n"), source_dir=Path(path).parent)
+    p = Path(path)
+    return parse_blocks(p.read_text(encoding="utf-8").split("\n"), source_dir=p.parent)
 
 
-def _split_h1_sections(blocks: list[dict]) -> list[list[dict]]:
+def split_h1_sections(blocks: list[dict]) -> list[list[dict]]:
     sections: list[list[dict]] = []
     current: list[dict] = []
     for block in blocks:
-        if block.get("kind") == "heading" and block.get("level") == 1:
-            if current:
-                sections.append(current)
-            current = [block]
-        else:
-            current.append(block)
+        if block.get("kind") == "heading" and block.get("level") == 1 and current:
+            sections.append(current)
+            current = []
+        current.append(block)
     if current:
         sections.append(current)
     return sections
@@ -61,7 +118,9 @@ def renumber_h1_sections(blocks: list[dict]) -> list[dict]:
     num = 0
     appendix = 0
     for block in blocks:
-        if block.get("kind") != "heading" or block.get("level") != 1:
+        if block.get("kind") == "addendum":
+            appendix = 0
+        if block.get("kind") != "heading" or block.get("level") != 1 or block.get("unnumbered"):
             continue
         text = (block.get("text") or "").strip()
         app = re.match(r"^A(\d+)[\.\):\-–—]?\s+(.*)$", text, re.I)

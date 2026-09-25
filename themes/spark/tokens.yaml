@@ -320,7 +320,7 @@ kpis:
   label_to_item: 24.7
   first_label_to_item: 27.1
   item_to_label: 24.6
-  item_pitch: 14.7
+  item_pitch: 12.7
   glyph: "●"
   glyph_x: 27.8
   text_x: 45.8

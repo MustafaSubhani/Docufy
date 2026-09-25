@@ -12,3 +12,4 @@ output/_preview/
 tests/golden/out/
 assets/raster_cache/
 node_modules/
+assets/trim_cache/

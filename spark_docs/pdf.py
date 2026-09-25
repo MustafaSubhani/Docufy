@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from html import escape
 from pathlib import Path
 
+from reportlab import rl_config
 from reportlab.lib.colors import HexColor
 from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY, TA_LEFT
 from reportlab.lib.styles import ParagraphStyle
@@ -40,6 +41,7 @@ from .theme import ASSETS, Meta
 
 T = tokmod.load("spark")
 ParagraphStyle.defaults["spaceShrinkage"] = 0  # Google Docs never squeezes spaces to fit a word
+rl_config.useA85 = 0  # binary image streams: ASCII85 in pure Python dominated render time
 PAGE_W = T.page.width
 PAGE_H = T.page.height
 LEFT = T.page.margin_left
@@ -1054,7 +1056,8 @@ def trim_whitespace(path: str, threshold: int = 245, pad_frac: float = 0.012) ->
 
     src = Path(path)
     digest = hashlib.sha1(src.read_bytes()).hexdigest()[:16]
-    out = TRIM_CACHE / f"{digest}.png"
+    is_jpeg = src.suffix.lower() in {".jpg", ".jpeg"}
+    out = TRIM_CACHE / f"{digest}.{'jpg' if is_jpeg else 'png'}"
     if out.is_file():
         with Image.open(out) as im:
             return str(out), im.size
@@ -1071,7 +1074,10 @@ def trim_whitespace(path: str, threshold: int = 245, pad_frac: float = 0.012) ->
             return str(src), rgb.size
         TRIM_CACHE.mkdir(parents=True, exist_ok=True)
         cropped = rgb.crop(box)
-        cropped.save(out)
+        if is_jpeg:
+            cropped.save(out, quality=92, optimize=True)
+        else:
+            cropped.save(out, optimize=True)
         return str(out), cropped.size
 
 
