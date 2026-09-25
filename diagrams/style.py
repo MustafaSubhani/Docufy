@@ -9,8 +9,25 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 FONT_DIR = ROOT / "assets" / "fonts"
-FONT_REGULAR = FONT_DIR / "DejaVuSans.ttf"
-FONT_BOLD = FONT_DIR / "DejaVuSans-Bold.ttf"
+
+# Claude draws diagrams in the rendering machine's system sans: Segoe UI on Windows (ADICC pages 6-12),
+# DejaVu Sans on Linux (pages 14, 24, 27). "auto" prefers Segoe UI when installed.
+FONT_CHOICES = {
+    "segoe": (Path(r"C:\Windows\Fonts\segoeui.ttf"), Path(r"C:\Windows\Fonts\segoeuib.ttf")),
+    "dejavu": (FONT_DIR / "DejaVuSans.ttf", FONT_DIR / "DejaVuSans-Bold.ttf"),
+}
+
+
+def pick_font(choice: str = "auto") -> tuple[Path, Path]:
+    if choice in FONT_CHOICES and FONT_CHOICES[choice][0].is_file():
+        return FONT_CHOICES[choice]
+    for key in ("segoe", "dejavu"):
+        if FONT_CHOICES[key][0].is_file():
+            return FONT_CHOICES[key]
+    raise FileNotFoundError("no diagram font available (run npm install in diagrams/node_worker)")
+
+
+FONT_REGULAR, FONT_BOLD = pick_font()
 
 # stops: 50 100 200 400 600 800 900
 RAMPS: dict[str, list[str]] = {
@@ -59,13 +76,20 @@ SUB_SIZE = 12
 LABEL_SIZE = 12
 NODE_H1 = 40          # single-line node
 NODE_H2 = 56          # title + subtitle
-NODE_PAD_X = 16
+NODE_PAD_X = 12
 NODE_MIN_W = 96
 NODE_MAX_TEXT_W = 190  # wrap titles beyond this
 RADIUS = 8
 STROKE_W = 0.5
-EDGE_W = 1.5
-ARROW = 7.5            # arrowhead length
+EDGE_W = 2.0
+ARROW = 9.0            # arrowhead length
+HEADER_SIZE = 14       # plain-text column headers ("Inputs", "Processing pipeline")
+HEADER_COLOR = "#A3A29C"
+GRID_COL_GAP = 30
+GRID_ROW_GAP = 14
+GRID_MARGIN = 16
+LEGEND_SIZE = 13
+LEGEND_COLOR = "#444441"
 NODE_GAP = 24
 LAYER_GAP = 40
 GROUP_PAD = 16

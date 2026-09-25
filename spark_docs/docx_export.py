@@ -346,10 +346,9 @@ def _emit(doc: Document, block: dict, meta: Meta) -> None:
         doc.add_page_break()
         return
     if kind == "diagram":
-        from diagrams.render import render_png
-        from diagrams.spec import Diagram
+        from diagrams.render import render_png_spec
 
-        png = render_png(Diagram.from_dict(block["spec"]))
+        png = render_png_spec(block["spec"])
         from PIL import Image as PILImage
 
         with PILImage.open(png) as im:

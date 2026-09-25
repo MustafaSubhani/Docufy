@@ -313,6 +313,10 @@ def claude_diagram_spec(source: str, lang: str) -> dict | None:
     if lang == "diagram":
         data = yaml.safe_load(source) or {}
         return Diagram.from_dict(data).to_dict() if isinstance(data, dict) else None
+    if source.strip().lower().startswith("sequencediagram"):
+        from diagrams.sequence import parse as parse_sequence
+
+        return parse_sequence(source)
     d = parse_mermaid(source)
     return d.to_dict() if d and d.nodes else None
 

@@ -1,0 +1,33 @@
+# Recreation of the ADICC page 6 Claude diagram (Module 1 estimation pipeline) for calibration.
+layout: grid
+nodes:
+  - {id: h_in, title: Inputs, shape: label, row: 0, col: 0}
+  - {id: h_proc, title: Processing pipeline, shape: label, row: 0, col: 1, colspan: 4}
+  - {id: pdf, title: PDF / DWG, category: gray, row: 1, col: 0}
+  - {id: scan, title: Scanned sets, category: gray, row: 2, col: 0}
+  - {id: arabic, title: Arabic sets, category: gray, row: 3, col: 0}
+  - {id: ing, title: Ingestion, subtitle: Parse + OCR, category: blue, row: 1, col: 1, rowspan: 3}
+  - {id: det, title: Element detection, subtitle: YOLOv10 AI, category: purple, row: 1, col: 2, rowspan: 3}
+  - {id: qty, title: Quantity calculation, subtitle: BOQ + waste, category: purple, row: 1, col: 3, rowspan: 3}
+  - {id: cost, title: Cost mapping, subtitle: UAE rates, category: teal, row: 1, col: 4, rowspan: 3}
+  - {id: h_out, title: Outputs, shape: label, row: 4, col: 4}
+  - {id: ver, title: Version comparison, subtitle: Detects scope changes between revisions, category: gray, row: 5, col: 2, colspan: 2}
+  - {id: boq, title: BOQ / Excel, category: teal, row: 5, col: 4}
+  - {id: team, title: Team collaboration layer, subtitle: Roles · annotation · approval workflow · multi-user, category: gray, row: 6, col: 1, colspan: 3}
+  - {id: erp, title: ERP push, category: teal, row: 6, col: 4}
+  - {id: rep, title: PDF report, category: teal, row: 7, col: 4}
+edges:
+  - {from: pdf, to: ing}
+  - {from: scan, to: ing}
+  - {from: arabic, to: ing}
+  - {from: ing, to: det}
+  - {from: det, to: qty}
+  - {from: qty, to: cost}
+  - {from: cost, to: boq}
+  - {from: boq, to: erp}
+  - {from: erp, to: rep}
+legend:
+  - {category: blue, label: Ingestion}
+  - {category: purple, label: AI processing}
+  - {category: teal, label: Cost & output}
+  - {category: gray, label: Platform capabilities}

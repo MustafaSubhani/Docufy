@@ -66,7 +66,7 @@ def draw_scene(c, scene: Scene, s: float, height_pt: float) -> None:
     # edges
     for e in scene.edges:
         c.setStrokeColor(HexColor(e.color))
-        c.setLineWidth(S.EDGE_W * s)
+        c.setLineWidth((e.width or S.EDGE_W) * s)
         if e.dashed:
             c.setDash(5 * s, 4 * s)
         p = c.beginPath()
@@ -76,6 +76,8 @@ def draw_scene(c, scene: Scene, s: float, height_pt: float) -> None:
             p.lineTo(X(x), Y(y))
         c.drawPath(p, stroke=1, fill=0)
         c.setDash()
+        if not e.arrow:
+            continue
         (ax, ay), (bx, by) = e.points[-2], e.points[-1]
         ang = math.atan2(by - ay, bx - ax)
         L, W = S.ARROW, S.ARROW * 0.62
@@ -98,6 +100,12 @@ def draw_scene(c, scene: Scene, s: float, height_pt: float) -> None:
             c.drawCentredString(X(cx), Y(cy + 4.2), e.label)
     # nodes
     for n in scene.nodes:
+        if n.shape == "label":
+            ln = n.lines[0]
+            c.setFillColor(HexColor(ln.color))
+            c.setFont(FONT_B if ln.bold else FONT, ln.size * s)
+            c.drawCentredString(X(n.x + n.w / 2), Y(n.y + n.h / 2 + ln.size * 0.36), ln.text)
+            continue
         r = S.ramp(n.ramp)
         c.setFillColor(HexColor(r[S.STOP["50"]]))
         c.setStrokeColor(HexColor(r[S.STOP["400"]]))
@@ -131,10 +139,10 @@ def draw_scene(c, scene: Scene, s: float, height_pt: float) -> None:
             c.setStrokeColor(HexColor(r[S.STOP["400"]]))
             c.setLineWidth(0.75 * s)
             c.roundRect(X(x), Y(scene.legend_y + S.LEGEND_SWATCH), S.LEGEND_SWATCH * s, S.LEGEND_SWATCH * s, 3 * s, stroke=1, fill=1)
-            c.setFillColor(HexColor(S.TEXT_MUTED))
-            c.setFont(FONT, S.LABEL_SIZE * s)
-            c.drawString(X(x + S.LEGEND_SWATCH + 6), Y(scene.legend_y + 10), label)
-            x += S.LEGEND_SWATCH + 6 + text_w(label, S.LABEL_SIZE) + 22
+            c.setFillColor(HexColor(S.LEGEND_COLOR))
+            c.setFont(FONT, S.LEGEND_SIZE * s)
+            c.drawString(X(x + S.LEGEND_SWATCH + 7), Y(scene.legend_y + 10.5), label)
+            x += S.LEGEND_SWATCH + 7 + text_w(label, S.LEGEND_SIZE) + 24
     c.restoreState()
 
 
@@ -161,19 +169,27 @@ class DiagramFlowable(Flowable):
         self.canv.restoreState()
 
 
-def spec_key(d: Diagram) -> str:
-    return hashlib.sha1(json.dumps(d.to_dict(), sort_keys=True).encode()).hexdigest()[:16]
+_ENGINE_FILES = ("style.py", "scene.py", "render.py", "layout.py", "sequence.py")
 
 
-def render_png(d: Diagram, zoom: float = 3.0) -> Path:
-    """High-resolution PNG (for DOCX and previews), cached by spec hash."""
+def scene_from_spec(spec: dict) -> Scene:
+    """Build a scene from any stored diagram spec (flowchart/grid Diagram or sequence)."""
+    if spec.get("type") == "sequence":
+        from .sequence import build_scene as build_sequence
+
+        return build_sequence(spec)
+    return build_scene(Diagram.from_dict(spec))
+
+
+def render_png_spec(spec: dict, zoom: float = 3.0) -> Path:
     import pymupdf
     from reportlab.pdfgen.canvas import Canvas
 
-    out = PNG_CACHE / f"{spec_key(d)}_{int(zoom * 100)}.png"
+    key = hashlib.sha1((json.dumps(spec, sort_keys=True) + ENGINE_VERSION + str(S.FONT_REGULAR)).encode()).hexdigest()[:16]
+    out = PNG_CACHE / f"{key}_{int(zoom * 100)}.png"
     if out.is_file():
         return out
-    scene = build_scene(d)
+    scene = scene_from_spec(spec)
     buf = io.BytesIO()
     cv = Canvas(buf, pagesize=(scene.width, scene.height))
     draw_scene(cv, scene, 1.0, scene.height)
@@ -185,6 +201,18 @@ def render_png(d: Diagram, zoom: float = 3.0) -> Path:
     pix.save(str(out))
     doc.close()
     return out
+ENGINE_VERSION = hashlib.sha1(b"".join((Path(__file__).parent / f).read_bytes() for f in _ENGINE_FILES)).hexdigest()[:8]
+
+
+def spec_key(d: Diagram) -> str:
+    """Cache key: the spec plus the engine code, so style changes invalidate cached renders."""
+    payload = json.dumps(d.to_dict(), sort_keys=True) + ENGINE_VERSION + str(S.FONT_REGULAR)
+    return hashlib.sha1(payload.encode()).hexdigest()[:16]
+
+
+def render_png(d: Diagram, zoom: float = 3.0) -> Path:
+    """High-resolution PNG (for DOCX and previews), cached by spec + engine hash."""
+    return render_png_spec(d.to_dict(), zoom)
 
 
 def render_svg(d: Diagram) -> str:
@@ -205,6 +233,10 @@ def render_svg(d: Diagram) -> str:
     )
     parts.insert(1, f"<defs>{defs}</defs>")
     for n in scene.nodes:
+        if n.shape == "label":
+            ln = n.lines[0]
+            parts.append(f'<text x="{n.x + n.w / 2:.1f}" y="{n.y + n.h / 2 + ln.size * 0.36:.1f}" font-size="{ln.size}" fill="{ln.color}" text-anchor="middle">{escape(ln.text)}</text>')
+            continue
         r = S.ramp(n.ramp)
         rx = n.h / 2 if n.shape == "pill" else S.RADIUS
         parts.append(f'<rect x="{n.x:.1f}" y="{n.y:.1f}" width="{n.w:.1f}" height="{n.h:.1f}" rx="{rx}" fill="{r[0]}" stroke="{r[3]}" stroke-width="0.75"/>')

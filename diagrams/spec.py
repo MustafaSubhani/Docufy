@@ -11,8 +11,13 @@ class Node:
     title: str
     subtitle: str = ""
     category: str = ""        # semantic category or ramp name (blue, purple, ai, output, ...)
-    shape: str = "rect"       # rect | pill | diamond
+    shape: str = "rect"       # rect | pill | diamond | label (plain header text)
     group: str | None = None
+    row: int | None = None    # grid layout position
+    col: int | None = None
+    colspan: int = 1
+    rowspan: int = 1
+    bold: bool = False
 
 
 @dataclass
@@ -21,7 +26,8 @@ class Edge:
     dst: str
     label: str = ""
     dashed: bool = False
-    category: str = ""        # defaults to the source node's category
+    category: str = ""        # defaults to the target node's category
+    route: str = "auto"       # grid layout: auto (straight/diagonal) | elbow
 
 
 @dataclass
@@ -35,6 +41,7 @@ class Group:
 @dataclass
 class Diagram:
     direction: str = "TB"     # TB | LR
+    layout: str = "auto"      # auto (ELK) | grid (row/col placement, Claude hand-layout style)
     nodes: list[Node] = field(default_factory=list)
     edges: list[Edge] = field(default_factory=list)
     groups: list[Group] = field(default_factory=list)
@@ -51,7 +58,7 @@ class Diagram:
 
     @classmethod
     def from_dict(cls, data: dict) -> Diagram:
-        d = cls(direction=str(data.get("direction", "TB")).upper(), title=data.get("title", ""))
+        d = cls(direction=str(data.get("direction", "TB")).upper(), title=data.get("title", ""), layout=str(data.get("layout", "auto")))
         for n in data.get("nodes") or []:
             if isinstance(n, dict):
                 d.nodes.append(Node(**{k: v for k, v in n.items() if k in Node.__dataclass_fields__}))

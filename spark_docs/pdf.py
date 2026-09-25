@@ -806,11 +806,9 @@ class Builder:
             self.add(Unit("figure", fig))
 
     def b_diagram(self, b, nxt):
-        from diagrams.render import DiagramFlowable
-        from diagrams.scene import build_scene
-        from diagrams.spec import Diagram
+        from diagrams.render import DiagramFlowable, scene_from_spec
 
-        scene = build_scene(Diagram.from_dict(b["spec"]))
+        scene = scene_from_spec(b["spec"])
         width = float(b.get("width") or T.figure.full_width)
         self.add(Unit("figure", DiagramFlowable(scene, width, max_height=FRAME_H * 0.62)))
 

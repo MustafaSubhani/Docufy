@@ -76,6 +76,8 @@ class SEdge:
     dashed: bool
     label: str = ""
     label_xy: tuple[float, float] | None = None
+    arrow: bool = True
+    width: float | None = None
 
 
 @dataclass
@@ -103,9 +105,11 @@ class Scene:
 
 
 def node_text(n: Node, ramp: str, max_text_w: float = S.NODE_MAX_TEXT_W) -> tuple[list[TextLine], float, float]:
+    if n.shape == "label":
+        return [TextLine(n.title, S.HEADER_SIZE, S.HEADER_COLOR, n.bold)], text_w(n.title, S.HEADER_SIZE, n.bold), 20.0
     r = S.ramp(ramp)
     title_lines = wrap(n.title, S.TITLE_SIZE, max_text_w)
-    lines = [TextLine(t, S.TITLE_SIZE, r[S.STOP["800"]]) for t in title_lines]
+    lines = [TextLine(t, S.TITLE_SIZE, r[S.STOP["800"]], n.bold) for t in title_lines]
     if n.subtitle:
         lines += [TextLine(t, S.SUB_SIZE, r[S.STOP["600"]]) for t in wrap(n.subtitle, S.SUB_SIZE, max_text_w)]
     width = max(text_w(ln.text, ln.size) for ln in lines) + 2 * S.NODE_PAD_X
@@ -176,12 +180,120 @@ def snake_layout(d: Diagram, chain: list[str], measured) -> dict:
     return {"id": "root", "children": children, "edges": edges, "width": width, "height": height}
 
 
+def grid_layout(d: Diagram, measured) -> dict:
+    """Place nodes on a row/column grid (Claude's hand-layout style) and route straight arrows."""
+    nodes = [n for n in d.nodes if n.row is not None and n.col is not None]
+    ncols = max((n.col + max(n.colspan, 1) for n in nodes), default=1)
+    nrows = max((n.row + max(n.rowspan, 1) for n in nodes), default=1)
+    gap_x, gap_y = S.GRID_COL_GAP, S.GRID_ROW_GAP
+    avail = S.CANVAS_W - 2 * S.GRID_MARGIN
+    for max_text in range(int(S.NODE_MAX_TEXT_W), 59, -8):  # wrap single-column nodes tighter until the grid fits
+        for n in nodes:
+            if n.shape != "label" and max(n.colspan, 1) == 1:
+                lines, w, h = node_text(n, measured[n.id][3], max_text)
+                measured[n.id] = (lines, max(w, 72.0), h, measured[n.id][3])
+        col_w = [0.0] * ncols
+        for n in nodes:
+            if n.colspan <= 1 and n.shape != "label":
+                col_w[n.col] = max(col_w[n.col], measured[n.id][1])
+        col_w = [w or S.NODE_MIN_W for w in col_w]
+        if sum(col_w) + gap_x * (ncols - 1) <= avail:
+            break
+
+    def span_w(c: int, span: int) -> float:
+        return sum(col_w[c : c + span]) + gap_x * (span - 1)
+
+    for n in nodes:  # spanning nodes wrap to their span, widening columns only if a word cannot fit
+        span = max(n.colspan, 1)
+        if span > 1 and n.shape != "label":
+            lines, w, h = node_text(n, measured[n.id][3], span_w(n.col, span) - 2 * S.NODE_PAD_X)
+            measured[n.id] = (lines, w, h, measured[n.id][3])
+            need = measured[n.id][1] - span_w(n.col, span)
+            if need > 0:
+                for c in range(n.col, n.col + span):
+                    col_w[c] += need / span
+    row_h = [0.0] * nrows
+    for n in nodes:
+        if max(n.rowspan, 1) == 1:
+            row_h[n.row] = max(row_h[n.row], measured[n.id][2])
+    label_rows = {r for r in range(nrows) if all(m.shape == "label" for m in nodes if m.row == r) and any(m.row == r for m in nodes)}
+    col_x = [0.0]
+    for c in range(1, ncols):
+        col_x.append(col_x[-1] + col_w[c - 1] + gap_x)
+    row_y = [0.0]
+    for r in range(1, nrows):
+        row_y.append(row_y[-1] + row_h[r - 1] + (6 if (r - 1) in label_rows else gap_y))
+
+    rects: dict[str, tuple[float, float, float, float]] = {}
+    children = []
+    for n in nodes:
+        span, rspan = max(n.colspan, 1), max(n.rowspan, 1)
+        cell_w = span_w(n.col, span)
+        cell_top = row_y[n.row]
+        cell_h = row_y[n.row + rspan - 1] + row_h[n.row + rspan - 1] - cell_top
+        if n.shape == "label":
+            w, h = measured[n.id][1], measured[n.id][2]
+            x = col_x[n.col] + (cell_w - w) / 2
+        else:
+            w, h = cell_w, measured[n.id][2]
+            x = col_x[n.col]
+        y = cell_top + (cell_h - h) / 2
+        rects[n.id] = (x, y, w, h)
+        children.append({"id": n.id, "x": x, "y": y, "width": w, "height": h})
+
+    edges = []
+    for i, e in enumerate(d.edges):
+        if e.src not in rects or e.dst not in rects:
+            continue
+        ax, ay, aw, ah = rects[e.src]
+        bx, by, bw, bh = rects[e.dst]
+        acx, acy, bcx, bcy = ax + aw / 2, ay + ah / 2, bx + bw / 2, by + bh / 2
+        dx, dy = bcx - acx, bcy - acy
+        pts: list[tuple[float, float]]
+        if e.route == "elbow":
+            if abs(dy) >= abs(dx) or abs(dx) < 1:
+                s = (acx, ay + ah if dy > 0 else ay)
+                t = (bcx, by if dy > 0 else by + bh)
+                mid = (s[1] + t[1]) / 2
+                pts = [s, (s[0], mid), (t[0], mid), t]
+            else:
+                s = (ax + aw if dx > 0 else ax, acy)
+                t = (bx if dx > 0 else bx + bw, bcy)
+                mid = (s[0] + t[0]) / 2
+                pts = [s, (mid, s[1]), (mid, t[1]), t]
+        elif abs(dy) < min(ah, bh) / 2:  # same row
+            pts = [(ax + aw if dx > 0 else ax, acy), (bx if dx > 0 else bx + bw, acy)]
+        elif abs(dx) < min(aw, bw) / 2:  # same column
+            x = (max(ax, bx) + min(ax + aw, bx + bw)) / 2
+            pts = [(x, ay + ah if dy > 0 else ay), (x, by if dy > 0 else by + bh)]
+        elif abs(dx) >= abs(dy):  # mostly sideways: fan in/out between facing sides
+            ty_ = bcy + max(min((acy - bcy) * 0.35, bh * 0.3), -bh * 0.3)
+            sy = acy + max(min((bcy - acy) * 0.35, ah * 0.3), -ah * 0.3)
+            pts = [(ax + aw if dx > 0 else ax, sy), (bx if dx > 0 else bx + bw, ty_)]
+        else:  # mostly vertical
+            tx_ = bcx + max(min((acx - bcx) * 0.35, bw * 0.3), -bw * 0.3)
+            sx = acx + max(min((bcx - acx) * 0.35, aw * 0.3), -aw * 0.3)
+            pts = [(sx, ay + ah if dy > 0 else ay), (tx_, by if dy > 0 else by + bh)]
+        sections = {"startPoint": {"x": pts[0][0], "y": pts[0][1]}, "endPoint": {"x": pts[-1][0], "y": pts[-1][1]}, "bendPoints": [{"x": x, "y": y} for x, y in pts[1:-1]]}
+        edge = {"id": f"e{i}", "sections": [sections]}
+        if e.label:
+            mx, my = (pts[len(pts) // 2 - 1][0] + pts[len(pts) // 2][0]) / 2, (pts[len(pts) // 2 - 1][1] + pts[len(pts) // 2][1]) / 2
+            lw = text_w(e.label, S.LABEL_SIZE) + 6
+            edge["labels"] = [{"text": e.label, "x": mx - lw / 2, "y": my - 8, "width": lw, "height": 16}]
+        edges.append(edge)
+    width = max(c["x"] + c["width"] for c in children)
+    height = max(c["y"] + c["height"] for c in children)
+    return {"id": "root", "children": children, "edges": edges, "width": width, "height": height}
+
+
 def build_scene(d: Diagram) -> Scene:
     measured: dict[str, tuple[list[TextLine], float, float, str]] = {}
     for n in d.nodes:
         ramp = S.resolve_ramp(n.category)
         lines, w, h = node_text(n, ramp)
         measured[n.id] = (lines, w, h, ramp)
+    if d.layout == "grid":
+        return finish_scene(d, grid_layout(d, measured), measured, groups_ok=False)
 
     # tidy sizes: equal widths when they are close, equal heights for LR pipelines
     widths = sorted(m[1] for m in measured.values())
@@ -243,7 +355,10 @@ def build_scene(d: Diagram) -> Scene:
     if laid is None:
         flat = [c for group in children.values() for c in group]
         laid = simple_layout(flat, edges, d.direction, S.NODE_GAP, S.LAYER_GAP)
+    return finish_scene(d, laid, measured, groups_ok=True)
 
+
+def finish_scene(d: Diagram, laid: dict, measured, groups_ok: bool) -> Scene:
     pos: dict[str, dict] = {}
     groups_pos: dict[str, dict] = {}
 
@@ -263,7 +378,7 @@ def build_scene(d: Diagram) -> Scene:
     content_w = max([p["x"] + p["width"] for p in pos.values()] + [g["x"] + g["width"] for g in groups_pos.values()] + [1])
     content_h = max([p["y"] + p["height"] for p in pos.values()] + [g["y"] + g["height"] for g in groups_pos.values()] + [1])
     avail = S.CANVAS_W - 2 * S.MARGIN
-    if d.direction == "LR" and content_w > 1.35 * avail and not getattr(d, "_retried", False):
+    if groups_ok and d.direction == "LR" and content_w > 1.35 * avail and not getattr(d, "_retried", False):
         # too wide to stay legible on a page: lay it out top-to-bottom instead
         import copy
 
@@ -272,7 +387,8 @@ def build_scene(d: Diagram) -> Scene:
         alt._retried = True
         return build_scene(alt)
     # never shrink geometry without text: widen the canvas and let the renderer scale uniformly
-    canvas_w = max(S.CANVAS_W, content_w + 2 * S.MARGIN)
+    margin = S.MARGIN if groups_ok else S.GRID_MARGIN
+    canvas_w = max(S.CANVAS_W, content_w + 2 * margin)
     scale = 1.0
     ox = (canvas_w - content_w) / 2
     oy = 20.0
@@ -318,7 +434,7 @@ def build_scene(d: Diagram) -> Scene:
     bottom = oy + content_h * scale
     used = []
     for sn in scene.nodes:
-        if sn.ramp not in used:
+        if sn.ramp not in used and sn.shape != "label":
             used.append(sn.ramp)
     if d.legend is None and len(used) >= 2:
         scene.legend = [(r, DEFAULT_LEGEND.get(r, r.title())) for r in used]
