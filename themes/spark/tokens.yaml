@@ -1,0 +1,338 @@
+# Spark theme tokens, measured from sample pdfs/ADICC_Proposal_updated (1).pdf with spark_docs.measure.
+# Distances are in PDF points. "base" = text baseline. Spacing entries are measured from the previous
+# block's last reference line (last baseline, or bottom edge for boxes) to the next block's first
+# reference line (first baseline, or top edge for boxes).
+
+name: spark
+version: 1
+
+page:
+  width: 595.28
+  height: 841.89
+  margin_left: 60
+  top: 60              # first line box top on every inner page
+  frame_top: 58        # ReportLab frame top; blocks add a small per-kind top adjust
+  bottom: 48
+  text_width: 478      # justified body text runs 60 -> 538
+  break_width: 476.2   # effective line-break width measured from the reference (Google Docs rounding)
+  rule_right: 535
+  box_width: 451.5     # tables, callouts, banner, cover box: 60 -> 511.5
+  gdocs_ascent: 0.9355 # Google Docs first-baseline factor (top + 0.9355 * size)
+
+fonts:
+  regular: Arial
+  bold: Arial-Bold
+  italic: Arial-Italic
+  bold_italic: Arial-BoldItalic
+  mono: Courier
+
+colors:
+  navy: "#1A1A2E"
+  navy_deep: "#0D1B3E"
+  slate: "#1E293B"
+  purple: "#6B4EFF"
+  purple_rule: "#6C3FE0"
+  body: "#3B3B3B"
+  body_alt: "#434343"
+  card_body: "#555555"
+  subtitle: "#444444"
+  subtle: "#64748B"
+  note: "#888888"
+  black: "#000000"
+  white: "#FFFFFF"
+  rule: "#C8C8C8"
+  rule_soft: "#E2E8F0"
+  box_border: "#CCCCCC"
+  grid: "#E8EAEE"
+  callout_bg: "#E5EAF1"
+  step_bg: "#EEF2F8"
+  tint_bg: "#EEF4FB"
+  table_alt: "#F5F7FA"
+  cover_box: "#F8F7FE"
+  banner_text: "#AABBDD"
+
+type:
+  body:       { size: 10, leading: 11.5, color: body }
+  kicker:     { size: 8, color: purple }
+  page_title: { size: 26, leading: 29.9, color: navy }
+  sub_title:  { size: 14, leading: 16.1, color: navy }   # 2nd+ H2, module titles, Why Choose Us
+  large_title: { size: 20, leading: 23, color: navy_deep } # ruled continuation titles (KPIs)
+  h3:         { size: 13, leading: 14.95, color: navy }
+  h4:         { size: 11, leading: 12.65, color: navy }
+  label:      { size: 10, leading: 11.5, color: body }   # bold "Scope includes:" lines
+  box_title:  { size: 11, leading: 12.65, color: navy }
+  card_title: { size: 10, leading: 11.5, color: navy }
+  card_body:  { size: 9.5, leading: 10.925, color: card_body }
+  table_head: { size: 9, leading: 10.35, color: white }
+  table_body: { size: 9, leading: 10.35, color: body }
+  list_large: { size: 11, leading: 12.65, color: body_alt }
+
+kicker:
+  base: 67.5
+  rule_y: 85.5
+  rule_width: 1
+  title_gap: 33.09     # rule -> page title baseline
+
+cover:
+  logo: { x: 61.5, y: 61.5, w: 78.5, h: 24.75 }
+  kicker_base: 120.81
+  kicker_size: 9
+  title_size: 36
+  title_leading: 41.4
+  subtitle_size: 18
+  subtitle_leading: 20.7
+  kicker_to_title: 51.17
+  title_to_subtitle: 30.52
+  subtitle_to_rule: 26.0
+  rule_to_meta: 29.69
+  meta_pitch: 15.5
+  meta_to_box: 23.31
+  box_to_text: 19.25
+  text_to_box_bottom: 12.05
+  note_size: 9
+  note_leading: 10
+  note_inset: 9.8
+
+addendum_cover:
+  kicker_base: 68.44
+  kicker_to_title: 51.18
+  title_to_subtitle: 30.51
+  subtitle_to_rule: 26.37
+  rule_to_meta: 29.32
+  meta_to_box: 23.68
+  box_to_text: 17.38
+  text_to_box_bottom: 10.62
+
+spacing:
+  default: 31.0
+  kicker:
+    page_title: 33.09
+    compact_title: 27.63
+    sub_title: 33.09
+    body: 33.09
+  page_title:
+    body: 26.89
+    sub_title: 56.14
+    table: 29.0
+    columns: 39.27
+    steps: 17.41
+    callout: 26.0
+    cards: 26.0
+    figure: 21.1
+    tight: 26.89
+    label: 26.89
+    bullets: 26.89
+    h3: 40.0
+    h4: 40.94
+  body:
+    body: 31.0
+    label: 31.0
+    tight: 31.0
+    bullets: 31.0
+    module_title: 46.8   # ### Module headings (Heading 3 in the source doc)
+    sub_title: 50.72     # second-level ## titles such as "Summary of Recommendations"
+    h3: 24.3
+    h4: 40.94
+    table: 19.5
+    roadmap: 36.55
+    commercial: 21.2
+    figure: 21.1
+    callout: 23.55
+    cards: 23.55
+    columns: 31.0
+    steps: 23.55
+    kpis: 30.6
+    contact: 31.15
+  sub_title:
+    body: 18.35
+    table: 20.4
+    cards: 20.46
+    figure: 21.97
+    bullets: 18.35
+    tight: 18.35
+    label: 18.35
+    callout: 20.4
+    roadmap: 20.4
+    commercial: 20.4
+    kpis: 20.4
+    steps: 20.4
+    h3: 18.35
+  h3:
+    body: 17.1
+    bullets: 16.28
+    bullets_large: 17.1
+    table: 21.2
+    commercial: 21.2
+    tight: 17.1
+  h4:
+    table: 6.33
+    body: 15.0
+    bullets: 15.0
+  label:
+    bullets: 15.5
+    body: 15.5
+  bullets:
+    bullets: 14.5
+    body: 31.0
+    module_title: 46.8
+    sub_title: 50.7
+    h3: 24.6
+    figure: 21.1
+    table: 19.5
+    label: 31.0
+  bullets_large:
+    bullets_large: 14.65
+    h3: 24.6
+  table:
+    h4: 39.4
+    h3: 36.77
+    sub_title: 46.8
+    body: 31.0
+    figure: 21.1
+  commercial:
+    h3: 36.77
+  callout:
+    callout: 18.2
+    body: 31.0
+  columns:
+    callout: 23.55
+    body: 31.0
+  cards:
+    contact: 31.15
+    body: 31.0
+  steps:
+    contact: 32.0
+  tight:
+    tight: 16.5
+    module_title: 46.8
+    sub_title: 50.75
+    body: 31.0
+  large_title:
+    kpis: 30.6
+  compact_title:
+    cards: 20.47
+
+tight:
+  pitch: 16.5          # last baseline -> next first baseline inside a :::tight group
+
+bullets:
+  size: 10
+  leading: 11.5
+  item_pitch: 14.5     # last baseline of an item -> first baseline of the next
+  glyph: "•"
+  glyph_x: 14.2
+  text_x: 27.8
+  text_width: 447.5
+  color: body
+
+bullets_large:        # 11pt #434343 lists (responsibilities, KPIs)
+  size: 11
+  leading: 12.65
+  item_pitch: 14.65
+  glyph_x: 14.2
+  text_x: 27.8
+  text_width: 447.5
+  color: body_alt
+
+columns:
+  inset: 6
+  width: 210
+  gutter: 24
+  title_to_body: 17.79
+
+callout:
+  width: 451.5
+  inner_width: 430
+  pad_x: 11.2
+  top_to_title: 19.36
+  title_to_body: 16.69
+  body_to_bottom: 11.45
+
+cards:
+  width: 222
+  gutter: 13.5
+  row_gap: 15.75
+  pad_x: 9
+  top_to_title: 17.63
+  title_to_body: 15.03
+  body_to_bottom: 13.1
+
+steps:
+  gutter: 13
+  total_width: 463
+  pad_x: 10.5          # inner text width 85 (reference wraps "Proposal Review")
+  top_to_number: 27.1
+  number_size: 20
+  number_to_title: 18.86
+  title_to_body: 14.64
+  body_to_bottom: 14.4
+
+contact:
+  width: 451.5
+  height: 45
+  top_to_head: 19.13
+  head_to_line: 14.57
+  head_size: 10
+  line_size: 9
+  separator: "   |   "
+
+table:
+  width: 451.5
+  pad_x: 6.8
+  pad_right: 6.2
+  pad_top: 5.35        # RL first baseline = cell top + pad_top + size -> 14.35 from row top
+  pad_bottom: 6.05
+  grid_width: 1
+
+roadmap:
+  widths: [348, 120]
+  head_size: 13
+  head_color: subtle
+  head_pad_top: 7.77
+  head_height: 30
+  body_size: 11
+  body_leading: 12.65
+  body_color: black
+  body_pad_top: 9.96
+  body_pad_bottom: 11.1
+  duration_size: 10
+  duration_color: purple_rule
+  duration_offset: -2.91
+  pad_x: 8
+
+commercial:
+  widths: [152.2, 219.8, 97.5]
+  size: 10
+  leading: 11.5
+  pad_left: 33
+  pad_right: 6
+  pad_top: 6.05
+  pad_bottom: 9.95
+  head_pad_bottom: 10.95
+  total_pad_bottom: 22.95
+
+kpis:
+  width: 468
+  pad_x: 9.8
+  top_to_label: 18.17
+  first_label_size: 13
+  label_size: 11
+  label_to_item: 24.7
+  first_label_to_item: 27.1
+  item_to_label: 24.6
+  item_pitch: 14.7
+  glyph: "●"
+  glyph_x: 27.8
+  text_x: 45.8
+  text_width: 412
+  bottom_pad: 20.4
+
+ruled_title:
+  rule_offset: 13.5    # rule y below the frame top when the title starts a page
+  rule_to_base: 29.4
+  compact_rule_to_base: 27.63
+
+figure:
+  full_width: 475.5
+  full_x: 61.5
+  inset_width: 432

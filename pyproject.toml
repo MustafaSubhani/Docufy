@@ -1,0 +1,28 @@
+[project]
+name = "spark-doc-agent"
+version = "0.1.0"
+description = "Spark Technologies branded document studio (renderer, diagrams, agents)."
+requires-python = ">=3.12"
+dependencies = [
+    "reportlab>=4.2",
+    "python-docx>=1.1",
+    "pyyaml>=6.0",
+    "pymupdf>=1.24",
+    "pillow>=10.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6", "numpy>=1.26", "scikit-image>=0.22"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+extend-exclude = ["input", "output", "assets", "_analysis", "sample pdfs"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["E501"]

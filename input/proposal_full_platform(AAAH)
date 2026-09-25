@@ -1,0 +1,207 @@
+# PROPOSAL 1 — FULL PLATFORM
+## AAAH Enterprise AI Platform — On-Premise Deployment
+### Proof of Concept (PoC)
+
+---
+
+**Prepared by:** Spark Technologies
+**Prepared for:** AAAH Holding Corp
+**Date:** September 1, 2026
+**PoC Timeline:** 6 Weeks
+
+---
+
+## 1. Overview
+
+Spark Technologies is proposing to deploy the **AAAH Enterprise AI Platform** directly at AAAH Holding Corp's premises — meaning all data stays within your own infrastructure, with no dependency on any external cloud service.
+
+The platform brings together eight AI-powered tools into one unified system, covering everything from reading and drafting documents, to analysing drawings, tracking site progress, and detecting clashes in building models.
+
+This document outlines:
+- The physical equipment needed to run the platform
+- What data and access AAAH Holding Corp will need to provide
+- How the system can grow as your needs expand
+
+> **PoC Scope:** 1–2 active project sites, up to 100 users, 10 users running AI features at the same time.
+
+---
+
+## 2. What the Platform Does
+
+| Module | What It Does |
+|---|---|
+| **Executive Dashboard** | A live summary of all project KPIs, progress curves, and activity across all modules |
+| **Drawing Scanner & BOQ** | Reads CAD drawings automatically and generates quantity take-offs |
+| **Document OCR & Parsing** | Extracts key information from invoices, contracts, and purchase orders |
+| **Document Drafting** | Drafts contracts, NOCs, and RFIs using AI, ready for review and approval |
+| **Clash Detection** | Identifies conflicts between different building models (e.g. structure vs. MEP) |
+| **Site Monitoring** | Connects to your existing site cameras to detect safety issues and track progress |
+| **DMS & AI Assistant** | A searchable document library with an AI assistant that answers questions from your files |
+| **Progress Monitoring** | Tracks planned vs actual progress, updates WBS activities, and flags delays automatically |
+
+---
+
+## 3. Equipment Required
+
+The entire platform runs on a **single server** installed at your premises. This keeps everything simple — one machine to manage, one point of maintenance, and a clear path to upgrade as the platform grows.
+
+### 3.1 The AI Server
+
+| Item | What It Is | Price (AED) |
+|---|---|---|
+| **AI Processing Cards × 2** | NVIDIA L40S — the engine that runs all AI features. Two cards give the platform enough power to serve all 8 modules simultaneously | 92,400 |
+| **Server Machine** | Dell PowerEdge R760xa — a professional rack-mounted server that houses everything | 19,800 |
+| **Memory (RAM)** | 256GB — the working space the server uses to run multiple tasks at once | 9,900 |
+| **Fast Internal Storage** | 10TB high-speed drives for storing AI models and active project data | 8,800 |
+| **Server Total** | | **AED 130,900** |
+
+### 3.2 Supporting Equipment
+
+| Item | What It Is | Price (AED) |
+|---|---|---|
+| **Server Cabinet** | A standard 42U rack to house and protect the server | 4,400 |
+| **Network Switch** | Connects all users and systems together on your internal network | 7,150 |
+| **Document & Video Storage** | 50TB Synology NAS — stores all documents, drawings, camera footage, and AI data | 25,300 |
+| **Firewall** | Fortinet FortiGate — protects the server from unauthorised access | 9,350 |
+| **Cabling & Setup Materials** | Network cables, power strips, and installation materials | 4,400 |
+| **Supporting Equipment Total** | | **AED 50,600** |
+
+### 3.3 Total Investment
+
+| | Price (AED) |
+|---|---|
+| AI Server | 130,900 |
+| Supporting Equipment | 50,600 |
+| **Total** | **AED 181,500** |
+
+> Prices are based on UAE distributor rates as of September 2026. Final pricing subject to formal vendor quotation.
+
+---
+
+### 3.4 Built to Grow
+
+The server is designed so that additional AI processing cards can be added later — **without replacing the machine itself**. The PoC starts with 2 cards, and the server can hold up to 4.
+
+| Stage | AI Cards | Users Supported |
+|---|---|---|
+| **PoC (Now)** | 2 cards | 100 users, 10 simultaneous AI |
+| **Phase 2** | 3 cards | ~150 users, 20 simultaneous AI |
+| **Full Scale** | 4 cards | 200+ users, 35+ simultaneous AI |
+
+> Adding a card in the future costs approximately **AED 46,200** and requires no new server.
+
+---
+
+## 4. Space & Environment at Your Site
+
+The following needs to be available at the location where the server will be installed:
+
+| Requirement | Details |
+|---|---|
+| **Dedicated Room or IT Space** | A lockable, access-controlled room — minimum 4m × 3m |
+| **Power** | A dedicated 20A power socket (standard single-phase 220V) |
+| **Cooling** | A dedicated air conditioner or split unit keeping the room between 18°C and 24°C |
+| **Internet Connection** | At least 100 Mbps dedicated line for remote support and updates |
+| **Internal Network** | Gigabit network connection to all staff workstations |
+| **Physical Security** | Key-card or biometric access to the server room |
+
+---
+
+## 5. What We Need from AAAH Holding Corp
+
+### 5.1 Project Data
+
+This is the information needed to set up and run the platform. The earlier it is shared, the faster we can get the system live.
+
+| What We Need | Format | Why We Need It | When |
+|---|---|---|---|
+| **3D Building Models** | Revit or IFC files | For clash detection and progress tracking | Week 1 |
+| **Project Schedules** | Primavera P6 or MS Project | To build the S-Curve and calculate delays | Week 1 |
+| **Past Project Records** | Any format — PDF, Excel, P6 | To help the AI understand your project patterns | Week 1 |
+| **Drawings & CAD Files** | DWG, DXF, or PDF | For the drawing scanner and BOQ module | Week 2 |
+| **Contracts & Documents** | PDF or Word | For document reading and AI drafting | Week 2 |
+| **Invoices & Purchase Orders** | PDF | For the document parsing module | Week 2 |
+| **Work Breakdown Structure (WBS)** | Excel or P6 export | To map activities to the progress dashboard | Week 1 |
+
+### 5.2 System Access
+
+| What We Need | Details | Why |
+|---|---|---|
+| **Primavera P6 or MS Project** | Read-only access or scheduled export | To keep schedules in sync automatically |
+| **ERP System (SAP or similar)** | Read-only API access | To pull purchase order and invoice data |
+| **Site Camera System** | Stream access (RTSP) or camera login credentials | To connect cameras to the AI pipeline |
+| **Company Login System** | Active Directory or single sign-on credentials | So all 100 users can log in with their existing accounts |
+| **Internal Network** | A fixed IP address allocated to the server | So all users can reach the platform |
+
+### 5.3 People We Will Need to Coordinate With
+
+| Role | Why |
+|---|---|
+| **IT Contact** | To help with server installation and network setup in weeks 1–2 |
+| **Project Manager** | To review and confirm schedule and WBS data |
+| **Site Supervisor** | To verify progress readings during the PoC |
+| **Camera System Administrator** | To provide access credentials for site cameras |
+
+---
+
+## 6. Platform Capacity
+
+| | Value |
+|---|---|
+| **Total Users** | 100 |
+| **Users Running AI at the Same Time** | 10 |
+| **Project Sites (PoC)** | 1–2 |
+| **Camera Streams Supported** | Up to 12 (using your existing cameras) |
+| **Storage for Documents & Data** | 50TB |
+| **AI Response Time** | Under 8 seconds for most queries at full load |
+
+---
+
+## 7. Drone Integration — Optional
+
+The Progress Monitoring module is built to work with drone surveys as an optional add-on. It is not required for the PoC, but can be switched on at any time.
+
+| | Without Drone | With Drone |
+|---|---|---|
+| **How progress is measured** | AI reads your existing cameras | AI also processes aerial drone images |
+| **Accuracy** | Good (~65–70%) | Very High (~90–95%) |
+| **Comparison against building model** | Not available | Available — AI compares what is built vs what was designed |
+| **Extra hardware needed** | None | Drone flights (third-party service, hired separately) |
+
+> Drone flights can be arranged by AAAH as a third-party service. No changes to the server or platform are needed to enable this.
+
+---
+
+## 8. PoC Delivery Plan — 6 Weeks
+
+| Week | What Happens |
+|---|---|
+| **Week 1** | Server delivered and installed. Network connected. Core system set up. |
+| **Week 2** | Project data loaded — schedules, drawings, documents. Camera feeds connected. |
+| **Week 3** | Document modules go live — OCR, AI Assistant, Document Drafting. All 100 user accounts created. |
+| **Week 4** | Drawing Scanner, Clash Detection, Site Monitoring, and Progress Monitoring go live. |
+| **Week 5** | Testing with real project data. Key staff review and validate the system. Adjustments made. |
+| **Week 6** | Final refinements. Full platform demo to AAAH leadership. PoC sign-off. |
+
+---
+
+## 9. Summary
+
+| | |
+|---|---|
+| **Type of Deployment** | On-Premise — data stays at your site |
+| **Server** | Dell PowerEdge R760xa |
+| **AI Engine** | 2× NVIDIA L40S — expandable to 4× without hardware replacement |
+| **Total Users** | 100 |
+| **Simultaneous AI Users** | 10 |
+| **Storage** | 50TB document/video storage + 10TB high-speed internal |
+| **PoC Sites** | 1–2 |
+| **Drone** | Optional — supported |
+| **Delivery** | 6 Weeks |
+| **Total Equipment Cost** | **AED 181,500** |
+| **Prepared by** | Spark Technologies |
+| **Prepared for** | AAAH Holding Corp |
+
+---
+
+*This proposal covers equipment and data requirements only. Platform development, deployment services, and project management are quoted separately.*

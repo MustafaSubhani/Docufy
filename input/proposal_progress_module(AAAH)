@@ -1,0 +1,233 @@
+# PROPOSAL 2 — PROGRESS TRACKING MODULE
+## AAAH AI Progress Monitoring — On-Premise Deployment
+### Proof of Concept (PoC)
+
+---
+
+**Prepared by:** Spark Technologies
+**Prepared for:** AAAH Holding Corp
+**Date:** September 1, 2026
+**PoC Timeline:** 6 Weeks
+
+---
+
+## 1. Overview
+
+Spark Technologies is proposing the deployment of the **AAAH AI Progress Monitoring Module** as a standalone on-premise solution — the most immediately impactful component of the full AAAH platform.
+
+This module connects to your **existing site cameras** and uses AI to automatically track construction progress, update activity completion, and flag delays — without any manual data entry from the site team. The same cameras that monitor safety are also used to track progress, making full use of your existing infrastructure.
+
+This document covers:
+- The equipment needed to run the module
+- What data and access AAAH Holding Corp needs to provide
+- What information is needed to train the AI for your specific projects
+
+> **PoC Scope:** 1–2 active project sites, up to 100 users, 10 users running AI features at the same time.
+
+---
+
+## 2. What the Module Does
+
+| Feature | Description |
+|---|---|
+| **Zone Completion Tracking** | The AI watches your camera feeds and recognises when a construction milestone is reached — such as a slab being poured or columns being completed — and marks the zone accordingly |
+| **Automatic Schedule Updates** | When a milestone is detected, the corresponding activity in your project schedule is updated automatically |
+| **Planned vs Actual Progress (S-Curve)** | A real-time graph showing how actual site progress compares to your planned schedule |
+| **Delay Detection & Alerts** | The system automatically identifies which activities are behind and by how many days |
+| **Site Map View** | A colour-coded map of the site showing which zones are done, in progress, delayed, or not yet started |
+| **Schedule Performance Metrics** | Automatically calculates key project health indicators like SPI and Schedule Variance |
+| **Drone Integration (Optional)** | Drone survey images can be added for a more detailed, high-accuracy progress view |
+
+---
+
+## 3. How It Works
+
+```
+Your Existing Site Cameras
+           │
+           ▼
+    AI reads the live feeds
+    (running on your server)
+           │
+     ┌─────┴──────┐
+     ▼            ▼
+Safety Alerts   Progress Tracking
+(PPE, access)   (Zone milestones,
+                 WBS updates)
+           │
+           ▼
+  Progress Dashboard
+  (S-Curve, KPIs, Delay Alerts)
+```
+
+> **One camera — two uses.** The same camera that monitors safety also feeds into the progress tracking AI. No additional cameras needed.
+
+---
+
+## 4. Equipment Required
+
+### 4.1 The AI Server
+
+| Item | What It Is | Price (AED) |
+|---|---|---|
+| **AI Processing Card × 1** | NVIDIA L40S — runs all computer vision and AI tasks for the module | 46,200 |
+| **Server Machine** | Dell PowerEdge R750xs — a professional 2U rack-mounted server | 13,200 |
+| **Memory (RAM)** | 128GB — working space for running multiple camera streams and AI models simultaneously | 4,950 |
+| **Fast Internal Storage** | 4TB high-speed drives for the AI model and active project data | 4,400 |
+| **Server Total** | | **AED 68,750** |
+
+### 4.2 Supporting Equipment
+
+| Item | What It Is | Price (AED) |
+|---|---|---|
+| **Server Cabinet** | A compact 12U wall-mount rack — fits in a small server room or IT closet | 3,300 |
+| **Network Switch** | Connects the server to your cameras and user workstations | 5,500 |
+| **Document & Video Storage** | 20TB Synology NAS — stores camera recordings, reports, and project data | 13,200 |
+| **Firewall** | Fortinet FortiGate — protects the server from unauthorised access | 5,500 |
+| **Cabling & Setup Materials** | Network cables, power strips, and installation materials | 3,300 |
+| **Supporting Equipment Total** | | **AED 30,800** |
+
+### 4.3 Total Investment
+
+| | Price (AED) |
+|---|---|
+| AI Server | 68,750 |
+| Supporting Equipment | 30,800 |
+| **Total** | **AED 99,550** |
+
+> Prices are based on UAE distributor rates as of September 2026. Final pricing subject to formal vendor quotation.
+
+---
+
+### 4.4 Built to Grow
+
+Starting with one AI processing card keeps the PoC cost-efficient. As more sites are added or accuracy needs increase, the same server accepts additional cards.
+
+| Stage | AI Cards | Sites Supported |
+|---|---|---|
+| **PoC (Now)** | 1 card | 1–2 sites, 12 camera streams |
+| **Phase 2** | 2 cards | 4–6 sites, 25 camera streams |
+| **Full Platform** | Move to Full Platform hardware | All sites, all AI modules |
+
+> Adding a card later costs approximately **AED 46,200** — no new server needed.
+
+---
+
+## 5. Space & Environment at Your Site
+
+| Requirement | Details |
+|---|---|
+| **Server Space** | A small lockable room or IT closet — the server fits in a compact 12U wall cabinet |
+| **Power** | A standard 15A wall socket (220V) — no special power setup required |
+| **Cooling** | Standard office air conditioning is sufficient for this server |
+| **Network** | The server must be connected to the same network as your site cameras and user computers |
+| **Camera Network** | The server needs to be able to reach your cameras over your internal network |
+
+---
+
+## 6. What We Need from AAAH Holding Corp
+
+### 6.1 To Run the System (Needed at Go-Live)
+
+| What We Need | Format | Why We Need It | When |
+|---|---|---|---|
+| **Project Schedule (Baseline)** | Primavera P6 or MS Project | To know what was planned, so we can measure how actual progress compares | Week 1 |
+| **Work Breakdown Structure (WBS)** | P6 export or Excel | To link camera-detected milestones to the right activities in the schedule | Week 1 |
+| **Site Zone Layout** | A drawing, sketch, or PDF of the site | To map which camera covers which area of the site | Week 2 |
+| **Building Model (Optional)** | Revit or IFC file | Improves zone detection accuracy significantly | Week 2 |
+
+### 6.2 To Train the AI (Important for Accuracy)
+
+The AI comes pre-trained on general construction data. To make it accurate for AAAH's specific project types — whether high-rise, infrastructure, or mixed-use — it needs examples from your own past projects. The more you share, the more accurate the results.
+
+| What We Need | Format | How Much | Why |
+|---|---|---|---|
+| **Past site photos** | JPG or PNG images from cameras or phones | At least 2,000 photos across your project types | Teaches the AI what different construction stages look like on your sites |
+| **Milestone photos with notes** | Photos labelled with what stage they show (e.g. "columns done", "slab poured") | 500 or more labelled examples | Helps the AI understand what "complete" looks like for each activity |
+| **Past completed project records** | Excel, P6, or PDF reports | 3–5 completed projects | Gives the AI a baseline for predicting delays and schedule performance |
+| **Sample camera recordings** | Short video clips or recordings from site cameras | 2–4 hours per camera angle | Used to calibrate the AI to your camera angles and site conditions |
+| **Zone boundaries** | A sketch or drawing overlay per site | One per site | Tells the AI which part of the site corresponds to which zone in the schedule |
+
+### 6.3 System Access Needed
+
+| What We Need | Details | Why |
+|---|---|---|
+| **Site Camera Access** | Video stream links (RTSP) or camera login credentials | So the AI can read the live feeds |
+| **Project Schedule Access** | Read-only access to Primavera P6, MS Project, or scheduled exports | To keep the progress dashboard in sync with your schedule |
+| **Company Login System** | Active Directory or single sign-on details | So all users can log in with their existing AAAH accounts |
+| **Internal Network** | A fixed address on your network assigned to the server | So all users and cameras can reach the platform |
+
+### 6.4 People We Will Need to Coordinate With
+
+| Role | Why |
+|---|---|
+| **IT Contact** | For server installation, network setup, and camera connectivity |
+| **Project Manager** | To confirm schedule data and validate progress readings |
+| **Site Supervisor** | To cross-check AI-detected progress against actual site conditions during the PoC |
+| **Camera System Administrator** | To provide access to existing camera streams |
+
+---
+
+## 7. Platform Capacity
+
+| | Value |
+|---|---|
+| **Total Users** | 100 |
+| **Users Running AI at the Same Time** | 10 |
+| **Project Sites (PoC)** | 1–2 |
+| **Camera Streams Supported** | Up to 12 (your existing cameras) |
+| **Storage** | 20TB for all recordings, documents, and reports |
+| **Schedule Refresh** | Real-time detection + daily reconciliation with P6 |
+| **Dashboard Update Frequency** | Every 15 minutes |
+
+---
+
+## 8. Drone Integration — Optional
+
+The module is fully built to accept drone survey data as an optional addition — at any time, without any changes to the server or software.
+
+| | Without Drone | With Drone |
+|---|---|---|
+| **How progress is tracked** | AI reads your existing cameras | AI also reads aerial drone images of the site |
+| **Accuracy** | Good (~65–70%) | Very High (~90–95%) |
+| **Comparison against building design** | Not available | AI compares what has been built against the original design |
+| **What it costs extra** | Nothing | Drone flight service (arranged separately by AAAH) |
+
+> AAAH can hire a drone flight service on a per-visit basis. No platform changes or extra hardware are needed.
+
+---
+
+## 9. Delivery Plan — 6 Weeks
+
+| Week | What Happens |
+|---|---|
+| **Week 1** | Server installed and connected to your network. Camera streams tested. |
+| **Week 2** | Project schedule and WBS data loaded. Site zone map configured. |
+| **Week 3** | AI trained and fine-tuned using AAAH's historical site photos and project data. |
+| **Week 4** | Live progress tracking switched on. All 100 user accounts created. Dashboard configured. |
+| **Week 5** | Accuracy review — AI progress readings compared against actual site conditions. Adjustments made. |
+| **Week 6** | Final refinements. User walkthrough. PoC sign-off and demo to AAAH project teams. |
+
+---
+
+## 10. Summary
+
+| | |
+|---|---|
+| **Type of Deployment** | On-Premise — data stays at your site |
+| **Server** | Dell PowerEdge R750xs |
+| **AI Engine** | 1× NVIDIA L40S — expandable without replacing the server |
+| **Total Users** | 100 |
+| **Simultaneous AI Users** | 10 |
+| **Camera Streams** | Up to 12 (your existing cameras) |
+| **Storage** | 20TB document and video storage + 4TB high-speed internal |
+| **PoC Sites** | 1–2 |
+| **Drone** | Optional — fully supported, not required |
+| **Delivery** | 6 Weeks |
+| **Total Equipment Cost** | **AED 99,550** |
+| **Prepared by** | Spark Technologies |
+| **Prepared for** | AAAH Holding Corp |
+
+---
+
+*This proposal covers equipment and data requirements only. Platform development, deployment services, and project management are quoted separately.*

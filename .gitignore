@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+_analysis/
+output/*.pdf
+output/*.docx
+output/preview/
+output/_preview/
+tests/golden/out/
+assets/raster_cache/
+node_modules/
