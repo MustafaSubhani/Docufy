@@ -1,146 +1,91 @@
 ---
 name: spark-documents
 description: >-
-  Creates Spark Technologies branded PDF and Word documents from markdown or
-  pasted text using create_doc.py. Use when the user wants a proposal,
-  documentation pack, scope of work, executive summary, or any document that
-  should match the ADICC proposal sample style (navy/purple theme, divider
-  lines, Spark logo on cover only, callout cards, navy tables).
+  Creates Spark Technologies branded PDF and Word documents from markdown using create_doc.py.
+  Use when the user wants a proposal, technical document, internal report, scope of work, or any
+  document that must match the ADICC proposal template (navy/purple theme, section kickers, callouts,
+  cards, step cards, roadmap and commercial tables, Claude-style diagrams).
 ---
 
 # Spark Documents
 
-Generate documents matching **`sample pdfs/ADICC_Proposal_updated (1).pdf`** — the single style reference. Arial, navy `#1A1A2E`, purple `#6B4EFF`, grey divider lines, callout cards, navy table headers, logo on the **cover page only**.
+The template is measured from `sample pdfs/ADICC_Proposal_updated (1).pdf`. The renderer reproduces it
+to within a point: 98.5% of the reference's text lines break identically, most pages within 1pt.
+All geometry lives in `themes/spark/tokens.yaml`. Do not hand-build PDFs; write Spark markdown and render.
 
-## Workflow
-
-1. Structure content as Spark markdown (frontmatter + headings + optional layout blocks).
-2. Save under `input/` or `examples/`.
-3. Render:
+## Render
 
 ```bash
-py create_doc.py path/to/file.md
-py create_doc.py path/to/file.md --docx
-py create_doc.py path/to/file.md --company-intro --company-outro
-py create_doc.py input/
+py create_doc.py path/to/file.md                 # PDF to output/<title>.pdf
+py create_doc.py path/to/file.md --format both   # PDF + DOCX
+py create_doc.py path/to/file.md --spark-content # client doc: add Who We Are, Why Choose Us, contact banner
+py create_doc.py path/to/file.md --no-spark-content  # internal doc: strip company sections and banners
 ```
 
-Default output: `output/<title>.pdf`.
+## Document pattern (ADICC proposal)
 
-Do not invent a different look. Run the script rather than hand-building a PDF.
+Cover, then `# 01 Executive Summary`, `# 02 About Spark Technologies` (added by `--spark-content`),
+`# 03 Solution Overview`, `# 04 Scope of Work`, `# 05 Client Responsibilities`,
+`# 06 Implementation Timeline & KPIs`, `# 07 Commercial Proposal`, `# 08 Conclusion` (The Path Forward,
+three paragraphs), `# 09 Next Steps & Sign-off` (How We Move Forward steps + contact), optional
+`:::addendum` with `# A1 ...` sections, then `# 10 Why Spark Technologies` (added by `--spark-content`).
+Technical documents use `doc_type: DOCUMENTATION` and never say "proposal".
 
-## Document pattern (ADICC)
-
-| Part | Content | Optional? |
-| --- | --- | --- |
-| Cover | Logo, `PROPOSAL`, title, subtitle, prepared for/by, date, confidential box | Always |
-| `# 01 …` | Executive summary / overview | Always |
-| `# 02 …` | **Who We Are** + **Our Solution Areas** (company intro) | Optional |
-| `# 03+ …` | Proposal body — solution, scope, commercial, etc. | Always |
-| `# …` | **Why Choose Us** cards + contact banner | Optional |
-
-Toggle company blocks with frontmatter or CLI — do **not** duplicate them in markdown when flags are on.
-
-## Frontmatter
-
-```yaml
----
-title: Client Name
-subtitle: Short offer line
-doc_type: PROPOSAL
-prepared_for: Client
-prepared_by: Spark Technologies
-date: August 2026
-confidential: true
-section_break: true
-show_contact: true
-include_company_intro: false
-include_company_outro: false
-footer: Spark Technologies  |  Confidential
-contact:
-  email: contact@sparktechnologies.ai
-  phone: "+971 58 958 8081"
-  website: sparktechnologies.ai
-  address: Office 705, New Century City Tower, Port Saeed, Dubai, UAE
----
-```
-
-**Company sections**
-
-- `include_company_intro: true` — inserts Who We Are + Solution Areas after section 01, then renumbers all `#` sections.
-- `include_company_outro: true` — inserts Why Choose Us before the contact banner, then renumbers.
-- `company_intro: path/to/custom.md` — override default intro template.
-- `company_outro: path/to/custom.md` — override default outro template.
-
-CLI equivalents: `--company-intro`, `--company-outro`.
-
-Default templates: `spark_docs/templates/company_intro.md`, `company_outro.md`.
-
-**Chrome (ADICC default)**
-
-- No logo on inner pages
-- No footer or page numbers on inner pages
-- No purple top bar
-
-Legacy inner logo/footer/bar: `--legacy-chrome` or set `inner_logo`, `inner_footer`, `top_bar` to `true`.
-
-## Heading rules
+## Headings
 
 | Markdown | Renders as |
 | --- | --- |
-| `# 01 Executive Summary` | Purple kicker `01  EXECUTIVE SUMMARY`, new page, grey rule |
-| `## Proposal Overview` | Large navy title (26pt) |
-| `### The Challenge` | Bold navy subhead (11pt) |
-| `### The Opportunity {.accent}` | Bold purple subhead (11pt) |
-| `### Module 1 — Estimation` | Bold navy module title (14pt) |
-| `## Why Choose Us {.compact}` | Compact navy title (14pt) — use for outro page title |
+| `# 01 Executive Summary` | new page, purple kicker `01  EXECUTIVE SUMMARY`, grey rule |
+| `## Proposal Overview` right after `#` | 26pt page title |
+| `## Summary of Recommendations` | 14pt section title (any later `##`) |
+| `### Module 1 — Estimation` | 14pt module title |
+| `### Data and System Access` | 13pt subhead (`{.accent}` = purple) |
+| `#### A3.1 Frontend` | 11pt subhead (e.g. above a table) |
+| `## KPIs {.ruled .large}` | grey rule + 20pt title (continuation page) |
+| `## Why Choose Us {.compact}` | 14pt title right under a kicker |
 
-Numbered H1s become section kickers. Keep `##` as the visible page title under the kicker.
+`**Scope includes:**` alone on a line becomes a bold label that sits tight above its list.
 
-## Layout blocks
-
-Two columns (second heading is purple):
-
-```markdown
-:::columns
-### The Challenge
-Left body copy.
-
-### The Opportunity
-Right body copy.
-:::
-```
-
-Callout band:
+## Blocks
 
 ```markdown
-:::callout
-### Our Approach
-Full-width shaded paragraph.
-:::
+:::columns          two columns; second title is purple (Challenge / Opportunity)
+:::callout          shaded box with ### title (Our Approach, The Outcome)
+:::cards            2-column shaded cards, ### title + text (Solution Areas, Why Choose Us)
+:::steps            How We Move Forward: numbered, centred cards (3 to 5 steps)
+:::tight            paragraphs 16.5pt apart (Who We Are lines, "Step 1 — ..." lists)
+:::large            11pt #434343 lists (client responsibilities)
+:::kpis             tinted KPI box: ### Module + - bullets
+:::table widths=120,131,200 bold_first      navy-header table with fixed column widths
+:::roadmap          | Deliverables | Duration | tinted timeline table
+:::commercial       | Solution | Description | Investment | with a final TOTAL row
+:::contact          navy "To proceed, please contact us" banner
+:::addendum         label:, title:, subtitle:, prepared_for:, prepared_by:, date:, note:
+<!-- pagebreak -->  explicit page break
+![Figure](path.png){width=432}   figure (near-white margins are trimmed automatically)
 ```
 
-Card grid (2×N):
+Tables, callouts, cards, steps and figures never split across pages if they fit on one page.
 
-```markdown
-:::cards
-### Card title
-Short supporting copy.
-:::
+## Diagrams (Claude style)
+
+Mermaid flowcharts render in Claude's visual language: DejaVu Sans, pastel ramp fills, colored arrows,
+auto legend, ELK layout. Long linear chains wrap into rows automatically. Use classes to set colors:
+
+```mermaid
+flowchart LR
+  A[PDF drawings]:::input --> B[Element detection<br/>YOLOv10]:::ai --> C[BOQ output]:::output
 ```
 
-Contact banner: `show_contact: true` or `:::contact`.
+Categories: `input/ingest` blue, `ai/process` purple, `output/cost` teal, `platform` gray,
+`validation/human` amber, `risk` coral, `approval` green. For full control use a ```diagram block
+with YAML: `direction`, `nodes` (id, title, subtitle, category, shape, group), `edges` (from, to, label,
+dashed), `groups`, `legend`.
 
-Tables: navy header `#0D1B3E`, white header text, alternating rows.
+## Check a render
 
-## After generating
-
-Check against ADICC sample:
-
-- Cover: logo top-left only, purple `PROPOSAL`, navy title, purple rule, bold label + regular value on prepared-for lines
-- Inner pages: **no logo, no footer, no top bar**
-- Purple section kicker + grey rule + navy page title
-- Callouts/cards in `#E5EAF1`
-- Why Choose Us page: compact 14pt title, 2×3 card grid, navy contact banner
-
-See `examples/sample.md` for a full inline example (intro + outro written in markdown). For client proposals without company pages, omit those sections and set flags to `false`.
+```bash
+py -m spark_docs.measure out.pdf --pages 1-3          # fonts, sizes, colors, baselines, boxes
+py -m spark_docs.conformance "sample pdfs/ADICC_Proposal_updated (1).pdf" out.pdf --out report/
+py -m pytest                                           # golden ADICC reproduction + unit tests
+```
