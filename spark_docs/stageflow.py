@@ -8,7 +8,7 @@ from reportlab.lib.colors import HexColor
 from reportlab.platypus import Flowable, Paragraph
 
 from .parser import inline_xml
-from .theme import BODY, CONTENT_W, FONT, FONT_BOLD, MUTED, NAVY, SUBTLE
+from .theme import CONTENT_W, FONT, FONT_BOLD, MUTED, SUBTLE
 
 LAYER_RE = re.compile(r"\s*\{+\s*\.?layer=(bot|ai|output|gov|process)\s*\}+\s*$", re.I)
 

@@ -5,8 +5,8 @@ from __future__ import annotations
 from pathlib import Path
 
 from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase.pdfmetrics import registerFontFamily
+from reportlab.pdfbase.ttfonts import TTFont
 
 from .theme import FONT, FONT_BOLD, FONT_BOLD_ITALIC, FONT_ITALIC
 

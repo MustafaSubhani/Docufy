@@ -7,9 +7,9 @@ from pathlib import Path
 
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.opc.constants import RELATIONSHIP_TYPE as RT
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
-from docx.opc.constants import RELATIONSHIP_TYPE as RT
 from docx.shared import Cm, Inches, Pt, RGBColor
 
 from .images import raster_path_for_pdf
@@ -344,6 +344,20 @@ def _emit(doc: Document, block: dict, meta: Meta) -> None:
         return
     if kind == "pagebreak":
         doc.add_page_break()
+        return
+    if kind == "diagram":
+        from diagrams.render import render_png
+        from diagrams.spec import Diagram
+
+        png = render_png(Diagram.from_dict(block["spec"]))
+        from PIL import Image as PILImage
+
+        with PILImage.open(png) as im:
+            w_pt = float(block.get("width") or 475.0)
+            h_pt = im.height * w_pt / im.width
+        p = doc.add_paragraph()
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        p.add_run().add_picture(str(png), width=Inches(w_pt / 72), height=Inches(h_pt / 72))
         return
     if kind == "label":
         p = doc.add_paragraph()

@@ -25,4 +25,8 @@ extend-exclude = ["input", "output", "assets", "_analysis", "sample pdfs"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP"]
-ignore = ["E501"]
+ignore = ["E501", "B905"]
+
+[tool.ruff.lint.per-file-ignores]
+"create_doc.py" = ["E402", "F841"]
+"spark_docs/__main__.py" = ["E402"]

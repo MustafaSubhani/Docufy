@@ -13,3 +13,5 @@ tests/golden/out/
 assets/raster_cache/
 node_modules/
 assets/trim_cache/
+diagrams/node_worker/node_modules/
+assets/diagrams/claude/

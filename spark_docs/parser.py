@@ -9,7 +9,8 @@ from pathlib import Path
 import yaml
 
 from .images import resolve_path as resolve_image_path
-from .mermaid import ASSET_SCALE, diagram_orientation, render as render_mermaid
+from .mermaid import ASSET_SCALE, diagram_orientation
+from .mermaid import render as render_mermaid
 from .theme import DEFAULT_CONFIDENTIAL, Meta, merge_contact
 
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.*)$")
@@ -221,6 +222,11 @@ def parse_blocks(
             if i < n:
                 i += 1
             source = "\n".join(code)
+            if lang.lower() in {"mermaid", "mmd", "diagram"}:
+                spec = claude_diagram_spec(source, lang.lower())
+                if spec is not None:
+                    blocks.append({"kind": "diagram", "spec": spec, "source": source, "lang": lang.lower()})
+                    continue
             if lang.lower() in {"mermaid", "mmd"}:
                 png = render_mermaid(source)
                 if png:
@@ -295,6 +301,20 @@ def parse_blocks(
                 blocks.append({"kind": "para", "text": para})
 
     return blocks
+
+
+def claude_diagram_spec(source: str, lang: str) -> dict | None:
+    """Mermaid flowcharts and ```diagram YAML specs -> Claude-style diagram spec dict."""
+    try:
+        from diagrams.mermaid_import import parse as parse_mermaid
+        from diagrams.spec import Diagram
+    except ImportError:
+        return None
+    if lang == "diagram":
+        data = yaml.safe_load(source) or {}
+        return Diagram.from_dict(data).to_dict() if isinstance(data, dict) else None
+    d = parse_mermaid(source)
+    return d.to_dict() if d and d.nodes else None
 
 
 LABEL_RE = re.compile(r"^\*\*[^*]{1,80}:\*\*$")
