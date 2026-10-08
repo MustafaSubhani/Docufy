@@ -1,6 +1,6 @@
 [project]
 name = "docufy"
-version = "0.4.0"
+version = "0.5.0"
 description = "Docufy: a local document studio that sets notes in the Spark Technologies template."
 requires-python = ">=3.12"
 dependencies = [
@@ -16,7 +16,20 @@ dependencies = [
     "python-multipart>=0.0.9",
     "psutil>=6",
     "keyring>=25",
+    "openai>=1.100",
+    "litellm>=1.50",
+    "mcp>=1.12,<2",
 ]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["spark_agent*", "spark_docs*", "diagrams*"]
+
+[tool.setuptools.package-data]
+spark_agent = ["prompts/*"]
 
 [project.scripts]
 docufy = "spark_agent.__main__:main"

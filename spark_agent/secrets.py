@@ -9,6 +9,7 @@ NAMES = {
     "gemini": "Gemini",
     "stability": "Stability",
     "fal": "Flux",
+    "tavily": "Tavily",
     "serper": "Serper",
     "brave": "Brave",
     "exa": "Exa",

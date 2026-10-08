@@ -64,6 +64,12 @@ def lookup(name: str, *, table: dict | None = None, show: dict | None = None, li
     if row:
         _apply_cost(card, row)
     overrides = (table or {}).get(name) or {}
+    if not overrides and not row and name.split("/", 1)[0] in {"openai", "anthropic"}:
+        # A cloud model picked in Settings that the table does not list yet: assume a modern window and a
+        # flagship price, so the budget overestimates rather than lets spending through unseen.
+        card.context, card.max_output = 128000, 16384
+        small = any(word in name for word in ("mini", "nano", "luna", "haiku"))
+        card.input_usd_per_mtok, card.output_usd_per_mtok = (0.5, 4.0) if small else (5.0, 30.0)
     _apply_map(card, overrides)
     if show:
         _apply_map(card, card_from_show(show))

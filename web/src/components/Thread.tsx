@@ -1,17 +1,19 @@
 import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
-import { api, type ChatDetail, type DocumentInfo, type Message, type ModelChoice, type Models } from "../api";
-import { ArrowDown, Check, Copy, Download, FileText, Layout, List, Mark, Pages, Pen, Refresh, Upload } from "../icons";
-import { pages, Rich } from "../lib";
-import { ResearchReply } from "./ResearchReply";
+import { api, type ChatDetail, type DocumentInfo, type DraftInfo, type Message, type ModelChoice, type Models, type Source } from "../api";
+import { ArrowDown, Check, Copy, Download, FileText, Layout, List, Mark, Pages, Pen, Refresh, Search, Upload } from "../icons";
+import { pages, Rich, when } from "../lib";
+import { ChatActions } from "../openui/chat";
 import { isResearchBody } from "../openui/extract";
 import { Activity } from "./Activity";
 import { Composer, type ComposerHandle } from "./Composer";
+import { Markdown } from "./Markdown";
+import { ResearchReply } from "./ResearchReply";
 
 const STARTERS = [
-  { icon: Pen, title: "Write a proposal", note: "Describe the client and the work. Docufy writes each section.", text: "Write a client proposal for ", spark: true },
-  { icon: List, title: "Draft a scope of work", note: "Deliverables, timeline, and what the client provides", text: "Draft a scope of work for ", spark: true },
-  { icon: Layout, title: "Set my notes as pages", note: "Paste notes with headings and keep every word", text: "# ", spark: true },
-  { icon: FileText, title: "Internal report", note: "Clean pages without the company sections", text: "Write an internal report on ", spark: false },
+  { icon: Pen, title: "Write a proposal", note: "Research the client, draft every section, then set it in the template", text: "Write a client proposal for ", spark: true },
+  { icon: Search, title: "Research a market", note: "Live web search with sources you can click", text: "Research the current state of ", spark: true },
+  { icon: List, title: "Plan a project", note: "A plan with phases, a timeline table, and a flow diagram", text: "Write a plan of action for ", spark: false },
+  { icon: Layout, title: "Set my notes as pages", note: "Attach or paste notes and keep every word", text: "Set these notes in the Spark template:\n\n", spark: true },
 ];
 
 type Props = {
@@ -31,6 +33,8 @@ type Props = {
   onStop: (messageId: string) => void;
   onRetry: (messageId: string, model?: ModelChoice) => void;
   onOpen: (doc: DocumentInfo) => void;
+  onOpenDraft: (draft: DraftInfo) => void;
+  openDraftId: string;
   composerRef: RefObject<ComposerHandle | null>;
 };
 
@@ -43,6 +47,7 @@ export function Thread(props: Props) {
   const writing = messages.find((item) => item.status === "writing");
   const last = messages.at(-1);
   const signature = `${messages.length}:${last?.status}:${last?.body.length}:${last?.activity?.length ?? 0}`;
+  const actions = { busy: Boolean(writing), send: (text: string) => void props.onSend(text, null) };
 
   useLayoutEffect(() => {
     pinned.current = true;
@@ -129,7 +134,7 @@ export function Thread(props: Props) {
               <Mark size={40} />
             </div>
             <h1>What are we writing today?</h1>
-            <p>Describe a document and Docufy writes it, or paste notes and it sets them as pages in the Spark Technologies template.</p>
+            <p>Ask for research, a proposal, or a plan. Docufy searches the web, drafts it in the canvas with tables and diagrams, then sets it in the Spark Technologies template when you say so.</p>
             {composer}
             <div className="starters">
               {STARTERS.map((item, index) => (
@@ -156,22 +161,27 @@ export function Thread(props: Props) {
       ) : (
         <>
           <div className="messages" ref={scroller} onScroll={onScroll}>
-            {props.loading ? (
-              <Skeleton />
-            ) : (
-              messages.map((message) => (
-                <MessageView
-                  key={message.id}
-                  message={message}
-                  chat={props.chat!}
-                  models={props.models}
-                  openId={props.preview?.id ?? ""}
-                  onOpen={props.onOpen}
-                  onStop={() => props.onStop(message.id)}
-                  onRetry={(model) => props.onRetry(message.id, model)}
-                />
-              ))
-            )}
+            <ChatActions.Provider value={actions}>
+              {props.loading ? (
+                <Skeleton />
+              ) : (
+                messages.map((message, index) => (
+                  <MessageView
+                    key={message.id}
+                    message={message}
+                    chat={props.chat!}
+                    models={props.models}
+                    openId={props.preview?.id ?? ""}
+                    openDraftId={props.openDraftId}
+                    latest={index === messages.length - 1}
+                    onOpen={props.onOpen}
+                    onOpenDraft={props.onOpenDraft}
+                    onStop={() => props.onStop(message.id)}
+                    onRetry={(model) => props.onRetry(message.id, model)}
+                  />
+                ))
+              )}
+            </ChatActions.Provider>
           </div>
           <div className="composer-dock">
             {away ? (
@@ -196,7 +206,10 @@ function MessageView({
   chat,
   models,
   openId,
+  openDraftId,
+  latest,
   onOpen,
+  onOpenDraft,
   onStop,
   onRetry,
 }: {
@@ -204,12 +217,16 @@ function MessageView({
   chat: ChatDetail;
   models: Models | null;
   openId: string;
+  openDraftId: string;
+  latest: boolean;
   onOpen: (doc: DocumentInfo) => void;
+  onOpenDraft: (draft: DraftInfo) => void;
   onStop: () => void;
   onRetry: (model?: ModelChoice) => void;
 }) {
   if (message.role === "user") {
     const target = chat.documents.find((item) => item.id === message.target_id);
+    const scoped = message.sections ?? [];
     return (
       <article className="bubble user">
         {message.attachment ? (
@@ -218,11 +235,11 @@ function MessageView({
             {message.attachment}
           </span>
         ) : null}
-        {target ? (
+        {target || scoped.length ? (
           <span className="target">
             <Pen size={13} />
-            Change to {target.title}
-            {target.version && target.version > 1 ? ` v${target.version}` : ""}
+            {target ? `${target.title}${target.version && target.version > 1 ? ` v${target.version}` : ""}` : "Open document"}
+            {scoped.length ? ` · ${scoped.length} section${scoped.length === 1 ? "" : "s"}` : ""}
           </span>
         ) : null}
         {message.web ? <span className="target">Web</span> : null}
@@ -233,22 +250,36 @@ function MessageView({
 
   const doc = chat.documents.find((item) => item.id === message.document_id);
   const live = message.status === "writing";
-  const streaming = live && message.progress?.streaming;
+  const streaming = live && Boolean(message.progress?.streaming);
   const steps = message.activity ?? [];
   const usable = (models?.options ?? []).filter((item) => item.id !== "off" && item.available);
+  const agentic = steps.some((step) => step.kind === "tool" || step.kind === "thought") || Boolean(message.usage);
+  const drafts = (message.drafts ?? [])
+    .map((id) => chat.drafts.find((item) => item.root_id === id || item.id === id) ?? null)
+    .filter((item): item is DraftInfo => Boolean(item));
+  const draftRoots = Array.from(new Set(drafts.map((item) => item.root_id)));
+  const latestDrafts = draftRoots
+    .map((root) => chat.drafts.find((item) => item.root_id === root))
+    .filter((item): item is DraftInfo => Boolean(item));
+  const showReply = !live || streaming;
 
   return (
-    <article className="bubble assistant">
+    <article className={live ? "bubble assistant live" : "bubble assistant"}>
       <header className="who">
         <Mark size={22} />
         <span>Docufy</span>
-        {message.model_label ? <span className="who-model">{message.model_label}</span> : null}
+        {message.model_label ? <span className="who-model">{message.usage?.model || message.model_label}</span> : null}
         {!live && message.body ? <CopyButton text={message.body} /> : null}
       </header>
-      {live && !streaming ? (
-        <Activity steps={steps} live fallback={message.progress?.text || message.body} onStop={onStop} />
-      ) : steps.length ? (
-        <Activity steps={steps} live={false} fallback="" outcome={message.status} />
+      {live || steps.length ? (
+        <Activity
+          steps={steps}
+          live={live}
+          fallback={live ? message.progress?.text || (streaming ? "" : message.body) : ""}
+          outcome={message.status}
+          onStop={onStop}
+          compact={!live && !latest}
+        />
       ) : null}
       {message.status === "blocked" ? (
         <div className="needs">
@@ -266,14 +297,24 @@ function MessageView({
             )}
           </div>
         </div>
-      ) : !live || streaming ? (
+      ) : showReply ? (
         <div className={message.status === "failed" ? "reply failed" : message.status === "stopped" ? "reply muted" : "reply"}>
-          {looksLikeResearch(message) ? (
+          {!agentic && looksLikeResearch(message) ? (
             <ResearchReply text={message.body} streaming={streaming} />
+          ) : agentic || /```|\n\|/.test(message.body) ? (
+            <Markdown text={message.body} streaming={streaming} />
           ) : (
             <Rich text={message.body} />
           )}
           {streaming ? <span className="caret" /> : null}
+        </div>
+      ) : null}
+      {!live && message.sources?.length ? <SourceStrip sources={message.sources} /> : null}
+      {latestDrafts.length ? (
+        <div className="draft-cards">
+          {latestDrafts.map((draft) => (
+            <DraftCard key={draft.root_id} draft={draft} open={openDraftId === draft.root_id} onOpen={() => onOpenDraft(draft)} />
+          ))}
         </div>
       ) : null}
       {message.status === "failed" || message.status === "stopped" ? (
@@ -283,8 +324,65 @@ function MessageView({
         </button>
       ) : null}
       {doc ? <DocCard doc={doc} open={doc.id === openId} onOpen={() => onOpen(doc)} /> : null}
+      {!live && message.usage && latest ? <UsageLine usage={message.usage} /> : null}
     </article>
   );
+}
+
+function SourceStrip({ sources }: { sources: Source[] }) {
+  const [all, setAll] = useState(false);
+  const shown = all ? sources : sources.slice(0, 6);
+  return (
+    <div className="sources">
+      <span className="sources-label">Sources</span>
+      {shown.map((item, index) => (
+        <a key={item.url} className="source-chip" href={item.url} target="_blank" rel="noreferrer" title={item.title}>
+          <span className="source-no">{index + 1}</span>
+          <span className="source-host">{host(item.url)}</span>
+        </a>
+      ))}
+      {sources.length > 6 ? (
+        <button type="button" className="source-more" onClick={() => setAll((value) => !value)}>
+          {all ? "Fewer" : `+${sources.length - 6} more`}
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
+function DraftCard({ draft, open, onOpen }: { draft: DraftInfo; open: boolean; onOpen: () => void }) {
+  return (
+    <button type="button" className={open ? "draft-card on" : "draft-card"} onClick={onOpen}>
+      <span className="draft-card-icon">
+        <FileText size={18} />
+      </span>
+      <span className="draft-card-body">
+        <span className="draft-card-title">{draft.title}</span>
+        <span className="draft-card-meta">
+          Draft v{draft.version} · {draft.words.toLocaleString()} words · {draft.document_root ? "set in the template" : "not in the template yet"} · {when(draft.created_at)}
+        </span>
+      </span>
+      <span className="draft-card-open">{open ? "Showing" : "Open"}</span>
+    </button>
+  );
+}
+
+function UsageLine({ usage }: { usage: NonNullable<Message["usage"]> }) {
+  const parts = [
+    `${(usage.input_tokens + usage.output_tokens).toLocaleString()} tokens`,
+    usage.cached_tokens ? `${Math.round((usage.cached_tokens / Math.max(1, usage.input_tokens)) * 100)}% from cache` : "",
+    usage.searches ? `${usage.searches} ${usage.searches === 1 ? "search" : "searches"}` : "",
+    usage.rounds > 1 ? `${usage.rounds} rounds` : "",
+  ].filter(Boolean);
+  return <p className="usage-line">{parts.join(" · ")}</p>;
+}
+
+function host(url: string) {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return url.slice(0, 30);
+  }
 }
 
 function looksLikeResearch(message: Message): boolean {

@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
-import type { DocumentInfo, ModelChoice, Models } from "../api";
+import { api, type DocumentInfo, type ModelChoice, type Models } from "../api";
 import { ArrowUp, Check, ChevronDown, Chip, Close, Cloud, FileText, Paperclip, Pencil, StopSquare, Type } from "../icons";
-import { bytes, go, useDismiss } from "../lib";
+import { bytes, go, useDismiss, useStored } from "../lib";
 
 export const ACCEPT = ".md,.markdown,.txt,.pdf,.docx,.pptx,.csv,.xlsx";
 
@@ -66,7 +66,9 @@ export const Composer = forwardRef<ComposerHandle, Props>(function Composer(prop
 
   const placeholder = editingDoc
     ? "Say what to change, for example: replace ACME with Acme Fleet"
-    : "Paste notes, describe a document, or ask a question";
+    : props.model === "openai"
+      ? "Ask a question, research a topic, or describe the document you need"
+      : "Paste notes, describe a document, or ask a question";
   const researchHint =
     !editingDoc && props.model !== "off" && !props.web && /\b(research|look up|find out)\b/i.test(text.trim());
 
@@ -186,20 +188,78 @@ export const Composer = forwardRef<ComposerHandle, Props>(function Composer(prop
   );
 });
 
+const EFFORTS = [
+  ["minimal", "Minimal"],
+  ["low", "Low"],
+  ["medium", "Medium"],
+  ["high", "High"],
+] as const;
+
 function ModelMenu({ models, value, onChange }: { models: Models | null; value: ModelChoice; onChange: (value: ModelChoice) => void }) {
   const [open, setOpen] = useState(false);
+  const [effort, setEffort] = useStored<string>("docufy.effort", "");
+  const [agentModel, setAgentModel] = useStored<string>("docufy.agentModel", "");
+  const [available, setAvailable] = useState<{ models: string[]; main: string } | null>(null);
   const ref = useDismiss<HTMLDivElement>(open, () => setOpen(false));
   const current = models?.options.find((item) => item.id === value);
+  const openai = value === "openai";
+
+  useEffect(() => {
+    if (!open || !openai || available) return;
+    api
+      .openaiModels()
+      .then((data) => setAvailable({ models: data.models, main: data.main }))
+      .catch(() => setAvailable({ models: [], main: "" }));
+  }, [open, openai, available]);
+
+  const shownModel = agentModel || available?.main || "";
+  const effortLabel = EFFORTS.find(([id]) => id === effort)?.[1];
 
   return (
     <div className="model-menu" ref={ref}>
       <button type="button" className="model-pill" aria-haspopup="listbox" aria-expanded={open} onClick={() => setOpen((state) => !state)}>
         <ModelIcon id={value} />
-        <span>{current?.label ?? "Format only"}</span>
+        <span>
+          {openai && agentModel ? agentModel : current?.label ?? "Format only"}
+          {openai && effortLabel ? <span className="model-pill-effort"> · {effortLabel}</span> : null}
+        </span>
         <ChevronDown size={15} />
       </button>
       {open ? (
         <div className="popover model-list" role="listbox" aria-label="Model">
+          {openai ? (
+            <div className="model-tune">
+              <p className="popover-title">Effort</p>
+              <div className="effort-group" role="radiogroup" aria-label="Reasoning effort">
+                <button type="button" role="radio" aria-checked={!effort} className={!effort ? "on" : undefined} onClick={() => setEffort("")}>
+                  Default
+                </button>
+                {EFFORTS.map(([id, label]) => (
+                  <button key={id} type="button" role="radio" aria-checked={effort === id} className={effort === id ? "on" : undefined} onClick={() => setEffort(id)}>
+                    {label}
+                  </button>
+                ))}
+              </div>
+              <p className="popover-title">OpenAI model</p>
+              <select
+                className="model-select"
+                value={agentModel}
+                aria-label="OpenAI model"
+                onChange={(event) => setAgentModel(event.target.value)}
+              >
+                <option value="">Settings default{available?.main ? ` (${available.main})` : ""}</option>
+                {(available?.models ?? []).map((name) => (
+                  <option key={name} value={name}>
+                    {name}
+                  </option>
+                ))}
+                {agentModel && available && !available.models.includes(agentModel) ? <option value={agentModel}>{agentModel}</option> : null}
+              </select>
+              {!available ? <span className="option-detail">Loading the models your key can use</span> : null}
+              {available && !available.models.length ? <span className="option-detail">Add or test the OpenAI key in Settings to list models</span> : null}
+              {shownModel ? <span className="option-detail">Effort applies to reasoning models; other models ignore it.</span> : null}
+            </div>
+          ) : null}
           <p className="popover-title">Model for this message</p>
           {(models?.options ?? []).map((item) => (
             <button

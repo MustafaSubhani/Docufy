@@ -17,7 +17,7 @@ from spark_docs.brand import archetype_prompt, load_archetypes
 
 from . import store
 from .blocks import HEADING, SrcBlock, segment, split_frontmatter
-from .governor import harmonize, run_items, workers_for
+from .governor import cloud_thresholds, harmonize, run_items, workers_for
 from .llm import LLMError, Router
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -406,6 +406,10 @@ def build_plan(router: Router, blocks: list[SrcBlock], meta: dict, log=print) ->
         except LLMError as exc:
             issues.append(f"document planner failed: {exc}")
             plan = fallback_plan(blocks)
+            if meta.get("archetype") in ARCHETYPES:
+                # The front matter already says what the document is (the agent or the brief set it).
+                plan["archetype"] = meta["archetype"]
+                plan["doc_type"] = ARCHETYPES[meta["archetype"]].get("doc_type", plan["doc_type"])
             break
         plan["title_block"] = resolve_title_block(blocks, plan.get("title_block"))
         natural = natural_sections(blocks, plan.get("title_block"))
@@ -474,6 +478,7 @@ def execute_plan(
             low_resource=bool(gov.get("low_resource")),
             timeout_s=float((router.config.get("limits") or {}).get("request_timeout_s") or 300),
             run_id=run_id,
+            **cloud_thresholds(router),
         )
         section_items = []
         for section, result in zip(plan["sections"], report.results, strict=False):

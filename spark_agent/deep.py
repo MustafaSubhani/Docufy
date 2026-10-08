@@ -844,6 +844,7 @@ def default_connectors() -> list:
     import os
 
     return [
+        KeyedConnector("tavily", key=os.environ.get("TAVILY_API_KEY", ""), kinds=("web", "news"), searcher=search_tavily),
         DdgConnector(),
         OpenAlexConnector(),
         KeyedConnector("serper", key=os.environ.get("SERPER_API_KEY", ""), kinds=("web", "news"), searcher=search_serper),
@@ -901,6 +902,23 @@ def search_serper(query: str, key: str, limit: int = 5) -> list[SearchHit]:
         link = item.get("link") or ""
         if link:
             hits.append(SearchHit(url=link, title=item.get("title") or "", snippet=item.get("snippet") or "", connector="serper", rank=rank))
+    return hits[:limit]
+
+
+def search_tavily(query: str, key: str, limit: int = 5) -> list[SearchHit]:
+    payload = json.dumps({"query": query, "max_results": limit, "search_depth": "advanced"}).encode()
+    request = Request(
+        "https://api.tavily.com/search",
+        data=payload,
+        headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json", "User-Agent": "SparkDocAgent"},
+    )
+    with urlopen(request, timeout=25) as response:
+        data = json.loads(response.read().decode("utf-8", "replace"))
+    hits = []
+    for rank, item in enumerate(data.get("results") or [], start=1):
+        link = item.get("url") or ""
+        if link:
+            hits.append(SearchHit(url=link, title=item.get("title") or "", snippet=(item.get("content") or "")[:500], connector="tavily", rank=rank))
     return hits[:limit]
 
 

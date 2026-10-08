@@ -69,6 +69,10 @@ _COLUMNS = {
         "target_id": "TEXT DEFAULT ''",
         "activity": "TEXT DEFAULT ''",
         "web": "INTEGER DEFAULT 0",
+        "sources": "TEXT DEFAULT ''",
+        "usage": "TEXT DEFAULT ''",
+        "drafts": "TEXT DEFAULT ''",
+        "sections": "TEXT DEFAULT ''",
     },
     "documents": {
         "version": "INTEGER DEFAULT 1",
@@ -144,6 +148,7 @@ class _Job:
     target_id: str = ""
     web: bool = False
     section_ids: list[str] = field(default_factory=list)
+    payload: str = ""
     token: str = field(default_factory=lambda: uuid.uuid4().hex)
 
 
@@ -216,13 +221,38 @@ class _Progress:
         self.lock = threading.Lock()
         self.agents = bool(job.settings.get("use_model"))
         self.sections = 0
+        self.nested = ""
+        self.body = ""
 
     def check(self) -> None:
         if not _jobs.live(self.job):
             raise Stopped()
 
+    def nest(self, parent: str) -> None:
+        """Steps a pipeline starts from now on sit under this tool call."""
+        self.nested = parent
+
+    def unnest(self, parent: str) -> None:
+        if self.nested == parent:
+            self.nested = ""
+
+    def _mapped(self, key: str, kind: str, parent: str) -> tuple[str, str, str]:
+        if self.nested and kind in {"step", "agent", "item"} and key != self.nested:
+            return f"{self.nested}:{key}", "item", self.nested if kind == "step" or not parent else f"{self.nested}:{parent}"
+        return key, kind, parent
+
+    def detail(self, key: str, text: str) -> None:
+        with self.lock:
+            for step in self.steps:
+                if step["key"] == key:
+                    step["detail"] = text
+            self._save("")
+
     def start(self, key: str, label: str, kind: str = "step", parent: str = "", detail: str = "") -> None:
         self.check()
+        key, kind, parent = self._mapped(key, kind, parent)
+        if self.nested and parent.startswith(self.nested + ":") and not any(step["key"] == parent for step in self.steps):
+            parent = self.nested
         now = time.time()
         with self.lock:
             if kind == "step":
@@ -239,6 +269,8 @@ class _Progress:
             self._save(label)
 
     def finish(self, key: str, detail: str = "", status: str = "done") -> None:
+        if self.nested and key != self.nested and not key.startswith(self.nested + ":"):
+            key = f"{self.nested}:{key}"
         now = time.time()
         with self.lock:
             for step in self.steps:
@@ -261,6 +293,7 @@ class _Progress:
         if time.time() - self.shown < 0.2:
             return
         self.shown = time.time()
+        self.body = text
         payload = json.dumps({"text": "", "streaming": True})
         with store._lock:
             store.conn().execute(
@@ -316,7 +349,7 @@ class _Progress:
     def _save(self, text: str, live: bool = True) -> None:
         running = [step for step in self.steps if step["status"] == "running"]
         label = text or (running[-1]["label"] if running else "")
-        payload = json.dumps({"text": label}) if live else ""
+        payload = json.dumps({"text": label, "streaming": bool(self.body)}) if live else ""
         activity = json.dumps(self.steps)
         with store._lock:
             store.conn().execute(
@@ -421,13 +454,19 @@ def get_chat(chat_id: str) -> dict:
             "target_id": m[9] or "",
             "activity": _activity(m[10]),
             "web": bool(m[11]),
+            "sources": _json_list(m[12]),
+            "usage": _progress(m[13]),
+            "drafts": _json_list(m[14]),
+            "sections": _json_list(m[15]),
         }
         for m in store.conn().execute(
-            "SELECT id, role, body, status, document_id, created_at, model, progress, attachment, target_id, activity, web "
-            "FROM messages WHERE chat_id=? ORDER BY created_at",
+            "SELECT id, role, body, status, document_id, created_at, model, progress, attachment, target_id, activity, web, "
+            "sources, usage, drafts, sections FROM messages WHERE chat_id=? ORDER BY created_at",
             (chat_id,),
         )
     ]
+    from . import workspace
+
     return {
         "id": row[0],
         "title": row[1],
@@ -436,7 +475,23 @@ def get_chat(chat_id: str) -> dict:
         "busy": any(item["status"] == "writing" for item in messages),
         "messages": messages,
         "documents": _documents_for_chat(chat_id),
+        "drafts": [_draft_info(item) for item in workspace.drafts_for_chat(chat_id)],
+        "notes": workspace.notes(chat_id),
     }
+
+
+def _draft_info(draft: dict) -> dict:
+    return {key: draft[key] for key in ("id", "root_id", "version", "title", "words", "document_root", "created_at", "author", "note")}
+
+
+def _json_list(raw: str | None) -> list:
+    if not raw:
+        return []
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError:
+        return []
+    return data if isinstance(data, list) else []
 
 
 def delete_chat(chat_id: str) -> None:
@@ -460,9 +515,11 @@ def delete_chat(chat_id: str) -> None:
         folder = studio_dir() / "uploads" / message_id
         if folder.is_dir():
             shutil.rmtree(folder, ignore_errors=True)
+    from . import workspace
     from .memory import forget_key
     from .panel import log_activity
 
+    workspace.delete_chat(chat_id)
     forget_key(chat_id)
     log_activity("project", "deleted a chat")
 
@@ -481,9 +538,11 @@ def send_message(
     section_ids: list[str] | None = None,
     web: bool = False,
     wait: bool = False,
+    effort: str | None = None,
+    agent_model: str | None = None,
 ) -> dict:
     chat = get_chat(chat_id)
-    settings = with_choice(load_settings(), model)
+    settings = with_turn(with_choice(load_settings(), model), effort, agent_model)
     spark = settings["spark_content"] if spark_content is None else bool(spark_content)
     body = (text or "").strip()
     filename = _safe_name(upload[0]) if upload else ""
@@ -507,7 +566,7 @@ def send_message(
         if not found or found[0] != chat_id:
             raise StudioError("document not found")
         target = document_id
-    kind = _kind(body, filename, target, web=web)
+    kind = _kind_for(settings, body, filename, target, web)
     now = time.time()
     user_id = uuid.uuid4().hex[:12]
     assistant_id = uuid.uuid4().hex[:12]
@@ -519,10 +578,13 @@ def send_message(
         folder.mkdir(parents=True, exist_ok=True)
         (folder / filename).write_bytes(upload[1])
     choice = _choice_of(settings)
+    scoped = [item.strip() for item in (section_ids or []) if item and str(item).strip()]
+    keep_target = target if kind in {"revise", "agent"} else ""
     with store._lock:
         store.conn().execute(
-            "INSERT INTO messages (id, chat_id, role, body, status, document_id, created_at, attachment, target_id, web) VALUES (?,?,?,?,?,?,?,?,?,?)",
-            (user_id, chat_id, "user", body, "ready", None, now, filename, target if kind == "revise" else "", 1 if web else 0),
+            "INSERT INTO messages (id, chat_id, role, body, status, document_id, created_at, attachment, target_id, web, sections) "
+            "VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+            (user_id, chat_id, "user", body, "ready", None, now, filename, keep_target, 1 if web else 0, json.dumps(scoped) if scoped else ""),
         )
         store.conn().execute(
             "INSERT INTO messages (id, chat_id, role, body, status, document_id, created_at, model, progress) VALUES (?,?,?,?,?,?,?,?,?)",
@@ -530,7 +592,6 @@ def send_message(
         )
         store.conn().execute("UPDATE chats SET title=?, updated_at=? WHERE id=?", (title, now, chat_id))
         store.conn().commit()
-    scoped = [item.strip() for item in (section_ids or []) if item and str(item).strip()]
     job = _Job(
         kind,
         chat_id,
@@ -540,7 +601,7 @@ def send_message(
         spark,
         settings,
         upload,
-        target if kind == "revise" else "",
+        keep_target,
         web,
         scoped,
     )
@@ -551,12 +612,16 @@ def send_message(
 def stop_message(chat_id: str, message_id: str) -> dict:
     _check_id(chat_id)
     _check_id(message_id)
-    row = store.conn().execute("SELECT status, run_id FROM messages WHERE id=? AND chat_id=?", (message_id, chat_id)).fetchone()
+    row = store.conn().execute(
+        "SELECT status, run_id, body, progress FROM messages WHERE id=? AND chat_id=?", (message_id, chat_id)
+    ).fetchone()
     if not row:
         raise StudioError("message not found")
     if row[0] == "writing":
         _jobs.cancel(message_id)
-        _finish_message(message_id, chat_id, "Stopped.", "stopped", None)
+        streamed = '"streaming": true' in (row[3] or "")
+        partial = (row[2] or "").strip() if streamed else ""
+        _finish_message(message_id, chat_id, f"{partial}\n\n*Stopped.*" if partial else "Stopped.", "stopped", None)
         if row[1]:
             store.finish_run(row[1], "stopped", "", {"stopped": True})
     return get_chat(chat_id)
@@ -574,7 +639,7 @@ def retry_message(chat_id: str, message_id: str, model: str | None = None) -> di
     if row[0] not in {"failed", "stopped", "blocked"}:
         raise StudioError("only a stopped or failed reply can be tried again")
     user = store.conn().execute(
-        "SELECT id, body, attachment, target_id, web FROM messages WHERE chat_id=? AND role='user' AND created_at<? ORDER BY created_at DESC LIMIT 1",
+        "SELECT id, body, attachment, target_id, web, sections FROM messages WHERE chat_id=? AND role='user' AND created_at<? ORDER BY created_at DESC LIMIT 1",
         (chat_id, row[1]),
     ).fetchone()
     if not user:
@@ -587,15 +652,18 @@ def retry_message(chat_id: str, message_id: str, model: str | None = None) -> di
             raise StudioError("the attached file is no longer saved; attach it again")
         upload = (user[2], path.read_bytes())
     web = bool(user[4])
-    kind = _kind(user[1], user[2] or "", user[3] or "", web=web)
+    kind = _kind_for(settings, user[1], user[2] or "", user[3] or "", web)
     with store._lock:
         store.conn().execute(
-            "UPDATE messages SET body=?, status='writing', document_id=NULL, progress='', activity='', run_id='', model=? WHERE id=?",
+            "UPDATE messages SET body=?, status='writing', document_id=NULL, progress='', activity='', run_id='', model=?, "
+            "sources='', usage='', drafts='' WHERE id=?",
             (_pending(kind, web), _choice_of(settings), message_id),
         )
         store.conn().execute("UPDATE chats SET updated_at=? WHERE id=?", (time.time(), chat_id))
         store.conn().commit()
-    job = _Job(kind, chat_id, message_id, user[0], user[1], settings["spark_content"], settings, upload, user[3] or "", web)
+    job = _Job(
+        kind, chat_id, message_id, user[0], user[1], settings["spark_content"], settings, upload, user[3] or "", web, _json_list(user[5])
+    )
     _dispatch(job)
     return get_chat(chat_id)
 
@@ -671,32 +739,31 @@ def document_sections(doc_id: str) -> list[dict]:
     md_path = Path(doc["md_path"] or Path(doc["pdf_path"]).with_name("notes.spark.md"))
     if not md_path.is_file():
         return []
+    from .edit import _kicker_body
+
     ir = load_markdown(md_path.read_text(encoding="utf-8"))
     layout = _read_layout(doc["pdf_path"])
-    pages_by_id: dict[str, set[int]] = {}
-    pages_by_anchor: dict[str, set[int]] = {}
-    for block in layout.get("blocks") or []:
-        page = block.get("page")
-        if not page:
-            continue
-        number = int(page)
-        bid = block.get("id")
-        if bid:
-            pages_by_id.setdefault(str(bid), set()).add(number)
-        anchor = block.get("anchor")
-        if anchor:
-            pages_by_anchor.setdefault(str(anchor), set()).add(number)
+    blocks = [block for block in layout.get("blocks") or [] if block.get("page")]
+    last_page = max([int(block["page"]) for block in blocks] or [int(doc.get("pages") or 1)])
+    # Kickers in page order. The renderer numbers blocks after the company pages are added, so block ids
+    # do not line up with the source; the kicker anchors do.
+    kickers: list[tuple[str, int]] = []
+    for block in blocks:
+        anchor = str(block.get("anchor") or "")
+        if block.get("kind") == "kicker" and anchor and all(anchor != seen for seen, _page in kickers):
+            kickers.append((anchor, int(block["page"])))
+    spans: dict[str, set[int]] = {}
+    for index, (anchor, start) in enumerate(kickers):
+        end = kickers[index + 1][1] - 1 if index + 1 < len(kickers) else last_page
+        spans[anchor] = set(range(start, max(start, end) + 1))
     out: list[dict] = []
     for section in _sections(ir):
-        block_ids = [section.id]
-        if section.title_id:
-            block_ids.append(section.title_id)
-        block_ids.extend(block.id for block in section.blocks)
         pages: set[int] = set()
-        for bid in block_ids:
-            pages.update(pages_by_id.get(bid, ()))
-        if not pages and section.kicker:
-            pages.update(pages_by_anchor.get(slug(section.kicker), ()))
+        if section.kicker:
+            for key in (slug(_kicker_body(section.kicker)), slug(section.kicker)):
+                if key in spans:
+                    pages = spans[key]
+                    break
         out.append(
             {
                 "id": section.id,
@@ -785,6 +852,21 @@ def with_choice(settings: dict, model: str | None) -> dict:
     return chosen
 
 
+def with_turn(settings: dict, effort: str | None, agent_model: str | None) -> dict:
+    """Effort and OpenAI model picked in the composer for one message, over the saved settings."""
+    chosen = dict(settings)
+    if effort:
+        if effort not in _EFFORTS:
+            raise StudioError("effort is minimal, low, medium, or high")
+        chosen["reasoning_effort"] = effort
+    if agent_model:
+        name = str(agent_model).strip().removeprefix("openai/")
+        if not re.fullmatch(r"[A-Za-z0-9._:-]{2,80}", name):
+            raise StudioError("that does not look like an OpenAI model id")
+        chosen["openai_model"] = name
+    return chosen
+
+
 def model_options() -> dict:
     settings = load_settings()
     cfg = load_config()
@@ -794,6 +876,9 @@ def model_options() -> dict:
         stored = {row["name"] for row in secrets.status() if row.get("set")}
     except Exception:
         stored = set()
+    for name, env in (("openai", "OPENAI_API_KEY"), ("anthropic", "ANTHROPIC_API_KEY")):
+        if os.environ.get(env):
+            stored.add(name)
     ollama = _ollama_cached(settings.get("ollama_url") or "")
     options = [
         {
@@ -822,6 +907,11 @@ def model_options() -> dict:
             else:
                 reason = ""
             detail = pretty_model(writer)
+            if profile == "openai" and available:
+                from .providers import resolve_openai_model
+
+                chosen = resolve_openai_model(settings.get("openai_model") or writer)
+                writer, detail = f"openai/{chosen}", f"{pretty_model(chosen)} agent with web search" if settings.get("agent") else pretty_model(chosen)
         options.append({"id": profile, "label": label, "detail": detail, "model": writer, "available": available, "reason": reason})
     return {"options": options, "current": _choice_of(settings)}
 
@@ -846,6 +936,13 @@ def load_settings() -> dict:
         "num_ctx": int(ollama.get("num_ctx") or 16384),
         "keep_alive": ollama.get("keep_alive") or "10m",
         "ollama_url": ollama.get("url") or "http://127.0.0.1:11434",
+        "agent": True,
+        "agent_local": False,
+        "openai_model": "",
+        "openai_fast_model": "",
+        "reasoning_effort": "medium",
+        "search_context": "medium",
+        "hosted_search": True,
     }
     path = studio_dir() / "settings.json"
     if path.is_file():
@@ -867,7 +964,19 @@ def load_settings() -> dict:
     data["local_only"] = bool(data["local_only"])
     data["num_ctx"] = int(data["num_ctx"]) if int(data["num_ctx"]) in {2048, 4096, 8192, 16384, 32768} else 16384
     data["keep_alive"] = str(data["keep_alive"])
+    data["agent"] = bool(data["agent"])
+    data["agent_local"] = bool(data["agent_local"])
+    data["hosted_search"] = bool(data["hosted_search"])
+    data["openai_model"] = str(data["openai_model"] or "")
+    data["openai_fast_model"] = str(data["openai_fast_model"] or "")
+    if data["reasoning_effort"] not in _EFFORTS:
+        data["reasoning_effort"] = "medium"
+    if data["search_context"] not in {"low", "medium", "high"}:
+        data["search_context"] = "medium"
     return data
+
+
+_EFFORTS = {"minimal", "low", "medium", "high"}
 
 
 def save_settings(incoming: dict) -> dict:
@@ -918,6 +1027,23 @@ def save_settings(incoming: dict) -> dict:
         if not re.fullmatch(r"\d+[smh]", alive):
             raise StudioError("keep alive looks like 10m")
         current["keep_alive"] = alive
+    for flag in ("agent", "agent_local", "hosted_search"):
+        if flag in incoming:
+            current[flag] = bool(incoming[flag])
+    for name in ("openai_model", "openai_fast_model"):
+        if name in incoming:
+            value = str(incoming[name] or "").strip().removeprefix("openai/")
+            if value and not re.fullmatch(r"[A-Za-z0-9._:-]{2,80}", value):
+                raise StudioError("that does not look like an OpenAI model id")
+            current[name] = value
+    if "reasoning_effort" in incoming:
+        if incoming["reasoning_effort"] not in _EFFORTS:
+            raise StudioError("reasoning effort is minimal, low, medium, or high")
+        current["reasoning_effort"] = incoming["reasoning_effort"]
+    if "search_context" in incoming:
+        if incoming["search_context"] not in {"low", "medium", "high"}:
+            raise StudioError("search depth is low, medium, or high")
+        current["search_context"] = incoming["search_context"]
     secret = str(incoming.get("password") or "").strip()
     if secret or incoming.get("clear_password"):
         from .ops import OpsError, clear_password, set_password
@@ -1020,11 +1146,25 @@ def usage_summary() -> dict:
 # work ----------------------------------------------------------------------------
 
 
+def _kind_for(settings: dict, body: str, filename: str, target: str, web: bool) -> str:
+    """The agent takes every message when it is ready. Otherwise the classic pipeline picks by the message."""
+    from .harness import agent_ready
+
+    if agent_ready(settings):
+        return "agent"
+    return _kind(body, filename, target, web=web)
+
+
 def _dispatch(job: _Job, *, wait: bool = False) -> None:
     _jobs.claim(job)
     quick = job.kind in {"reply", "draft"} and not job.settings.get("use_model")
     if wait or quick:
         _work(job)
+        return
+    cloud = job.kind == "agent" and _choice_of(job.settings) == "openai"
+    if cloud:
+        # Cloud turns do not load the local GPU, so chats do not wait for each other.
+        threading.Thread(target=_work, args=(job,), name=f"docufy-agent-{job.assistant_id}", daemon=True).start()
         return
     if _jobs.busy():
         with store._lock:
@@ -1039,7 +1179,13 @@ def _dispatch(job: _Job, *, wait: bool = False) -> None:
 def _work(job: _Job) -> None:
     progress = _Progress(job)
     try:
-        if job.kind == "document":
+        if job.kind == "agent":
+            _agent_message(job, progress)
+        elif job.kind == "publish":
+            _publish_message(job, progress)
+        elif job.kind == "source":
+            _source_message(job, progress)
+        elif job.kind == "document":
             _make_document(job, progress)
         elif job.kind == "draft":
             _draft_document(job, progress)
@@ -1061,14 +1207,305 @@ def _work(job: _Job) -> None:
             return
         progress.close("failed")
         lead = {
+            "agent": "That did not finish.",
+            "publish": "The draft was not set in the template.",
+            "source": "Your edit was not set.",
             "document": "The document was not created.",
             "draft": "The draft was not written.",
             "revise": "That change was not made.",
             "research": "The web search did not finish.",
         }.get(job.kind, "The reply was not written.")
-        _finish_message(job.assistant_id, job.chat_id, f"{lead} {_reason(exc)}", "failed", None)
+        partial = progress.body.strip() if job.kind == "agent" else ""
+        text = f"{partial}\n\n**{lead}** {_reason(exc)}" if partial else f"{lead} {_reason(exc)}"
+        _finish_message(job.assistant_id, job.chat_id, text, "failed", None)
     finally:
         _jobs.release(job)
+
+
+def _agent_message(job: _Job, progress: _Progress) -> None:
+    from .harness import run_agent
+
+    cfg = load_config()
+    result = run_agent(job, progress, settings=job.settings, cfg=cfg, router_factory=lambda: _router(job.settings))
+    progress.check()
+    documents = result["documents"]
+    from . import workspace
+
+    roots: list[str] = []
+    for draft_id in result["drafts"]:
+        try:
+            root = workspace.get_draft(draft_id)["root_id"]
+        except workspace.WorkspaceError:
+            continue
+        if root not in roots:
+            roots.append(root)
+    result["drafts"] = roots
+    with store._lock:
+        store.conn().execute(
+            "UPDATE messages SET sources=?, usage=?, drafts=? WHERE id=?",
+            (
+                json.dumps(result["sources"][:40]),
+                json.dumps(result["usage"]),
+                json.dumps(result["drafts"]),
+                job.assistant_id,
+            ),
+        )
+        store.conn().commit()
+    _finish_message(job.assistant_id, job.chat_id, result["text"], "ready", documents[-1] if documents else None)
+
+
+def _action_message(chat_id: str, user_text: str, pending: str, kind: str, settings: dict, *, target: str = "", payload: str = "", spark: bool | None = None) -> dict:
+    """A message pair for a button press (publish, save source) so it shows in the chat like any other step."""
+    get_chat(chat_id)
+    now = time.time()
+    user_id, assistant_id = uuid.uuid4().hex[:12], uuid.uuid4().hex[:12]
+    with store._lock:
+        store.conn().execute(
+            "INSERT INTO messages (id, chat_id, role, body, status, document_id, created_at, target_id) VALUES (?,?,?,?,?,?,?,?)",
+            (user_id, chat_id, "user", user_text, "ready", None, now, target),
+        )
+        store.conn().execute(
+            "INSERT INTO messages (id, chat_id, role, body, status, document_id, created_at, model, progress) VALUES (?,?,?,?,?,?,?,?,?)",
+            (assistant_id, chat_id, "assistant", pending, "writing", None, now + 0.001, _choice_of(settings), ""),
+        )
+        store.conn().execute("UPDATE chats SET updated_at=? WHERE id=?", (now, chat_id))
+        store.conn().commit()
+    job = _Job(kind, chat_id, assistant_id, user_id, user_text, settings["spark_content"] if spark is None else bool(spark), settings, None, target, False, [], payload)
+    _dispatch(job)
+    return get_chat(chat_id)
+
+
+def publish_draft(chat_id: str, draft_id: str, *, spark: bool | None = None, model: str | None = None) -> dict:
+    from . import workspace
+
+    try:
+        draft = workspace.get_draft(draft_id)
+    except workspace.WorkspaceError as exc:
+        raise StudioError(str(exc)) from exc
+    if draft["chat_id"] != chat_id:
+        raise StudioError("draft not found")
+    settings = with_choice(load_settings(), model)
+    label = f"Set “{draft['title']}” in the Spark template"
+    return _action_message(chat_id, label, "Setting the draft in the template", "publish", settings, payload=draft["id"], spark=spark)
+
+
+def save_source(chat_id: str, doc_id: str, markdown: str) -> dict:
+    doc = get_document(doc_id)
+    if doc["chat_id"] != chat_id:
+        raise StudioError("document not found")
+    text = (markdown or "").replace("\r\n", "\n").strip()
+    if not text.startswith("---") or len(text) > 600_000:
+        raise StudioError("the source must keep its front matter at the top")
+    settings = load_settings()
+    return _action_message(
+        chat_id, f"Edited the source of “{doc['title']}”", "Setting your edit", "source", settings, target=doc_id, payload=text + "\n"
+    )
+
+
+def restore_version(doc_id: str) -> dict:
+    """Copy an older version forward as the newest version. Nothing is re-rendered."""
+    doc = get_document(doc_id)
+    newest = latest_version(doc["root_id"])
+    if newest["id"] == doc["id"]:
+        raise StudioError("that is already the latest version")
+    new_id = uuid.uuid4().hex[:12]
+    source = studio_dir() / "docs" / doc["id"]
+    target = studio_dir() / "docs" / new_id
+    shutil.copytree(source, target)
+
+    def moved(path: str) -> str:
+        return str(target / Path(path).relative_to(source)) if path and Path(path).is_relative_to(source) else path
+
+    body = store.conn().execute("SELECT body FROM documents WHERE id=?", (doc["id"],)).fetchone()[0]
+    with store._lock:
+        store.conn().execute(
+            """INSERT INTO documents (id, chat_id, message_id, title, body, pdf_path, docx_path, pages, spark_content, created_at,
+                version, parent_id, root_id, md_path) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+            (
+                new_id, doc["chat_id"], doc["message_id"], doc["title"], body, moved(doc["pdf_path"]), moved(doc["docx_path"]),
+                doc["pages"], 1 if doc["spark_content"] else 0, time.time(), newest["version"] + 1, newest["id"], doc["root_id"], moved(doc["md_path"]),
+            ),
+        )
+        now = time.time()
+        store.conn().execute(
+            "INSERT INTO messages (id, chat_id, role, body, status, document_id, created_at) VALUES (?,?,?,?,?,?,?)",
+            (uuid.uuid4().hex[:12], doc["chat_id"], "assistant", f"Restored version {doc['version']} as version {newest['version'] + 1}.", "ready", new_id, now),
+        )
+        store.conn().execute("UPDATE chats SET updated_at=? WHERE id=?", (now, doc["chat_id"]))
+        store.conn().commit()
+    return get_document(new_id)
+
+
+def _publish_message(job: _Job, progress: _Progress) -> None:
+    from . import workspace
+    from .agent_tools import _with_frontmatter
+
+    draft = workspace.latest_in(workspace.get_draft(job.payload)["root_id"])
+    progress.start("publish", "Setting it in the template", kind="tool", detail=draft["title"])
+    progress.nest("publish")
+    source = _with_frontmatter(draft["body"], draft["title"], job.spark, "", "")
+    doc = publish_markdown(job, progress, source, parent_root=draft["document_root"], title=draft["title"], spark=job.spark, convert_first=True)
+    progress.unnest("publish")
+    progress.finish("publish", f"{doc['pages']} pages")
+    workspace.link_document(draft["id"], doc["root_id"])
+    notes = doc.get("issues") or []
+    text = f"“{doc['title']}” is set in the template" + (f" as version {doc['version']}." if doc["version"] > 1 else ".")
+    if notes:
+        text += f" The layout checks left {len(notes)} note{'s' if len(notes) != 1 else ''} to look at."
+    _finish_message(job.assistant_id, job.chat_id, text, "ready", doc["id"])
+
+
+def _source_message(job: _Job, progress: _Progress) -> None:
+    parent = get_document(job.target_id)
+    from .blocks import split_frontmatter
+
+    meta, _body = split_frontmatter(job.payload)
+    doc = publish_markdown(
+        job,
+        progress,
+        job.payload,
+        parent_root=parent["root_id"],
+        title=str(meta.get("title") or parent["title"]),
+        spark=bool(meta.get("include_spark_content", parent["spark_content"])),
+        convert_first=False,
+        parent_id=parent["id"],
+    )
+    issues = doc.get("issues") or []
+    text = f"Version {doc['version']} is ready with your edit." + (f" {len(issues)} layout notes to look at." if issues else "")
+    _finish_message(job.assistant_id, job.chat_id, text, "ready", doc["id"])
+
+
+def diagram_svg(source: str) -> str:
+    """A mermaid or diagram block drawn by the template's own engine, for the draft canvas."""
+    import hashlib
+
+    from spark_docs.parser import claude_diagram_spec
+
+    from .diagramfix import repair_mermaid
+
+    text = (source or "").strip()[:20000]
+    lang = "diagram" if re.match(r"^\s*(nodes|direction|edges)\s*:", text) else "mermaid"
+    cache = studio_dir() / "svg"
+    cache.mkdir(parents=True, exist_ok=True)
+    key = hashlib.sha1((lang + text).encode()).hexdigest()[:20]
+    hit = cache / f"{key}.svg"
+    if hit.is_file():
+        return hit.read_text(encoding="utf-8")
+    spec = claude_diagram_spec(text, lang) or (claude_diagram_spec(repair_mermaid(text), "mermaid") if lang == "mermaid" else None)
+    if not spec:
+        raise StudioError("this diagram does not parse")
+    if spec.get("type") == "sequence":
+        raise StudioError("sequence diagrams show in the pages only")
+    from diagrams.render import render_svg
+    from diagrams.spec import Diagram
+
+    svg = render_svg(Diagram.from_dict(spec))
+    hit.write_text(svg, encoding="utf-8")
+    return svg
+
+
+def latest_version(root_id: str) -> dict:
+    row = store.conn().execute(
+        "SELECT id FROM documents WHERE COALESCE(NULLIF(root_id, ''), id)=? ORDER BY version DESC, created_at DESC LIMIT 1",
+        (root_id,),
+    ).fetchone()
+    if not row:
+        raise StudioError("document not found")
+    return get_document(row[0])
+
+
+def document_markdown(doc: dict) -> str:
+    path = Path(doc["md_path"] or Path(doc["pdf_path"]).with_name("notes.spark.md"))
+    if not path.is_file():
+        raise StudioError("the source of that document is missing")
+    return path.read_text(encoding="utf-8")
+
+
+def publish_markdown(
+    job: _Job,
+    progress: _Progress,
+    source_text: str,
+    *,
+    parent_root: str = "",
+    title: str = "",
+    spark: bool = True,
+    convert_first: bool = True,
+    parent_id: str = "",
+) -> dict:
+    """Set Markdown as Spark pages and save it as a document, or as the next version of parent_root.
+
+    convert_first runs the planner, which maps free Markdown onto template components and keeps the
+    text as written. Without it the text is taken as template Markdown already (an edit of a document).
+    """
+    from .uploads import normalize_newlines
+
+    doc_id = uuid.uuid4().hex[:12]
+    folder = studio_dir() / "docs" / doc_id
+    folder.mkdir(parents=True, exist_ok=True)
+    source_text = normalize_newlines(source_text)
+    try:
+        if convert_first:
+            from .convert import convert
+
+            source = folder / "notes.md"
+            source.write_text(source_text, encoding="utf-8")
+            progress.start("read", "Reading the draft")
+            result = convert(source, _router(job.settings), spark_content=spark, render=True, docx=True, out_dir=folder, log=progress.log)
+            if not result.pdf or not Path(result.pdf).is_file():
+                raise StudioError("the PDF was not written")
+            issues = [item for item in result.issues if not item.startswith("section planner failed")]
+            progress.finish("render", f"{len(issues)} notes from the checks" if issues else "checks passed")
+            pdf, docx = Path(result.pdf), Path(result.docx) if result.docx else None
+            md = folder / "notes.spark.md"
+            title = title or (result.plan.get("title") or "").strip()
+        else:
+            from .verify import render_and_check
+
+            md = folder / "notes.spark.md"
+            md.write_text(source_text, encoding="utf-8")
+            progress.start("render", "Setting the pages and checking them")
+            pdf_path, docx_path, issues = render_and_check(md, folder, docx=True)
+            if not pdf_path or not Path(pdf_path).is_file():
+                raise StudioError("the PDF was not written")
+            progress.finish("render", f"{len(issues)} notes from the checks" if issues else "checks passed")
+            pdf, docx = Path(pdf_path), Path(docx_path) if docx_path else None
+        progress.start("preview", "Preparing the preview")
+        pages = _render_pages(pdf, folder / "pages")
+        progress.finish("preview", f"{pages} pages")
+        progress.check()
+    except BaseException:
+        shutil.rmtree(folder, ignore_errors=True)
+        raise
+    version, root = 1, doc_id
+    if parent_root:
+        top = store.conn().execute(
+            "SELECT MAX(COALESCE(version, 1)) FROM documents WHERE COALESCE(NULLIF(root_id, ''), id)=?", (parent_root,)
+        ).fetchone()[0]
+        if top:
+            version, root = int(top) + 1, parent_root
+            if not parent_id:
+                parent_id = latest_version(parent_root)["id"]
+    body = md.read_text(encoding="utf-8") if md.is_file() else source_text
+    from .blocks import split_frontmatter
+
+    _meta, plain = split_frontmatter(body)
+    _insert_document(
+        doc_id,
+        job,
+        title=title or _title_from(plain),
+        body=plain[:20000],
+        pdf=pdf,
+        docx=docx,
+        md=md,
+        pages=pages,
+        spark=spark,
+        version=version,
+        parent_id=parent_id if root != doc_id else "",
+        root_id=root,
+    )
+    doc = get_document(doc_id)
+    doc["issues"] = issues
+    return doc
 
 
 def _draft_document(job: _Job, progress: _Progress) -> None:
@@ -1289,7 +1726,17 @@ def _router(settings: dict) -> Router:
     privacy = dict(router.config.get("privacy") or {})
     if settings.get("local_only"):
         privacy["local_only"] = True
-    router.config = {**router.config, "ollama": ollama, "budgets": budgets, "privacy": privacy}
+    profiles = dict(router.config.get("profiles") or {})
+    if profile == "openai" and settings.get("use_model"):
+        from .providers import resolve_openai_model
+
+        roles = dict(profiles.get("openai") or {})
+        main = resolve_openai_model(settings.get("openai_model") or str(roles.get("writer") or ""))
+        fast = resolve_openai_model(settings.get("openai_fast_model") or str(roles.get("extractor") or ""), fast=True)
+        for role in list(roles) or ["planner", "writer", "extractor", "critic_vision", "researcher", "diagrammer"]:
+            roles[role] = f"openai/{fast if role == 'extractor' else main}"
+        profiles["openai"] = roles
+    router.config = {**router.config, "ollama": ollama, "budgets": budgets, "privacy": privacy, "profiles": profiles}
     if not settings.get("use_model"):
         router.fake = _model_off
     return router

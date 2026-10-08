@@ -1,66 +1,58 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { api, type DocumentDetail, type DocumentInfo } from "../api";
-import { ChevronDown, Close, Download, Minus, Plus } from "../icons";
+import { api, type ChatDetail, type DocumentDetail, type DocumentInfo, type DocumentSection } from "../api";
+import { ArrowUp, Check, ChevronDown, Close, Download, Minus, Pen, Plus, Refresh, Spinner } from "../icons";
 import { pages, useDismiss, when } from "../lib";
 
-function toolText(label: string, scoped: boolean) {
-  const where = scoped ? "the selected section(s)" : "the section on this page";
-  switch (label) {
-    case "Shorten":
-      return `Shorten ${where}. Keep every fact.`;
-    case "Add detail":
-      return `Add more useful detail to ${where}. Do not invent prices or dates.`;
-    case "Add diagram":
-      return `Add or improve one mermaid diagram in ${where}.`;
-    case "Fix tables":
-      return `Make the tables in ${where} clearer without changing the meaning.`;
-    default:
-      return "";
-  }
-}
+const QUICK = [
+  ["Shorten", (where: string) => `Shorten ${where}. Keep every fact and figure.`],
+  ["Add detail", (where: string) => `Add useful, specific detail to ${where}. Do not invent prices, dates or names; mark gaps to be confirmed.`],
+  ["Add a diagram", (where: string) => `Add or improve one mermaid diagram in ${where} that shows the flow or architecture.`],
+  ["Make it a table", (where: string) => `Restructure the key points of ${where} into a clear table where that reads better.`],
+  ["More formal", (where: string) => `Make the tone of ${where} more formal and confident for a client audience.`],
+] as const;
 
-const QUICK_LABELS = ["Shorten", "Add detail", "Add diagram", "Fix tables"] as const;
+const ZOOMS = [0.6, 0.75, 0.9, 1, 1.2];
+/** The brand pack's pages. They come from the template, so they are not offered for editing. */
+const COMPANY = /\b(who we are|why choose|about spark|solution areas|how we move forward|contact)\b/i;
 
-const ZOOMS = [0.7, 0.85, 1, 1.2];
-
-export function Preview({
-  doc,
-  onPick,
-  onClose,
-  onResize,
-  onApplyEdit,
-}: {
+type Props = {
   doc: DocumentInfo;
+  chat: ChatDetail;
+  busy: boolean;
   onPick: (doc: DocumentInfo) => void;
-  onClose: () => void;
-  onResize: (width: number) => void;
-  onApplyEdit: (text: string, page: number, sectionIds: string[]) => Promise<boolean>;
-}) {
+  onApplyEdit: (text: string, sectionIds: string[]) => Promise<boolean>;
+  onChat: (detail: ChatDetail) => void;
+};
+
+export function Preview({ doc, chat, busy, onPick, onApplyEdit, onChat }: Props) {
   const [detail, setDetail] = useState<DocumentDetail | null>(null);
   const [current, setCurrent] = useState(1);
   const [zoom, setZoom] = useState(2);
-  const [editText, setEditText] = useState("");
-  const [editBusy, setEditBusy] = useState(false);
+  const [text, setText] = useState("");
+  const [sending, setSending] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
+  const [source, setSource] = useState<string | null>(null);
+  const [original, setOriginal] = useState("");
+  const [note, setNote] = useState("");
   const desk = useRef<HTMLDivElement>(null);
+  const input = useRef<HTMLTextAreaElement>(null);
   const count = Math.max(1, doc.pages || 1);
-  const sections = detail?.sections ?? [];
+  const sections = useMemo(
+    () => (detail?.sections ?? []).filter((item) => item.label && !COMPANY.test(`${item.kicker} ${item.label}`)),
+    [detail?.sections],
+  );
 
   useEffect(() => {
     let stop = false;
     api.document(doc.id).then((data) => !stop && setDetail(data)).catch(() => undefined);
     setCurrent(1);
     setSelected([]);
+    setSource(null);
     desk.current?.scrollTo({ top: 0 });
     return () => {
       stop = true;
     };
   }, [doc.id]);
-
-  const onPage = useMemo(
-    () => sections.filter((section) => section.pages.includes(current)).map((section) => section.id),
-    [sections, current],
-  );
 
   useEffect(() => {
     const root = desk.current;
@@ -74,53 +66,64 @@ export function Preview({
     );
     root.querySelectorAll("[data-page]").forEach((node) => observer.observe(node));
     return () => observer.disconnect();
-  }, [doc.id, count, zoom]);
+  }, [doc.id, count, zoom, source]);
 
   const versions = detail?.versions ?? [];
-  const scoped = selected.length > 0;
+  const newest = versions.length ? versions[versions.length - 1] : null;
+  const isOld = Boolean(newest && newest.id !== doc.id);
+  const onPage = (page: number) => sections.filter((section) => section.pages.includes(page));
+  const chosen = sections.filter((section) => selected.includes(section.id));
+  const where = chosen.length ? (chosen.length === 1 ? `the ${chosen[0].label} section` : "the selected sections") : `the section on page ${current}`;
 
-  function toggleSection(id: string) {
+  function toggle(id: string) {
     setSelected((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]));
   }
 
-  function selectOnPage() {
-    if (!onPage.length) return;
-    setSelected(onPage);
+  function pickPage(page: number) {
+    const ids = onPage(page).map((item) => item.id);
+    if (!ids.length) return;
+    const all = ids.every((id) => selected.includes(id));
+    setSelected((prev) => (all ? prev.filter((id) => !ids.includes(id)) : Array.from(new Set([...prev, ...ids]))));
+    input.current?.focus();
   }
 
-  function runEdit(text: string) {
-    if (!text.trim() || editBusy) return;
-    setEditBusy(true);
-    onApplyEdit(text, current, selected)
-      .then((ok) => {
-        if (ok) setEditText("");
-      })
-      .finally(() => setEditBusy(false));
+  async function run(value: string) {
+    const trimmed = value.trim();
+    if (!trimmed || sending || busy) return;
+    setSending(true);
+    const ids = selected.length ? selected : onPage(current).map((item) => item.id);
+    const scoped = selected.length ? trimmed : `On page ${current} of the open document: ${trimmed}`;
+    const ok = await onApplyEdit(scoped, ids);
+    setSending(false);
+    if (ok) setText("");
+  }
+
+  async function openSource() {
+    setNote("");
+    try {
+      const data = await api.documentSource(doc.id);
+      setSource(data.markdown);
+      setOriginal(data.markdown);
+    } catch (exc) {
+      setNote(exc instanceof Error ? exc.message : "The source did not load.");
+    }
+  }
+
+  async function saveSource() {
+    if (source === null) return;
+    setSending(true);
+    try {
+      onChat(await api.saveDocumentSource(doc.id, source));
+      setSource(null);
+    } catch (exc) {
+      setNote(exc instanceof Error ? exc.message : "The edit was not saved.");
+    } finally {
+      setSending(false);
+    }
   }
 
   return (
-    <aside className="preview" aria-label="Document preview">
-      <div
-        className="resizer"
-        role="separator"
-        aria-orientation="vertical"
-        aria-label="Resize the preview"
-        onPointerDown={(event) => {
-          event.preventDefault();
-          const handle = event.currentTarget;
-          handle.setPointerCapture(event.pointerId);
-          document.body.classList.add("resizing");
-          const move = (next: PointerEvent) => onResize(window.innerWidth - next.clientX);
-          const up = () => {
-            document.body.classList.remove("resizing");
-            handle.removeEventListener("pointermove", move);
-            handle.removeEventListener("pointerup", up);
-          };
-          handle.addEventListener("pointermove", move);
-          handle.addEventListener("pointerup", up);
-        }}
-        onDoubleClick={() => onResize(0)}
-      />
+    <div className="pages-view">
       <header className="preview-head">
         <div className="preview-title">
           <h2>{doc.title}</h2>
@@ -134,10 +137,11 @@ export function Preview({
                   value={doc.id}
                   onChange={(event) => {
                     const picked = versions.find((item) => item.id === event.target.value);
-                    if (picked) onPick({ ...doc, id: picked.id, version: picked.version, pages: picked.pages });
+                    const known = chat.documents.find((item) => item.id === event.target.value);
+                    if (picked) onPick(known ?? { ...doc, id: picked.id, version: picked.version, pages: picked.pages });
                   }}
                 >
-                  {versions.map((item) => (
+                  {[...versions].reverse().map((item) => (
                     <option key={item.id} value={item.id}>
                       Version {item.version}, {when(item.created_at)}
                     </option>
@@ -145,96 +149,140 @@ export function Preview({
                 </select>
               </label>
             ) : null}
+            {isOld ? (
+              <button
+                type="button"
+                className="link-button"
+                onClick={() =>
+                  api
+                    .restoreVersion(doc.id)
+                    .then(onChat)
+                    .catch((exc: Error) => setNote(exc.message))
+                }
+              >
+                <Refresh size={13} /> Restore this version
+              </button>
+            ) : null}
           </p>
         </div>
         <div className="preview-actions">
+          {source === null ? (
+            <button type="button" className="small-button" onClick={openSource} title="Edit the template source by hand">
+              <Pen size={14} />
+              Source
+            </button>
+          ) : null}
           <DownloadMenu id={doc.id} />
-          <button type="button" className="icon-button" aria-label="Close the preview" onClick={onClose}>
-            <Close />
-          </button>
         </div>
       </header>
-      <div className="desk" ref={desk} style={{ ["--zoom" as string]: String(ZOOMS[zoom]) }}>
-        {Array.from({ length: count }, (_, index) => (
-          <figure key={`${doc.id}-${index}`} className="sheet" data-page={index + 1} style={{ animationDelay: `${Math.min(index, 3) * 60}ms` }}>
-            <img
-              src={api.pageUrl(doc.id, index + 1, doc)}
-              alt={`Page ${index + 1} of ${count}`}
-              loading={index < 2 ? "eager" : "lazy"}
-              onLoad={(event) => event.currentTarget.classList.add("loaded")}
-            />
-          </figure>
-        ))}
-      </div>
-      <div className="preview-edit">
-        <p className="preview-edit-title">Edit this document</p>
-        {sections.length ? (
-          <div className="preview-sections" role="group" aria-label="Sections to edit">
-            <div className="preview-sections-head">
-              <span>Sections</span>
-              <div className="preview-sections-actions">
-                <button type="button" className="link-button" disabled={!onPage.length} onClick={selectOnPage}>
-                  On this page
-                </button>
-                <button type="button" className="link-button" disabled={!selected.length} onClick={() => setSelected([])}>
-                  Clear
-                </button>
-              </div>
-            </div>
-            <ul className="preview-section-list">
-              {sections.map((section) => {
-                const active = selected.includes(section.id);
-                const onCurrentPage = section.pages.includes(current);
-                return (
-                  <li key={section.id}>
-                    <label className={onCurrentPage ? "preview-section on-page" : "preview-section"}>
-                      <input
-                        type="checkbox"
-                        checked={active}
-                        onChange={() => toggleSection(section.id)}
-                      />
-                      <span className="preview-section-label">{section.label}</span>
-                      {section.pages.length ? (
-                        <span className="preview-section-pages">p{section.pages.join(", p")}</span>
-                      ) : null}
-                    </label>
-                  </li>
-                );
-              })}
-            </ul>
-            <p className="preview-section-hint">
-              {scoped
-                ? `${selected.length} section${selected.length === 1 ? "" : "s"} selected. Edits apply only there.`
-                : "Select one or more sections, or leave none selected to scope by the current page."}
-            </p>
-          </div>
-        ) : null}
-        <form
-          className="preview-edit-form"
-          onSubmit={(event) => {
-            event.preventDefault();
-            runEdit(editText);
-          }}
-        >
-          <textarea
-            rows={2}
-            value={editText}
-            placeholder="Describe the change, for example: expand the data requirements table"
-            aria-label="Edit instruction"
-            onChange={(event) => setEditText(event.target.value)}
-          />
-          <button type="submit" className="small-button primary" disabled={editBusy || !editText.trim()}>
-            Apply
+      {note ? (
+        <p className="preview-note" role="alert">
+          {note}
+          <button type="button" className="icon-button" aria-label="Dismiss" onClick={() => setNote("")}>
+            <Close size={14} />
           </button>
-        </form>
-        <div className="preview-tools" role="group" aria-label="Quick edits">
-          {QUICK_LABELS.map((label) => (
-            <button key={label} type="button" className="small-button" disabled={editBusy} onClick={() => runEdit(toolText(label, scoped))}>
-              {label}
+        </p>
+      ) : null}
+      {source !== null ? (
+        <div className="source-editor">
+          <p className="source-help">
+            This is the Spark template Markdown. Keep the front matter, the <code># 01 Title</code> kickers and the <code>:::block</code> fences. Saving sets the pages again as a new version.
+          </p>
+          <textarea value={source} spellCheck={false} onChange={(event) => setSource(event.target.value)} aria-label="Template source" />
+          <div className="source-actions">
+            <button type="button" className="small-button" onClick={() => setSource(null)}>
+              Cancel
             </button>
-          ))}
+            <button type="button" className="small-button primary" disabled={sending || source === original} onClick={saveSource}>
+              {sending ? "Saving" : "Save as a new version"}
+            </button>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className={busy ? "desk working" : "desk"} ref={desk} style={{ ["--zoom" as string]: String(ZOOMS[zoom]) }}>
+          {busy ? (
+            <div className="desk-busy" role="status">
+              <Spinner size={13} />
+              Making the next version
+            </div>
+          ) : null}
+          {Array.from({ length: count }, (_, index) => {
+            const page = index + 1;
+            const here = onPage(page);
+            const picked = here.length > 0 && here.every((item) => selected.includes(item.id));
+            return (
+              <figure
+                key={`${doc.id}-${index}`}
+                className={picked ? "sheet picked" : "sheet"}
+                data-page={page}
+                style={{ animationDelay: `${Math.min(index, 3) * 60}ms` }}
+              >
+                <img
+                  src={api.pageUrl(doc.id, page, doc)}
+                  alt={`Page ${page} of ${count}`}
+                  loading={index < 2 ? "eager" : "lazy"}
+                  onLoad={(event) => event.currentTarget.classList.add("loaded")}
+                />
+                {here.length ? (
+                  <button type="button" className="sheet-pick" onClick={() => pickPage(page)} aria-pressed={picked}>
+                    {picked ? <Check size={13} /> : <Pen size={13} />}
+                    {picked ? "Selected" : here.length === 1 ? `Edit ${here[0].label}` : `Edit this page`}
+                  </button>
+                ) : null}
+                <span className="sheet-no">{page}</span>
+              </figure>
+            );
+          })}
+        </div>
+      )}
+      {source === null ? (
+        <div className="ask-dock pages">
+          {chosen.length ? (
+            <div className="ask-scope">
+              {chosen.map((section) => (
+                <SectionChip key={section.id} section={section} onRemove={() => toggle(section.id)} />
+              ))}
+              <button type="button" className="link-button" onClick={() => setSelected([])}>
+                Clear
+              </button>
+            </div>
+          ) : sections.length ? (
+            <SectionMenu sections={sections} selected={selected} onToggle={toggle} current={current} />
+          ) : null}
+          <div className="ask-chips">
+            {QUICK.map(([label, make]) => (
+              <button key={label} type="button" className="ask-chip" disabled={busy || sending} onClick={() => run(make(where))}>
+                {label}
+              </button>
+            ))}
+          </div>
+          <form
+            className="ask-form"
+            onSubmit={(event) => {
+              event.preventDefault();
+              run(text);
+            }}
+          >
+            <textarea
+              ref={input}
+              rows={1}
+              value={text}
+              placeholder={chosen.length ? `Change ${where}` : `Ask for a change, e.g. update the commercial table on page ${current}`}
+              aria-label="Describe the change"
+              onChange={(event) => setText(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && !event.shiftKey) {
+                  event.preventDefault();
+                  run(text);
+                }
+              }}
+            />
+            <button type="submit" className="send small" disabled={busy || sending || !text.trim()} aria-label="Apply the change">
+              {sending ? <Spinner size={13} /> : <ArrowUp size={16} />}
+            </button>
+          </form>
+        </div>
+      ) : null}
       <footer className="preview-foot">
         <span>
           Page {current} of {count}
@@ -249,7 +297,45 @@ export function Preview({
           </button>
         </div>
       </footer>
-    </aside>
+    </div>
+  );
+}
+
+function SectionChip({ section, onRemove }: { section: DocumentSection; onRemove: () => void }) {
+  return (
+    <span className="scope-chip">
+      <span className="scope-kicker">{section.kicker.split(" ")[0]}</span>
+      {section.label}
+      <button type="button" aria-label={`Remove ${section.label}`} onClick={onRemove}>
+        <Close size={12} />
+      </button>
+    </span>
+  );
+}
+
+function SectionMenu({ sections, selected, onToggle, current }: { sections: DocumentSection[]; selected: string[]; onToggle: (id: string) => void; current: number }) {
+  const [open, setOpen] = useState(false);
+  const ref = useDismiss<HTMLDivElement>(open, () => setOpen(false));
+  return (
+    <div className="section-menu" ref={ref}>
+      <button type="button" className="link-button" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
+        Choose sections <ChevronDown size={13} />
+      </button>
+      {open ? (
+        <div className="popover section-pop" role="listbox" aria-label="Sections">
+          {sections.map((section) => (
+            <label key={section.id} className={section.pages.includes(current) ? "section-row here" : "section-row"}>
+              <input type="checkbox" checked={selected.includes(section.id)} onChange={() => onToggle(section.id)} />
+              <span className="section-row-label">
+                {section.kicker ? <span className="scope-kicker">{section.kicker.split(" ")[0]}</span> : null}
+                {section.label}
+              </span>
+              {section.pages.length ? <span className="section-row-pages">p{section.pages[0]}</span> : null}
+            </label>
+          ))}
+        </div>
+      ) : null}
+    </div>
   );
 }
 
@@ -275,7 +361,7 @@ function DownloadMenu({ id }: { id: string }) {
           </a>
           <a role="menuitem" href={api.downloadUrl(id, "md")} onClick={() => setOpen(false)}>
             Markdown
-            <span>The source Docufy sets</span>
+            <span>The template source</span>
           </a>
         </div>
       ) : null}

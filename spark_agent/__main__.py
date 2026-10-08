@@ -89,6 +89,7 @@ def main(argv: list[str] | None = None) -> int:
     serve = sub.add_parser("serve", help="Open Docufy in the browser")
     serve.add_argument("--port", type=int, default=8787)
     serve.add_argument("--no-open", action="store_true", help="Do not open a browser window")
+    sub.add_parser("mcp", help="Serve the Spark template to other agents over MCP (stdio)")
     sub.add_parser("ready", help="Check Python, the database, fonts, and the local model")
     sub.add_parser("recover", help="Mark crashed runs so they can resume")
     backup = sub.add_parser("backup", help="Snapshot the database and studio files")
@@ -144,6 +145,12 @@ def main(argv: list[str] | None = None) -> int:
             print(f"image     {asset.path}")
         print(f"provider  {asset.provider}")
         print(f"cached    {asset.cached}")
+        return 0
+
+    if args.cmd == "mcp":
+        from spark_agent.mcp_server import main as serve_mcp
+
+        serve_mcp()
         return 0
 
     if args.cmd == "serve":

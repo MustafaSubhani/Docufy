@@ -139,6 +139,17 @@ def workers_for(router) -> int:
     return count
 
 
+def cloud_thresholds(router) -> dict:
+    """Memory limits for work that runs on a provider. The calls hold little local memory, so they
+    pause only when the machine is nearly out, not at the local-model threshold."""
+    gov = router.config.get("governor") or {}
+    return {
+        "pause_at": float(gov.get("cloud_pause_at", 95)),
+        "trim_at": float(gov.get("cloud_trim_at", 97)),
+        "checkpoint_at": float(gov.get("cloud_checkpoint_at", 98)),
+    }
+
+
 def caps_for(router=None, *, low_resource: bool = False, local: bool = False) -> dict:
     gov = (router.config.get("governor") or {}) if router is not None else {}
     low_resource = low_resource or bool(gov.get("low_resource"))

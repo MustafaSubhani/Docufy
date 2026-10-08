@@ -216,6 +216,24 @@ class Router:
     ) -> LLMResult:
         """A plain reply that reports text as it arrives. Only local Ollama streams; other paths report once."""
         model = self.model_for(role)
+        if self.fake is None and self.cassette is None and model.startswith("openai/") and not (self.config.get("privacy") or {}).get("local_only"):
+            limits = self.config.get("limits") or {}
+            messages = [{"role": "system", "content": f"{system}\n\n{now_line()}"}, {"role": "user", "content": user}]
+            self._check_budget()
+            t0 = time.time()
+            try:
+                res = self._openai(model.split("/", 1)[1], messages, None, max_tokens or int(limits.get("max_output_tokens", 4096)), temperature, on_text)
+            except LLMError:
+                raise
+            except Exception as exc:
+                store.record_call(run_id=self.run_id, role=role, provider="openai", model=model, latency_s=time.time() - t0, retries=0, error=str(exc)[:500])
+                raise LLMError(str(exc)[:300]) from exc
+            store.record_call(
+                run_id=self.run_id, role=role, provider="openai", model=model,
+                input_tokens=res.input_tokens, output_tokens=res.output_tokens, cached_tokens=0, cost_usd=res.cost_usd,
+                latency_s=res.latency_s, finish_reason=res.finish_reason, retries=0, error=None,
+            )
+            return res
         if self.fake is not None or self.cassette is not None or not model.startswith("ollama/"):
             res = self.complete(role, system, user, max_tokens=max_tokens, temperature=temperature)
             on_text(res.text)
@@ -264,6 +282,8 @@ class Router:
         provider, _, name = model.partition("/")
         if provider == "ollama":
             result = self._ollama(name, messages, schema, max_tokens, temperature)
+        elif provider == "openai":
+            result = self._openai(name, messages, schema, max_tokens, temperature)
         else:
             _apply_provider_keys()
             result = self._litellm(model, messages, schema, max_tokens, temperature)
@@ -360,6 +380,55 @@ class Router:
             finish_reason="length" if data.get("done_reason") == "length" else "stop",
             latency_s=time.time() - t0,
         )
+
+    def _openai(self, name: str, messages: list[dict], schema: dict | None, max_tokens: int, temperature: float, on_text=None) -> LLMResult:
+        """OpenAI through its own SDK. Reasoning models take no temperature and count tokens as completion tokens."""
+        from .providers import ProviderError, is_reasoning, openai_client
+
+        try:
+            client = openai_client(timeout=float((self.config.get("limits") or {}).get("request_timeout_s", 300)))
+        except ProviderError as exc:
+            raise LLMError(str(exc)) from exc
+        kwargs: dict[str, Any] = {"model": name, "messages": messages}
+        if is_reasoning(name):
+            kwargs["max_completion_tokens"] = max(max_tokens * 3, 4000)  # room for hidden reasoning
+            kwargs["reasoning_effort"] = "low"
+        else:
+            kwargs["max_completion_tokens"] = max_tokens
+            kwargs["temperature"] = temperature
+        if schema is not None:
+            kwargs["response_format"] = {"type": "json_schema", "json_schema": {"name": "result", "schema": schema, "strict": False}}
+        t0 = time.time()
+        if on_text is None:
+            resp = client.chat.completions.create(**kwargs)
+            choice = resp.choices[0]
+            text = choice.message.content or ""
+            finish = str(choice.finish_reason or "stop")
+            usage = resp.usage
+        else:
+            pieces: list[str] = []
+            finish, usage = "stop", None
+            for chunk in client.chat.completions.create(**kwargs, stream=True, stream_options={"include_usage": True}):
+                if getattr(chunk, "usage", None):
+                    usage = chunk.usage
+                if chunk.choices:
+                    delta = chunk.choices[0].delta.content or ""
+                    if delta:
+                        pieces.append(delta)
+                        on_text("".join(pieces))
+                    if chunk.choices[0].finish_reason:
+                        finish = str(chunk.choices[0].finish_reason)
+            text = "".join(pieces)
+        result = LLMResult(
+            text=text,
+            model=f"openai/{name}",
+            input_tokens=int(getattr(usage, "prompt_tokens", 0) or 0),
+            output_tokens=int(getattr(usage, "completion_tokens", 0) or 0),
+            finish_reason="length" if finish == "length" else "stop",
+            latency_s=time.time() - t0,
+        )
+        result.cost_usd = self.price(f"openai/{name}", result.input_tokens, result.output_tokens)
+        return result
 
     def _litellm(self, model: str, messages: list[dict], schema: dict | None, max_tokens: int, temperature: float) -> LLMResult:
         import litellm  # imported lazily: heavy import, only needed for API profiles

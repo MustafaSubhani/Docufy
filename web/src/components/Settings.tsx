@@ -2,10 +2,12 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { api, type Backup, type KeyStatus, type Models, type Panel, type ReadyCheck, type Settings, type SettingsDraft, type Usage } from "../api";
 import { Check, Close, Download, Upload } from "../icons";
 import { bytes, go, when } from "../lib";
+import { AgentCard, McpTab } from "./AgentSettings";
 
 const TABS = [
   ["general", "General"],
   ["models", "Models and keys"],
+  ["mcp", "MCP tools"],
   ["usage", "Usage"],
   ["privacy", "Privacy"],
   ["data", "Data"],
@@ -126,7 +128,8 @@ export function SettingsPage(props: Props) {
 
       {tab === "models" ? (
         <>
-          <Card title="Provider keys" note="A key is stored in Windows Credential Manager and is not shown again.">
+          <AgentCard draft={draft} setDraft={setDraft} />
+          <Card title="Provider keys" note="A key is stored in Windows Credential Manager and is not shown again. Tavily, Serper and Brave give the web search more to work with on non-OpenAI models.">
             <Keys onChange={() => api.panel().then(setPanel).catch(() => undefined)} />
           </Card>
           <Card title="Local model" note="Ollama on this computer. It runs one job at a time.">
@@ -215,6 +218,7 @@ export function SettingsPage(props: Props) {
         </>
       ) : null}
 
+      {tab === "mcp" ? <McpTab /> : null}
       {tab === "data" ? <DataTab onImported={props.onImported} /> : null}
       {tab === "system" ? <SystemTab panel={panel} /> : null}
       {tab === "memory" ? <MemoryTab panel={panel} onChange={() => api.panel().then(setPanel).catch(() => undefined)} /> : null}

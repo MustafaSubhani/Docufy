@@ -30,7 +30,10 @@ def test_a_monthly_budget_warns_and_can_stop_the_next_call(isolated):
         router.complete("writer", "system", "hello")
 
 
-def test_keys_stay_out_of_the_database_and_the_panel(isolated):
+def test_keys_stay_out_of_the_database_and_the_panel(isolated, monkeypatch):
+    from spark_agent import providers
+
+    monkeypatch.setattr(providers, "list_openai_models", lambda refresh=False: ["gpt-5", "gpt-5-mini"])
     saved = secrets.put("openai", "sk-test-secret-value")
     assert saved == {"name": "openai", "set": True}
     visible = json.dumps(secrets.status()) + json.dumps(panel.activity())

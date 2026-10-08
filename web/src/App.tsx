@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
-import { api, ApiError, type ChatDetail, type ChatSummary, type DocumentInfo, type ModelChoice, type Models, type Settings, type SettingsDraft } from "./api";
+import { api, ApiError, type ChatDetail, type ChatSummary, type DocumentInfo, type DraftInfo, type ModelChoice, type Models, type Settings, type SettingsDraft } from "./api";
 import type { ComposerHandle } from "./components/Composer";
 import { Files } from "./components/Files";
 import { Lock } from "./components/Lock";
 import { Palette } from "./components/Palette";
-import { Preview } from "./components/Preview";
+import { Workspace, type PanelTab } from "./components/Workspace";
 import { Rail } from "./components/Rail";
 import { SettingsPage } from "./components/Settings";
 import { Thread } from "./components/Thread";
@@ -25,6 +25,9 @@ export function App() {
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState<DocumentInfo | null>(null);
   const [editing, setEditing] = useState(true);
+  const [panelOpen, setPanelOpen] = useState(() => window.innerWidth > 960);
+  const [panelTab, setPanelTab] = useState<PanelTab>("pages");
+  const [draftRoot, setDraftRoot] = useState("");
   const [settings, setSettings] = useState<Settings | null>(null);
   const [models, setModels] = useState<Models | null>(null);
   const [model, setModel] = useStored<ModelChoice>("docufy.model", "off");
@@ -39,7 +42,7 @@ export function App() {
   const [railOpen, setRailOpen] = useState(false);
   const [palette, setPalette] = useState(false);
   const [toast, setToast] = useState("");
-  const known = useRef<{ chat: string; docs: Set<string> }>({ chat: "", docs: new Set() });
+  const known = useRef<{ chat: string; docs: Set<string>; drafts: Map<string, number> }>({ chat: "", docs: new Set(), drafts: new Map() });
   const wanted = useRef("");
   const modelSynced = useRef(false);
   const composer = useRef<ComposerHandle>(null);
@@ -99,7 +102,7 @@ export function App() {
       setChat(null);
       setPreview(null);
       setLoading(false);
-      known.current = { chat: "", docs: new Set() };
+      known.current = { chat: "", docs: new Set(), drafts: new Map() };
       return;
     }
     if (known.current.chat === chatId && chat?.id === chatId) return;
@@ -109,12 +112,18 @@ export function App() {
       .chat(chatId)
       .then((detail) => {
         if (stop) return;
-        known.current = { chat: detail.id, docs: new Set(detail.documents.map((item) => item.id)) };
+        known.current = { chat: detail.id, docs: new Set(detail.documents.map((item) => item.id)), drafts: draftMap(detail.drafts) };
         const pick = detail.documents.find((item) => item.id === wanted.current) ?? latest(detail.documents);
+        const asked = Boolean(wanted.current);
         wanted.current = "";
         setChat(detail);
         setPreview(pick);
         setEditing(true);
+        const lastDraft = detail.drafts.at(-1) ?? null;
+        setDraftRoot(lastDraft?.root_id ?? "");
+        const draftNewer = Boolean(lastDraft && (!pick || lastDraft.created_at > pick.created_at));
+        setPanelTab(!asked && draftNewer ? "draft" : "pages");
+        setPanelOpen(asked || window.innerWidth > 960);
       })
       .catch((exc) => {
         if (exc instanceof ApiError && exc.status === 404) {
@@ -138,10 +147,19 @@ export function App() {
         .then((detail) => {
           setChat(detail);
           const fresh = detail.documents.filter((item) => !known.current.docs.has(item.id));
+          const grown = detail.drafts.filter((item) => (known.current.drafts.get(item.root_id) ?? 0) < item.version);
+          known.current.drafts = draftMap(detail.drafts);
+          if (grown.length) {
+            setDraftRoot(grown[grown.length - 1].root_id);
+            if (!fresh.length) setPanelTab("draft");
+            setPanelOpen(true);
+          }
           if (fresh.length) {
             fresh.forEach((item) => known.current.docs.add(item.id));
             setPreview(fresh[fresh.length - 1]);
             setEditing(true);
+            setPanelTab("pages");
+            setPanelOpen(true);
           }
           if (!detail.busy) refreshChats();
         })
@@ -199,16 +217,7 @@ export function App() {
     setRailOpen(false);
   }
 
-  async function applyDocEdit(text: string, page?: number, sectionIds?: string[]) {
-    const trimmed = text.trim();
-    if (!trimmed) return false;
-    setEditing(true);
-    const scoped =
-      sectionIds?.length || !page ? trimmed : `On page ${page} of the open document: ${trimmed}`;
-    return onSend(scoped, null, sectionIds);
-  }
-
-  async function onSend(text: string, file: File | null, sectionIds?: string[]) {
+  async function onSend(text: string, file: File | null, sectionIds?: string[], targetDoc?: string | null) {
     setToast("");
     const trimmed = text.trim();
     const useWeb = Boolean(web || (!file && model !== "off" && RESEARCH_INTENT.test(trimmed)));
@@ -222,9 +231,11 @@ export function App() {
       if (!id) {
         const created = await api.createChat();
         id = created.id;
-        known.current = { chat: id, docs: new Set() };
+        known.current = { chat: id, docs: new Set(), drafts: new Map() };
       }
-      const target = editing && preview && preview.chat_id === id ? preview.id : null;
+      const showingPages = panelOpen && panelTab === "pages";
+      const target =
+        targetDoc !== undefined ? targetDoc : editing && showingPages && preview && preview.chat_id === id ? preview.id : null;
       const detail = await api.send(id, text, {
         spark,
         web: useWeb,
@@ -232,6 +243,8 @@ export function App() {
         model,
         documentId: target,
         sectionIds: sectionIds?.length ? sectionIds : undefined,
+        effort: model === "openai" ? window.localStorage.getItem("docufy.effort") || undefined : undefined,
+        agentModel: model === "openai" ? window.localStorage.getItem("docufy.agentModel") || undefined : undefined,
       });
       setChat(detail);
       if (chatId !== id) navigate(`#/c/${id}`);
@@ -254,9 +267,27 @@ export function App() {
     api.retry(chat.id, messageId, choice ?? model).then(setChat).catch((exc) => fail(exc, "That did not start again."));
   }
 
+  async function onPublish(draftId: string, clientPages: boolean) {
+    if (!chat) return;
+    try {
+      setChat(await api.publishDraft(draftId, clientPages, model));
+      refreshChats();
+    } catch (exc) {
+      fail(exc, "The draft was not sent to the template.");
+    }
+  }
+
+  function openDraft(draft: DraftInfo) {
+    setDraftRoot(draft.root_id);
+    setPanelTab("draft");
+    setPanelOpen(true);
+  }
+
   function openFile(doc: DocumentInfo) {
     if (doc.chat_id === chatId && chat) {
       setPreview(doc);
+      setPanelTab("pages");
+      setPanelOpen(true);
       navigate(`#/c/${doc.chat_id}`);
       return;
     }
@@ -288,7 +319,8 @@ export function App() {
     return <Lock checking={gate === "checking"} onUnlock={() => setGate("open")} />;
   }
 
-  const showPreview = view === "chat" && preview !== null && chat !== null;
+  const hasWork = Boolean(chat && (preview || chat.drafts.length));
+  const showPreview = view === "chat" && chat !== null && panelOpen && hasWork;
   const hidden = railMode === "hidden";
   const shellClass = ["shell", showPreview ? "with-preview" : "", hidden ? "rail-hidden" : ""].filter(Boolean).join(" ");
 
@@ -333,8 +365,8 @@ export function App() {
             <Menu />
           </button>
           <strong>{view === "files" ? "Files" : view === "settings" ? "Settings" : chat?.title || "Docufy"}</strong>
-          {view === "chat" && chat && !preview && chat.documents.length ? (
-            <button type="button" className="icon-button" aria-label="Open the pages" onClick={() => setPreview(latest(chat.documents))}>
+          {view === "chat" && chat && !showPreview && hasWork ? (
+            <button type="button" className="icon-button" aria-label="Open the workspace" onClick={() => setPanelOpen(true)}>
               <Pages />
             </button>
           ) : null}
@@ -349,10 +381,10 @@ export function App() {
             </button>
           </div>
         ) : null}
-        {view === "chat" && chat && !preview && chat.documents.length ? (
-          <button type="button" className="reopen" onClick={() => setPreview(latest(chat.documents))}>
+        {view === "chat" && chat && !showPreview && hasWork ? (
+          <button type="button" className="reopen" onClick={() => setPanelOpen(true)}>
             <Pages size={16} />
-            Show pages
+            Show workspace
           </button>
         ) : null}
         {toast ? (
@@ -402,22 +434,35 @@ export function App() {
               onOpen={(doc) => {
                 setPreview(doc);
                 setEditing(true);
+                setPanelTab("pages");
+                setPanelOpen(true);
               }}
+              onOpenDraft={openDraft}
+              openDraftId={showPreview && panelTab === "draft" ? draftRoot || chat?.drafts.at(-1)?.root_id || "" : ""}
               composerRef={composer}
             />
           )}
         </div>
       </main>
-      {showPreview && preview ? (
-        <Preview
+      {showPreview && chat ? (
+        <Workspace
+          chat={chat}
+          tab={panelTab}
+          onTab={setPanelTab}
+          draftRoot={draftRoot}
+          onDraftRoot={setDraftRoot}
           doc={preview}
-          onPick={(doc) => setPreview(chat?.documents.find((item) => item.id === doc.id) ?? doc)}
-          onResize={resizePreview}
-          onApplyEdit={applyDocEdit}
-          onClose={() => {
-            setPreview(null);
-            setEditing(false);
+          onPickDoc={(doc) => setPreview(chat.documents.find((item) => item.id === doc.id) ?? doc)}
+          busy={Boolean(chat.busy)}
+          spark={spark}
+          onSend={(text, sections, targetDoc) => onSend(text, null, sections, targetDoc)}
+          onPublish={onPublish}
+          onChat={(detail) => {
+            setChat(detail);
+            refreshChats();
           }}
+          onResize={resizePreview}
+          onClose={() => setPanelOpen(false)}
         />
       ) : null}
       {palette ? (
@@ -433,6 +478,10 @@ export function App() {
       ) : null}
     </div>
   );
+}
+
+function draftMap(drafts: DraftInfo[]) {
+  return new Map(drafts.map((item) => [item.root_id, item.version]));
 }
 
 function latest(documents: DocumentInfo[]) {

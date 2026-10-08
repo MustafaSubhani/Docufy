@@ -39,7 +39,7 @@ export type Progress = { text: string; streaming?: boolean };
 export type Step = {
   key: string;
   label: string;
-  kind: "step" | "agent" | "item";
+  kind: "step" | "agent" | "item" | "tool" | "thought";
   parent: string;
   status: "running" | "done" | "failed" | "stopped";
   detail: string;
@@ -61,11 +61,67 @@ export type Message = {
   attachment?: string;
   target_id?: string;
   web?: boolean;
+  sources?: Source[];
+  usage?: TurnUsage | null;
+  drafts?: string[];
+  sections?: string[];
+};
+
+export type Source = { url: string; title: string };
+
+export type TurnUsage = {
+  input_tokens: number;
+  output_tokens: number;
+  cached_tokens: number;
+  reasoning_tokens: number;
+  searches: number;
+  rounds: number;
+  model: string;
+};
+
+export type DraftInfo = {
+  id: string;
+  root_id: string;
+  version: number;
+  title: string;
+  words: number;
+  document_root: string;
+  created_at: number;
+  author: string;
+  note: string;
+};
+
+export type DraftDetail = DraftInfo & {
+  body: string;
+  outline: string[];
+  chat_id: string;
+  latest_id: string;
+  versions: { id: string; version: number; created_at: number; note: string; author: string }[];
+};
+
+export type ChatNote = { id: string; text: string; created_at: number };
+
+export type McpServer = {
+  name: string;
+  transport: "stdio" | "http" | "sse";
+  enabled: boolean;
+  command?: string;
+  args?: string[];
+  env?: Record<string, string>;
+  url?: string;
+  headers?: Record<string, string>;
+  allow?: string[];
+  description?: string;
+  status?: "idle" | "connecting" | "ready" | "failed" | "off";
+  error?: string;
+  tools?: { name: string; description: string }[];
 };
 
 export type ChatDetail = ChatSummary & {
   messages: Message[];
   documents: DocumentInfo[];
+  drafts: DraftInfo[];
+  notes: ChatNote[];
 };
 
 export type ModelChoice = "off" | "dev" | "claude" | "openai";
@@ -94,6 +150,13 @@ export type Settings = {
   num_ctx: number;
   keep_alive: string;
   ollama_url: string;
+  agent: boolean;
+  agent_local: boolean;
+  openai_model: string;
+  openai_fast_model: string;
+  reasoning_effort: "minimal" | "low" | "medium" | "high";
+  search_context: "low" | "medium" | "high";
+  hosted_search: boolean;
   has_password?: boolean;
 };
 
@@ -171,6 +234,8 @@ export type SendOptions = {
   model: ModelChoice;
   documentId?: string | null;
   sectionIds?: string[];
+  effort?: string;
+  agentModel?: string;
 };
 
 export const api = {
@@ -196,6 +261,8 @@ export const api = {
       form.set("model", options.model);
       if (options.documentId) form.set("document_id", options.documentId);
       if (options.sectionIds?.length) form.set("section_ids", JSON.stringify(options.sectionIds));
+      if (options.effort) form.set("effort", options.effort);
+      if (options.agentModel) form.set("agent_model", options.agentModel);
       form.set("file", options.file);
       return read<ChatDetail>(`/api/chats/${id}/messages`, { method: "POST", body: form });
     }
@@ -208,6 +275,8 @@ export const api = {
         model: options.model,
         document_id: options.documentId || null,
         section_ids: options.sectionIds?.length ? options.sectionIds : null,
+        effort: options.effort || null,
+        agent_model: options.agentModel || null,
       }),
     );
   },
@@ -235,4 +304,21 @@ export const api = {
   makeBackup: () => read<{ name: string; bytes: number }>("/api/backups", { method: "POST" }),
   backupUrl: (name: string) => `/api/backups/${encodeURIComponent(name)}`,
   ready: () => read<{ ok: boolean; checks: ReadyCheck[] }>("/api/ready"),
+  draft: (id: string) => read<DraftDetail>(`/api/drafts/${id}`),
+  saveDraft: (id: string, markdown: string, title?: string) => read<DraftDetail>(`/api/drafts/${id}`, json("PUT", { markdown, title })),
+  publishDraft: (id: string, clientPages: boolean, model: ModelChoice) =>
+    read<ChatDetail>(`/api/drafts/${id}/publish`, json("POST", { client_pages: clientPages, model })),
+  diagram: async (source: string) => {
+    const response = await fetch("/api/diagram", json("POST", { source }));
+    if (!response.ok) throw new ApiError("diagram", response.status);
+    return response.text();
+  },
+  documentSource: (id: string) => read<{ id: string; markdown: string }>(`/api/documents/${id}/source`),
+  saveDocumentSource: (id: string, markdown: string) => read<ChatDetail>(`/api/documents/${id}/source`, json("PUT", { markdown })),
+  restoreVersion: (id: string) => read<ChatDetail>(`/api/documents/${id}/restore`, { method: "POST" }),
+  dropNote: (chatId: string, noteId: string) => read<{ ok: boolean }>(`/api/chats/${chatId}/notes/${noteId}`, { method: "DELETE" }),
+  mcp: () => read<{ servers: McpServer[] }>("/api/mcp"),
+  saveMcp: (servers: McpServer[]) => read<{ servers: McpServer[] }>("/api/mcp", json("PUT", { servers })),
+  testMcp: (name: string) => read<{ ok: boolean; error: string; tools: string[] }>(`/api/mcp/${encodeURIComponent(name)}/test`, { method: "POST" }),
+  openaiModels: (refresh = false) => read<{ models: string[]; main: string; fast: string }>(`/api/openai/models${refresh ? "?refresh=true" : ""}`),
 };

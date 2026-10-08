@@ -16,7 +16,7 @@ import yaml
 from spark_docs.brand import archetype_prompt, load_archetypes
 
 from .diagramfix import repair_fences
-from .governor import run_items, workers_for
+from .governor import cloud_thresholds, run_items, workers_for
 from .llm import LLMError, Router
 
 ARCHETYPES = load_archetypes()
@@ -329,6 +329,7 @@ def draft_document(router: Router, brief: str, *, spark: bool, events=None) -> D
             timeout_s=float(limits.get("request_timeout_s") or 300),
             retries=0,
             run_id=router.run_id,
+            **cloud_thresholds(router),
         )
         bodies = [result.value if result and result.ok else None for result in report.results]
     else:
