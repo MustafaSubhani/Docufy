@@ -1,0 +1,10 @@
+id: internal_report
+doc_type: REPORT
+spark_content: false
+confidential: internal
+description: Internal report. No company intro, Why Choose Us, or contact banner.
+slots:
+  - {id: cover, required: true, component: cover}
+  - {id: methods, kicker: Methods, required: true, components: [para, list]}
+  - {id: results, kicker: Results, required: true, components: [para, table, figure]}
+  - {id: references, kicker: References, required: true, components: [list]}

@@ -15,3 +15,13 @@ node_modules/
 assets/trim_cache/
 diagrams/node_worker/node_modules/
 assets/diagrams/claude/
+workspace/*.db
+workspace/*.db-*
+workspace/memory/
+workspace/studio/
+workspace/charts/
+workspace/images/
+workspace/pages/
+workspace/backups/
+web/node_modules/
+web/dist/

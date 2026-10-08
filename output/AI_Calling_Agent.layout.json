@@ -1,0 +1,3045 @@
+{
+  "pages": 13,
+  "blocks": [
+    {
+      "id": "b1",
+      "kind": "kicker",
+      "part": 0,
+      "anchor": "about-spark-technologies",
+      "page": 2,
+      "x": 60,
+      "y": 756.41,
+      "w": 478.0,
+      "h": 26.0,
+      "y_top": 59.48,
+      "lines": [],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b2",
+      "kind": "page_title",
+      "part": 0,
+      "anchor": "",
+      "page": 2,
+      "x": 60,
+      "y": 719.42,
+      "w": 478.0,
+      "h": 29.9,
+      "y_top": 92.57,
+      "lines": [
+        {
+          "text": "Who We Are",
+          "x": 60,
+          "baseline": 723.32
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b3",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 2,
+      "x": 60,
+      "y": 683.43,
+      "w": 478.0,
+      "h": 23.0,
+      "y_top": 135.46,
+      "lines": [
+        {
+          "text": "We are a Dubai-based Full Spectrum AI technology company specialising in enterprise-grade AI solutions",
+          "x": 60,
+          "baseline": 696.43
+        },
+        {
+          "text": "for the construction, infrastructure, and industrial sectors.",
+          "x": 60,
+          "baseline": 684.93
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b4",
+      "kind": "tight",
+      "part": 0,
+      "anchor": "",
+      "page": 2,
+      "x": 60,
+      "y": 652.43,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 177.96,
+      "lines": [
+        {
+          "text": "Headquartered in Dubai, UAE",
+          "x": 60,
+          "baseline": 653.93
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b4",
+      "kind": "tight",
+      "part": 1,
+      "anchor": "",
+      "page": 2,
+      "x": 60,
+      "y": 635.93,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 194.46,
+      "lines": [
+        {
+          "text": "10+ years in software development and technology delivery",
+          "x": 60,
+          "baseline": 637.43
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b4",
+      "kind": "tight",
+      "part": 2,
+      "anchor": "",
+      "page": 2,
+      "x": 60,
+      "y": 619.43,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 210.96,
+      "lines": [
+        {
+          "text": "1.5+ years focused exclusively on Enterprise AI solutions",
+          "x": 60,
+          "baseline": 620.93
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b4",
+      "kind": "tight",
+      "part": 3,
+      "anchor": "",
+      "page": 2,
+      "x": 60,
+      "y": 602.93,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 227.46,
+      "lines": [
+        {
+          "text": "Deep expertise in UAE regulatory environments, FIDIC contracts, and GCC construction operations",
+          "x": 60,
+          "baseline": 604.43
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b4",
+      "kind": "tight",
+      "part": 4,
+      "anchor": "",
+      "page": 2,
+      "x": 60,
+      "y": 574.93,
+      "w": 478.0,
+      "h": 23.0,
+      "y_top": 243.96,
+      "lines": [
+        {
+          "text": "We combine advanced AI engineering with practical domain knowledge to solve high-impact, real-world",
+          "x": 60,
+          "baseline": 587.93
+        },
+        {
+          "text": "problems across the full construction project lifecycle.",
+          "x": 60,
+          "baseline": 576.43
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b10",
+      "kind": "sub_title",
+      "part": 0,
+      "anchor": "",
+      "page": 2,
+      "x": 60,
+      "y": 523.58,
+      "w": 478.0,
+      "h": 16.1,
+      "y_top": 302.21,
+      "lines": [
+        {
+          "text": "Our Solution Areas",
+          "x": 60,
+          "baseline": 525.68
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b11",
+      "kind": "cards",
+      "part": 0,
+      "anchor": "",
+      "page": 2,
+      "x": 60,
+      "y": 354.25,
+      "w": 478.0,
+      "h": 150.97,
+      "y_top": 336.67,
+      "lines": [
+        {
+          "text": "SME Outcome as a Service",
+          "x": 69.0,
+          "baseline": 487.59
+        },
+        {
+          "text": "AI training, consultation, automation, and",
+          "x": 69.0,
+          "baseline": 472.56
+        },
+        {
+          "text": "custom development for SMEs looking to turn AI",
+          "x": 69.0,
+          "baseline": 461.63
+        },
+        {
+          "text": "into measurable business outcomes.",
+          "x": 69.0,
+          "baseline": 450.71
+        },
+        {
+          "text": "Enterprise Solutions",
+          "x": 304.5,
+          "baseline": 487.59
+        },
+        {
+          "text": "Advanced AI and deep learning solutions for",
+          "x": 304.5,
+          "baseline": 472.56
+        },
+        {
+          "text": "enterprise operations, inspections, prediction,",
+          "x": 304.5,
+          "baseline": 461.63
+        },
+        {
+          "text": "automation, and secure system integration.",
+          "x": 304.5,
+          "baseline": 450.71
+        },
+        {
+          "text": "Custom AI App Development",
+          "x": 69.0,
+          "baseline": 404.23
+        },
+        {
+          "text": "Custom AI apps for enterprises, internal",
+          "x": 69.0,
+          "baseline": 389.2
+        },
+        {
+          "text": "workflow automation, AI-powered document",
+          "x": 69.0,
+          "baseline": 378.27
+        },
+        {
+          "text": "systems, CRM and operations apps.",
+          "x": 69.0,
+          "baseline": 367.35
+        },
+        {
+          "text": "In-House AI Products",
+          "x": 304.5,
+          "baseline": 404.23
+        },
+        {
+          "text": "Ready-to-deploy AI products built for specific",
+          "x": 304.5,
+          "baseline": 389.2
+        },
+        {
+          "text": "industry verticals. Spark Hire, Leadsreach,",
+          "x": 304.5,
+          "baseline": 378.27
+        },
+        {
+          "text": "CircleVoice, and Funnel Flow.",
+          "x": 304.5,
+          "baseline": 367.35
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": [
+        {
+          "x": 60.0,
+          "y": 437.61,
+          "w": 222,
+          "h": 67.61
+        },
+        {
+          "x": 295.5,
+          "y": 437.61,
+          "w": 222,
+          "h": 67.61
+        },
+        {
+          "x": 60.0,
+          "y": 354.25,
+          "w": 222,
+          "h": 67.61
+        },
+        {
+          "x": 295.5,
+          "y": 354.25,
+          "w": 222,
+          "h": 67.61
+        }
+      ]
+    },
+    {
+      "id": "b16",
+      "kind": "kicker",
+      "part": 0,
+      "anchor": "purpose",
+      "page": 3,
+      "x": 60,
+      "y": 756.41,
+      "w": 478.0,
+      "h": 26.0,
+      "y_top": 59.48,
+      "lines": [],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b17",
+      "kind": "page_title",
+      "part": 0,
+      "anchor": "",
+      "page": 3,
+      "x": 60,
+      "y": 719.42,
+      "w": 478.0,
+      "h": 29.9,
+      "y_top": 92.57,
+      "lines": [
+        {
+          "text": "What this document covers",
+          "x": 60,
+          "baseline": 723.32
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b18",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 3,
+      "x": 60,
+      "y": 683.43,
+      "w": 478.0,
+      "h": 23.0,
+      "y_top": 135.46,
+      "lines": [
+        {
+          "text": "This document lists what the client provides before Spark Technologies deploys the AI Calling Agent. It",
+          "x": 60,
+          "baseline": 696.43
+        },
+        {
+          "text": "applies to any organisation. No company specific detail is assumed.",
+          "x": 60,
+          "baseline": 684.93
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b19",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 3,
+      "x": 60,
+      "y": 640.93,
+      "w": 478.0,
+      "h": 23.0,
+      "y_top": 177.96,
+      "lines": [
+        {
+          "text": "The list covers the server, the telephone system, the network, the access needed to install the system, and",
+          "x": 60,
+          "baseline": 653.93
+        },
+        {
+          "text": "the business information used to configure the agent.",
+          "x": 60,
+          "baseline": 642.43
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b20",
+      "kind": "callout",
+      "part": 0,
+      "anchor": "",
+      "page": 3,
+      "x": 60,
+      "y": 548.38,
+      "w": 478.0,
+      "h": 70.5,
+      "y_top": 223.01,
+      "lines": [
+        {
+          "text": "How deployment starts",
+          "x": 71.2,
+          "baseline": 599.52
+        },
+        {
+          "text": "Spark Technologies installs the system on the client's server, connects it to the client's telephone",
+          "x": 71.2,
+          "baseline": 582.83
+        },
+        {
+          "text": "system, configures the agent, and tests live calls. Work starts once the items in this document",
+          "x": 71.2,
+          "baseline": 571.33
+        },
+        {
+          "text": "are available.",
+          "x": 71.2,
+          "baseline": 559.83
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b22",
+      "kind": "table",
+      "part": 0,
+      "anchor": "",
+      "page": 3,
+      "x": 60,
+      "y": 386.88,
+      "w": 451.5,
+      "h": 130.5,
+      "y_top": 324.51,
+      "lines": [],
+      "cells": [
+        {
+          "r": 0,
+          "c": 0,
+          "x": 60,
+          "y": 495.63,
+          "w": 58.89,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 1,
+          "x": 118.89,
+          "y": 495.63,
+          "w": 392.61,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 0,
+          "x": 60,
+          "y": 473.88,
+          "w": 58.89,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 1,
+          "x": 118.89,
+          "y": 473.88,
+          "w": 392.61,
+          "h": 21.75
+        },
+        {
+          "r": 2,
+          "c": 0,
+          "x": 60,
+          "y": 452.13,
+          "w": 58.89,
+          "h": 21.75
+        },
+        {
+          "r": 2,
+          "c": 1,
+          "x": 118.89,
+          "y": 452.13,
+          "w": 392.61,
+          "h": 21.75
+        },
+        {
+          "r": 3,
+          "c": 0,
+          "x": 60,
+          "y": 430.38,
+          "w": 58.89,
+          "h": 21.75
+        },
+        {
+          "r": 3,
+          "c": 1,
+          "x": 118.89,
+          "y": 430.38,
+          "w": 392.61,
+          "h": 21.75
+        },
+        {
+          "r": 4,
+          "c": 0,
+          "x": 60,
+          "y": 408.63,
+          "w": 58.89,
+          "h": 21.75
+        },
+        {
+          "r": 4,
+          "c": 1,
+          "x": 118.89,
+          "y": 408.63,
+          "w": 392.61,
+          "h": 21.75
+        },
+        {
+          "r": 5,
+          "c": 0,
+          "x": 60,
+          "y": 386.88,
+          "w": 58.89,
+          "h": 21.75
+        },
+        {
+          "r": 5,
+          "c": 1,
+          "x": 118.89,
+          "y": 386.88,
+          "w": 392.61,
+          "h": 21.75
+        }
+      ],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b23",
+      "kind": "figure",
+      "part": 0,
+      "anchor": "",
+      "page": 3,
+      "x": 60,
+      "y": 210.54,
+      "w": 478.0,
+      "h": 155.24,
+      "y_top": 476.11,
+      "lines": [],
+      "cells": [],
+      "nodes": [
+        {
+          "id": "A",
+          "text": "Caller",
+          "x": 89.22,
+          "y": 311.23,
+          "w": 87.06,
+          "h": 40.56
+        },
+        {
+          "id": "B",
+          "text": "SIP trunk",
+          "x": 200.05,
+          "y": 311.23,
+          "w": 87.06,
+          "h": 40.56
+        },
+        {
+          "id": "C",
+          "text": "PBX or SBC",
+          "x": 310.89,
+          "y": 311.23,
+          "w": 87.06,
+          "h": 40.56
+        },
+        {
+          "id": "D",
+          "text": "AI Calling Agent",
+          "x": 421.72,
+          "y": 311.23,
+          "w": 87.06,
+          "h": 40.56
+        },
+        {
+          "id": "E",
+          "text": "Completed call or transfer",
+          "x": 421.72,
+          "y": 249.7,
+          "w": 87.06,
+          "h": 40.56
+        }
+      ],
+      "cards": []
+    },
+    {
+      "id": "b24",
+      "kind": "kicker",
+      "part": 0,
+      "anchor": "server",
+      "page": 4,
+      "x": 60,
+      "y": 756.41,
+      "w": 478.0,
+      "h": 26.0,
+      "y_top": 59.48,
+      "lines": [],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b25",
+      "kind": "page_title",
+      "part": 0,
+      "anchor": "",
+      "page": 4,
+      "x": 60,
+      "y": 719.42,
+      "w": 478.0,
+      "h": 29.9,
+      "y_top": 92.57,
+      "lines": [
+        {
+          "text": "Dedicated host",
+          "x": 60,
+          "baseline": 723.32
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b26",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 4,
+      "x": 60,
+      "y": 694.93,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 135.46,
+      "lines": [
+        {
+          "text": "The client provides one dedicated server for the AI Calling Agent. The server is for this system.",
+          "x": 60,
+          "baseline": 696.43
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b27",
+      "kind": "callout",
+      "part": 0,
+      "anchor": "",
+      "page": 4,
+      "x": 60,
+      "y": 613.88,
+      "w": 478.0,
+      "h": 59.0,
+      "y_top": 169.01,
+      "lines": [
+        {
+          "text": "Operating system",
+          "x": 71.2,
+          "baseline": 653.52
+        },
+        {
+          "text": "Linux is required. Ubuntu 22.04 LTS, 64 bit, is the version Spark Technologies installs on.",
+          "x": 71.2,
+          "baseline": 636.83
+        },
+        {
+          "text": "Windows Server is not supported.",
+          "x": 71.2,
+          "baseline": 625.33
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b29",
+      "kind": "table",
+      "part": 0,
+      "anchor": "",
+      "page": 4,
+      "x": 60,
+      "y": 463.78,
+      "w": 451.5,
+      "h": 119.1,
+      "y_top": 259.01,
+      "lines": [],
+      "cells": [
+        {
+          "r": 0,
+          "c": 0,
+          "x": 60,
+          "y": 550.78,
+          "w": 58.89,
+          "h": 32.1
+        },
+        {
+          "r": 0,
+          "c": 1,
+          "x": 118.89,
+          "y": 550.78,
+          "w": 392.61,
+          "h": 32.1
+        },
+        {
+          "r": 1,
+          "c": 0,
+          "x": 60,
+          "y": 529.03,
+          "w": 58.89,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 1,
+          "x": 118.89,
+          "y": 529.03,
+          "w": 392.61,
+          "h": 21.75
+        },
+        {
+          "r": 2,
+          "c": 0,
+          "x": 60,
+          "y": 507.28,
+          "w": 58.89,
+          "h": 21.75
+        },
+        {
+          "r": 2,
+          "c": 1,
+          "x": 118.89,
+          "y": 507.28,
+          "w": 392.61,
+          "h": 21.75
+        },
+        {
+          "r": 3,
+          "c": 0,
+          "x": 60,
+          "y": 485.53,
+          "w": 58.89,
+          "h": 21.75
+        },
+        {
+          "r": 3,
+          "c": 1,
+          "x": 118.89,
+          "y": 485.53,
+          "w": 392.61,
+          "h": 21.75
+        },
+        {
+          "r": 4,
+          "c": 0,
+          "x": 60,
+          "y": 463.78,
+          "w": 58.89,
+          "h": 21.75
+        },
+        {
+          "r": 4,
+          "c": 1,
+          "x": 118.89,
+          "y": 463.78,
+          "w": 392.61,
+          "h": 21.75
+        }
+      ],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b30",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 4,
+      "x": 60,
+      "y": 419.78,
+      "w": 478.0,
+      "h": 23.0,
+      "y_top": 399.11,
+      "lines": [
+        {
+          "text": "The server must be able to run continuously. It needs stable power, a stable network connection, and",
+          "x": 60,
+          "baseline": 432.78
+        },
+        {
+          "text": "remote access so Spark Technologies can deploy the system and maintain it.",
+          "x": 60,
+          "baseline": 421.28
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b31",
+      "kind": "kicker",
+      "part": 0,
+      "anchor": "telephony",
+      "page": 5,
+      "x": 60,
+      "y": 756.41,
+      "w": 478.0,
+      "h": 26.0,
+      "y_top": 59.48,
+      "lines": [],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b32",
+      "kind": "page_title",
+      "part": 0,
+      "anchor": "",
+      "page": 5,
+      "x": 60,
+      "y": 719.42,
+      "w": 478.0,
+      "h": 29.9,
+      "y_top": 92.57,
+      "lines": [
+        {
+          "text": "PBX and the SIP trunk",
+          "x": 60,
+          "baseline": 723.32
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b33",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 5,
+      "x": 60,
+      "y": 694.93,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 135.46,
+      "lines": [
+        {
+          "text": "The telephone system already in place must be able to work with the agent.",
+          "x": 60,
+          "baseline": 696.43
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b34",
+      "kind": "label",
+      "part": 0,
+      "anchor": "",
+      "page": 5,
+      "x": 60,
+      "y": 663.93,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 166.46,
+      "lines": [
+        {
+          "text": "The PBX or SBC must provide:",
+          "x": 60,
+          "baseline": 665.43
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b35",
+      "kind": "bullets",
+      "part": 0,
+      "anchor": "",
+      "page": 5,
+      "x": 60,
+      "y": 648.43,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 181.96,
+      "lines": [
+        {
+          "text": "SIP trunk support",
+          "x": 87.8,
+          "baseline": 649.93
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b35",
+      "kind": "bullets",
+      "part": 1,
+      "anchor": "",
+      "page": 5,
+      "x": 60,
+      "y": 633.93,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 196.46,
+      "lines": [
+        {
+          "text": "SIP routing",
+          "x": 87.8,
+          "baseline": 635.43
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b35",
+      "kind": "bullets",
+      "part": 2,
+      "anchor": "",
+      "page": 5,
+      "x": 60,
+      "y": 619.43,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 210.96,
+      "lines": [
+        {
+          "text": "Call forwarding and call routing",
+          "x": 87.8,
+          "baseline": 620.93
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b35",
+      "kind": "bullets",
+      "part": 3,
+      "anchor": "",
+      "page": 5,
+      "x": 60,
+      "y": 604.93,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 225.46,
+      "lines": [
+        {
+          "text": "Calls in both directions between the telephone system and the agent",
+          "x": 87.8,
+          "baseline": 606.43
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b36",
+      "kind": "label",
+      "part": 0,
+      "anchor": "",
+      "page": 5,
+      "x": 60,
+      "y": 573.93,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 256.46,
+      "lines": [
+        {
+          "text": "The client also provides:",
+          "x": 60,
+          "baseline": 575.43
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b37",
+      "kind": "table",
+      "part": 0,
+      "anchor": "",
+      "page": 5,
+      "x": 60,
+      "y": 457.43,
+      "w": 451.5,
+      "h": 87.0,
+      "y_top": 297.46,
+      "lines": [],
+      "cells": [
+        {
+          "r": 0,
+          "c": 0,
+          "x": 60,
+          "y": 522.68,
+          "w": 58.89,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 1,
+          "x": 118.89,
+          "y": 522.68,
+          "w": 392.61,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 0,
+          "x": 60,
+          "y": 500.93,
+          "w": 58.89,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 1,
+          "x": 118.89,
+          "y": 500.93,
+          "w": 392.61,
+          "h": 21.75
+        },
+        {
+          "r": 2,
+          "c": 0,
+          "x": 60,
+          "y": 479.18,
+          "w": 58.89,
+          "h": 21.75
+        },
+        {
+          "r": 2,
+          "c": 1,
+          "x": 118.89,
+          "y": 479.18,
+          "w": 392.61,
+          "h": 21.75
+        },
+        {
+          "r": 3,
+          "c": 0,
+          "x": 60,
+          "y": 457.43,
+          "w": 58.89,
+          "h": 21.75
+        },
+        {
+          "r": 3,
+          "c": 1,
+          "x": 118.89,
+          "y": 457.43,
+          "w": 392.61,
+          "h": 21.75
+        }
+      ],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b38",
+      "kind": "h3",
+      "part": 0,
+      "anchor": "",
+      "page": 5,
+      "x": 60,
+      "y": 418.71,
+      "w": 478.0,
+      "h": 14.95,
+      "y_top": 408.23,
+      "lines": [
+        {
+          "text": "SIP trunk",
+          "x": 60,
+          "baseline": 420.66
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b39",
+      "kind": "table",
+      "part": 0,
+      "anchor": "",
+      "page": 5,
+      "x": 60,
+      "y": 225.46,
+      "w": 451.5,
+      "h": 174.0,
+      "y_top": 442.43,
+      "lines": [],
+      "cells": [
+        {
+          "r": 0,
+          "c": 0,
+          "x": 60,
+          "y": 377.71,
+          "w": 71.29,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 1,
+          "x": 131.29,
+          "y": 377.71,
+          "w": 380.21,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 0,
+          "x": 60,
+          "y": 355.96,
+          "w": 71.29,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 1,
+          "x": 131.29,
+          "y": 355.96,
+          "w": 380.21,
+          "h": 21.75
+        },
+        {
+          "r": 2,
+          "c": 0,
+          "x": 60,
+          "y": 334.21,
+          "w": 71.29,
+          "h": 21.75
+        },
+        {
+          "r": 2,
+          "c": 1,
+          "x": 131.29,
+          "y": 334.21,
+          "w": 380.21,
+          "h": 21.75
+        },
+        {
+          "r": 3,
+          "c": 0,
+          "x": 60,
+          "y": 312.46,
+          "w": 71.29,
+          "h": 21.75
+        },
+        {
+          "r": 3,
+          "c": 1,
+          "x": 131.29,
+          "y": 312.46,
+          "w": 380.21,
+          "h": 21.75
+        },
+        {
+          "r": 4,
+          "c": 0,
+          "x": 60,
+          "y": 290.71,
+          "w": 71.29,
+          "h": 21.75
+        },
+        {
+          "r": 4,
+          "c": 1,
+          "x": 131.29,
+          "y": 290.71,
+          "w": 380.21,
+          "h": 21.75
+        },
+        {
+          "r": 5,
+          "c": 0,
+          "x": 60,
+          "y": 268.96,
+          "w": 71.29,
+          "h": 21.75
+        },
+        {
+          "r": 5,
+          "c": 1,
+          "x": 131.29,
+          "y": 268.96,
+          "w": 380.21,
+          "h": 21.75
+        },
+        {
+          "r": 6,
+          "c": 0,
+          "x": 60,
+          "y": 247.21,
+          "w": 71.29,
+          "h": 21.75
+        },
+        {
+          "r": 6,
+          "c": 1,
+          "x": 131.29,
+          "y": 247.21,
+          "w": 380.21,
+          "h": 21.75
+        },
+        {
+          "r": 7,
+          "c": 0,
+          "x": 60,
+          "y": 225.46,
+          "w": 71.29,
+          "h": 21.75
+        },
+        {
+          "r": 7,
+          "c": 1,
+          "x": 131.29,
+          "y": 225.46,
+          "w": 380.21,
+          "h": 21.75
+        }
+      ],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b40",
+      "kind": "figure",
+      "part": 0,
+      "anchor": "",
+      "page": 6,
+      "x": 60,
+      "y": 369.32,
+      "w": 478.0,
+      "h": 412.57,
+      "y_top": 60.0,
+      "lines": [],
+      "cells": [],
+      "nodes": [
+        {
+          "id": "A",
+          "text": "Call arrives or is placed",
+          "x": 165.0,
+          "y": 731.54,
+          "w": 156.13,
+          "h": 27.97
+        },
+        {
+          "id": "B",
+          "text": "SIP trunk",
+          "x": 165.0,
+          "y": 675.6,
+          "w": 156.13,
+          "h": 27.97
+        },
+        {
+          "id": "C",
+          "text": "PBX or SBC",
+          "x": 165.0,
+          "y": 619.66,
+          "w": 156.13,
+          "h": 27.97
+        },
+        {
+          "id": "D",
+          "text": "AI Calling Agent",
+          "x": 165.0,
+          "y": 563.72,
+          "w": 156.13,
+          "h": 27.97
+        },
+        {
+          "id": "E",
+          "text": "Transfer to a person?",
+          "x": 165.0,
+          "y": 491.0,
+          "w": 156.13,
+          "h": 44.75
+        },
+        {
+          "id": "F",
+          "text": "The agent completes the call",
+          "x": 138.42,
+          "y": 395.9,
+          "w": 156.13,
+          "h": 27.97
+        },
+        {
+          "id": "G",
+          "text": "The call is passed to the nominated person",
+          "x": 311.84,
+          "y": 383.31,
+          "w": 156.13,
+          "h": 40.56
+        }
+      ],
+      "cards": []
+    },
+    {
+      "id": "b41",
+      "kind": "kicker",
+      "part": 0,
+      "anchor": "network",
+      "page": 7,
+      "x": 60,
+      "y": 756.41,
+      "w": 478.0,
+      "h": 26.0,
+      "y_top": 59.48,
+      "lines": [],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b42",
+      "kind": "page_title",
+      "part": 0,
+      "anchor": "",
+      "page": 7,
+      "x": 60,
+      "y": 719.42,
+      "w": 478.0,
+      "h": 29.9,
+      "y_top": 92.57,
+      "lines": [
+        {
+          "text": "Address, firewall, and ports",
+          "x": 60,
+          "baseline": 723.32
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b43",
+      "kind": "table",
+      "part": 0,
+      "anchor": "",
+      "page": 7,
+      "x": 60,
+      "y": 607.32,
+      "w": 451.5,
+      "h": 87.0,
+      "y_top": 147.57,
+      "lines": [],
+      "cells": [
+        {
+          "r": 0,
+          "c": 0,
+          "x": 60,
+          "y": 672.57,
+          "w": 69.95,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 1,
+          "x": 129.95,
+          "y": 672.57,
+          "w": 381.55,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 0,
+          "x": 60,
+          "y": 650.82,
+          "w": 69.95,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 1,
+          "x": 129.95,
+          "y": 650.82,
+          "w": 381.55,
+          "h": 21.75
+        },
+        {
+          "r": 2,
+          "c": 0,
+          "x": 60,
+          "y": 629.07,
+          "w": 69.95,
+          "h": 21.75
+        },
+        {
+          "r": 2,
+          "c": 1,
+          "x": 129.95,
+          "y": 629.07,
+          "w": 381.55,
+          "h": 21.75
+        },
+        {
+          "r": 3,
+          "c": 0,
+          "x": 60,
+          "y": 607.32,
+          "w": 69.95,
+          "h": 21.75
+        },
+        {
+          "r": 3,
+          "c": 1,
+          "x": 129.95,
+          "y": 607.32,
+          "w": 381.55,
+          "h": 21.75
+        }
+      ],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b44",
+      "kind": "table",
+      "part": 0,
+      "anchor": "",
+      "page": 7,
+      "x": 60,
+      "y": 480.02,
+      "w": 451.5,
+      "h": 96.3,
+      "y_top": 265.57,
+      "lines": [],
+      "cells": [
+        {
+          "r": 0,
+          "c": 0,
+          "x": 60,
+          "y": 544.22,
+          "w": 33.44,
+          "h": 32.1
+        },
+        {
+          "r": 0,
+          "c": 1,
+          "x": 93.44,
+          "y": 544.22,
+          "w": 167.22,
+          "h": 32.1
+        },
+        {
+          "r": 0,
+          "c": 2,
+          "x": 260.67,
+          "y": 544.22,
+          "w": 250.83,
+          "h": 32.1
+        },
+        {
+          "r": 1,
+          "c": 0,
+          "x": 60,
+          "y": 512.12,
+          "w": 33.44,
+          "h": 32.1
+        },
+        {
+          "r": 1,
+          "c": 1,
+          "x": 93.44,
+          "y": 512.12,
+          "w": 167.22,
+          "h": 32.1
+        },
+        {
+          "r": 1,
+          "c": 2,
+          "x": 260.67,
+          "y": 512.12,
+          "w": 250.83,
+          "h": 32.1
+        },
+        {
+          "r": 2,
+          "c": 0,
+          "x": 60,
+          "y": 480.02,
+          "w": 33.44,
+          "h": 32.1
+        },
+        {
+          "r": 2,
+          "c": 1,
+          "x": 93.44,
+          "y": 480.02,
+          "w": 167.22,
+          "h": 32.1
+        },
+        {
+          "r": 2,
+          "c": 2,
+          "x": 260.67,
+          "y": 480.02,
+          "w": 250.83,
+          "h": 32.1
+        }
+      ],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b45",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 7,
+      "x": 60,
+      "y": 436.02,
+      "w": 478.0,
+      "h": 23.0,
+      "y_top": 382.87,
+      "lines": [
+        {
+          "text": "The RTP range is taken from the PBX and the trunk. It is opened on the firewall before testing. No other",
+          "x": 60,
+          "baseline": 449.02
+        },
+        {
+          "text": "ports are assumed.",
+          "x": 60,
+          "baseline": 437.52
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b46",
+      "kind": "kicker",
+      "part": 0,
+      "anchor": "access-and-software",
+      "page": 8,
+      "x": 60,
+      "y": 756.41,
+      "w": 478.0,
+      "h": 26.0,
+      "y_top": 59.48,
+      "lines": [],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b47",
+      "kind": "page_title",
+      "part": 0,
+      "anchor": "",
+      "page": 8,
+      "x": 60,
+      "y": 719.42,
+      "w": 478.0,
+      "h": 29.9,
+      "y_top": 92.57,
+      "lines": [
+        {
+          "text": "What the installation needs",
+          "x": 60,
+          "baseline": 723.32
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b48",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 8,
+      "x": 60,
+      "y": 683.43,
+      "w": 478.0,
+      "h": 23.0,
+      "y_top": 135.46,
+      "lines": [
+        {
+          "text": "The server must allow Spark Technologies to install the following. The client does not need to install them",
+          "x": 60,
+          "baseline": 696.43
+        },
+        {
+          "text": "in advance.",
+          "x": 60,
+          "baseline": 684.93
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b49",
+      "kind": "bullets",
+      "part": 0,
+      "anchor": "",
+      "page": 8,
+      "x": 60,
+      "y": 652.43,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 177.96,
+      "lines": [
+        {
+          "text": "Docker",
+          "x": 87.8,
+          "baseline": 653.93
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b49",
+      "kind": "bullets",
+      "part": 1,
+      "anchor": "",
+      "page": 8,
+      "x": 60,
+      "y": 637.93,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 192.46,
+      "lines": [
+        {
+          "text": "Docker Compose",
+          "x": 87.8,
+          "baseline": 639.43
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b49",
+      "kind": "bullets",
+      "part": 2,
+      "anchor": "",
+      "page": 8,
+      "x": 60,
+      "y": 623.43,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 206.96,
+      "lines": [
+        {
+          "text": "The system packages the installer requires",
+          "x": 87.8,
+          "baseline": 624.93
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b49",
+      "kind": "bullets",
+      "part": 3,
+      "anchor": "",
+      "page": 8,
+      "x": 60,
+      "y": 608.93,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 221.46,
+      "lines": [
+        {
+          "text": "The AI processing components",
+          "x": 87.8,
+          "baseline": 610.43
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b49",
+      "kind": "bullets",
+      "part": 4,
+      "anchor": "",
+      "page": 8,
+      "x": 60,
+      "y": 594.43,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 235.96,
+      "lines": [
+        {
+          "text": "The voice processing components",
+          "x": 87.8,
+          "baseline": 595.93
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b49",
+      "kind": "bullets",
+      "part": 5,
+      "anchor": "",
+      "page": 8,
+      "x": 60,
+      "y": 579.93,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 250.46,
+      "lines": [
+        {
+          "text": "The database service",
+          "x": 87.8,
+          "baseline": 581.43
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b49",
+      "kind": "bullets",
+      "part": 6,
+      "anchor": "",
+      "page": 8,
+      "x": 60,
+      "y": 565.43,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 264.96,
+      "lines": [
+        {
+          "text": "The application services",
+          "x": 87.8,
+          "baseline": 566.93
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b50",
+      "kind": "table",
+      "part": 0,
+      "anchor": "",
+      "page": 8,
+      "x": 60,
+      "y": 385.88,
+      "w": 451.5,
+      "h": 161.55,
+      "y_top": 294.46,
+      "lines": [],
+      "cells": [
+        {
+          "r": 0,
+          "c": 0,
+          "x": 60,
+          "y": 525.68,
+          "w": 191.02,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 1,
+          "x": 251.02,
+          "y": 525.68,
+          "w": 260.48,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 0,
+          "x": 60,
+          "y": 503.93,
+          "w": 191.02,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 1,
+          "x": 251.02,
+          "y": 503.93,
+          "w": 260.48,
+          "h": 21.75
+        },
+        {
+          "r": 2,
+          "c": 0,
+          "x": 60,
+          "y": 482.18,
+          "w": 191.02,
+          "h": 21.75
+        },
+        {
+          "r": 2,
+          "c": 1,
+          "x": 251.02,
+          "y": 482.18,
+          "w": 260.48,
+          "h": 21.75
+        },
+        {
+          "r": 3,
+          "c": 0,
+          "x": 60,
+          "y": 450.08,
+          "w": 191.02,
+          "h": 32.1
+        },
+        {
+          "r": 3,
+          "c": 1,
+          "x": 251.02,
+          "y": 450.08,
+          "w": 260.48,
+          "h": 32.1
+        },
+        {
+          "r": 4,
+          "c": 0,
+          "x": 60,
+          "y": 417.98,
+          "w": 191.02,
+          "h": 32.1
+        },
+        {
+          "r": 4,
+          "c": 1,
+          "x": 251.02,
+          "y": 417.98,
+          "w": 260.48,
+          "h": 32.1
+        },
+        {
+          "r": 5,
+          "c": 0,
+          "x": 60,
+          "y": 385.88,
+          "w": 191.02,
+          "h": 32.1
+        },
+        {
+          "r": 5,
+          "c": 1,
+          "x": 251.02,
+          "y": 385.88,
+          "w": 260.48,
+          "h": 32.1
+        }
+      ],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b51",
+      "kind": "kicker",
+      "part": 0,
+      "anchor": "agent-configuration",
+      "page": 9,
+      "x": 60,
+      "y": 756.41,
+      "w": 478.0,
+      "h": 26.0,
+      "y_top": 59.48,
+      "lines": [],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b52",
+      "kind": "page_title",
+      "part": 0,
+      "anchor": "",
+      "page": 9,
+      "x": 60,
+      "y": 719.42,
+      "w": 478.0,
+      "h": 29.9,
+      "y_top": 92.57,
+      "lines": [
+        {
+          "text": "Business information",
+          "x": 60,
+          "baseline": 723.32
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b53",
+      "kind": "table",
+      "part": 0,
+      "anchor": "",
+      "page": 9,
+      "x": 60,
+      "y": 520.32,
+      "w": 451.5,
+      "h": 174.0,
+      "y_top": 147.57,
+      "lines": [],
+      "cells": [
+        {
+          "r": 0,
+          "c": 0,
+          "x": 60,
+          "y": 672.57,
+          "w": 80.4,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 1,
+          "x": 140.4,
+          "y": 672.57,
+          "w": 371.1,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 0,
+          "x": 60,
+          "y": 650.82,
+          "w": 80.4,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 1,
+          "x": 140.4,
+          "y": 650.82,
+          "w": 371.1,
+          "h": 21.75
+        },
+        {
+          "r": 2,
+          "c": 0,
+          "x": 60,
+          "y": 629.07,
+          "w": 80.4,
+          "h": 21.75
+        },
+        {
+          "r": 2,
+          "c": 1,
+          "x": 140.4,
+          "y": 629.07,
+          "w": 371.1,
+          "h": 21.75
+        },
+        {
+          "r": 3,
+          "c": 0,
+          "x": 60,
+          "y": 607.32,
+          "w": 80.4,
+          "h": 21.75
+        },
+        {
+          "r": 3,
+          "c": 1,
+          "x": 140.4,
+          "y": 607.32,
+          "w": 371.1,
+          "h": 21.75
+        },
+        {
+          "r": 4,
+          "c": 0,
+          "x": 60,
+          "y": 585.57,
+          "w": 80.4,
+          "h": 21.75
+        },
+        {
+          "r": 4,
+          "c": 1,
+          "x": 140.4,
+          "y": 585.57,
+          "w": 371.1,
+          "h": 21.75
+        },
+        {
+          "r": 5,
+          "c": 0,
+          "x": 60,
+          "y": 563.82,
+          "w": 80.4,
+          "h": 21.75
+        },
+        {
+          "r": 5,
+          "c": 1,
+          "x": 140.4,
+          "y": 563.82,
+          "w": 371.1,
+          "h": 21.75
+        },
+        {
+          "r": 6,
+          "c": 0,
+          "x": 60,
+          "y": 542.07,
+          "w": 80.4,
+          "h": 21.75
+        },
+        {
+          "r": 6,
+          "c": 1,
+          "x": 140.4,
+          "y": 542.07,
+          "w": 371.1,
+          "h": 21.75
+        },
+        {
+          "r": 7,
+          "c": 0,
+          "x": 60,
+          "y": 520.32,
+          "w": 80.4,
+          "h": 21.75
+        },
+        {
+          "r": 7,
+          "c": 1,
+          "x": 140.4,
+          "y": 520.32,
+          "w": 371.1,
+          "h": 21.75
+        }
+      ],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b54",
+      "kind": "kicker",
+      "part": 0,
+      "anchor": "testing",
+      "page": 10,
+      "x": 60,
+      "y": 756.41,
+      "w": 478.0,
+      "h": 26.0,
+      "y_top": 59.48,
+      "lines": [],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b55",
+      "kind": "page_title",
+      "part": 0,
+      "anchor": "",
+      "page": 10,
+      "x": 60,
+      "y": 719.42,
+      "w": 478.0,
+      "h": 29.9,
+      "y_top": 92.57,
+      "lines": [
+        {
+          "text": "Acceptance checks",
+          "x": 60,
+          "baseline": 723.32
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b56",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 10,
+      "x": 60,
+      "y": 683.43,
+      "w": 478.0,
+      "h": 23.0,
+      "y_top": 135.46,
+      "lines": [
+        {
+          "text": "Testing covers the connection, the voice path, the conversation, and the routing. A client contact joins the",
+          "x": 60,
+          "baseline": 696.43
+        },
+        {
+          "text": "test and confirms the result.",
+          "x": 60,
+          "baseline": 684.93
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b57",
+      "kind": "table",
+      "part": 0,
+      "anchor": "",
+      "page": 10,
+      "x": 60,
+      "y": 534.93,
+      "w": 451.5,
+      "h": 130.5,
+      "y_top": 176.46,
+      "lines": [],
+      "cells": [
+        {
+          "r": 0,
+          "c": 0,
+          "x": 60,
+          "y": 643.68,
+          "w": 75.25,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 1,
+          "x": 135.25,
+          "y": 643.68,
+          "w": 376.25,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 0,
+          "x": 60,
+          "y": 621.93,
+          "w": 75.25,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 1,
+          "x": 135.25,
+          "y": 621.93,
+          "w": 376.25,
+          "h": 21.75
+        },
+        {
+          "r": 2,
+          "c": 0,
+          "x": 60,
+          "y": 600.18,
+          "w": 75.25,
+          "h": 21.75
+        },
+        {
+          "r": 2,
+          "c": 1,
+          "x": 135.25,
+          "y": 600.18,
+          "w": 376.25,
+          "h": 21.75
+        },
+        {
+          "r": 3,
+          "c": 0,
+          "x": 60,
+          "y": 578.43,
+          "w": 75.25,
+          "h": 21.75
+        },
+        {
+          "r": 3,
+          "c": 1,
+          "x": 135.25,
+          "y": 578.43,
+          "w": 376.25,
+          "h": 21.75
+        },
+        {
+          "r": 4,
+          "c": 0,
+          "x": 60,
+          "y": 556.68,
+          "w": 75.25,
+          "h": 21.75
+        },
+        {
+          "r": 4,
+          "c": 1,
+          "x": 135.25,
+          "y": 556.68,
+          "w": 376.25,
+          "h": 21.75
+        },
+        {
+          "r": 5,
+          "c": 0,
+          "x": 60,
+          "y": 534.93,
+          "w": 75.25,
+          "h": 21.75
+        },
+        {
+          "r": 5,
+          "c": 1,
+          "x": 135.25,
+          "y": 534.93,
+          "w": 376.25,
+          "h": 21.75
+        }
+      ],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b58",
+      "kind": "kicker",
+      "part": 0,
+      "anchor": "readiness",
+      "page": 11,
+      "x": 60,
+      "y": 756.41,
+      "w": 478.0,
+      "h": 26.0,
+      "y_top": 59.48,
+      "lines": [],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b59",
+      "kind": "page_title",
+      "part": 0,
+      "anchor": "",
+      "page": 11,
+      "x": 60,
+      "y": 719.42,
+      "w": 478.0,
+      "h": 29.9,
+      "y_top": 92.57,
+      "lines": [
+        {
+          "text": "Checklist",
+          "x": 60,
+          "baseline": 723.32
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b60",
+      "kind": "table",
+      "part": 0,
+      "anchor": "",
+      "page": 11,
+      "x": 60,
+      "y": 498.57,
+      "w": 451.5,
+      "h": 195.75,
+      "y_top": 147.57,
+      "lines": [],
+      "cells": [
+        {
+          "r": 0,
+          "c": 0,
+          "x": 60,
+          "y": 672.57,
+          "w": 54.73,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 1,
+          "x": 114.73,
+          "y": 672.57,
+          "w": 342.05,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 2,
+          "x": 456.77,
+          "y": 672.57,
+          "w": 54.73,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 0,
+          "x": 60,
+          "y": 650.82,
+          "w": 54.73,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 1,
+          "x": 114.73,
+          "y": 650.82,
+          "w": 342.05,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 2,
+          "x": 456.77,
+          "y": 650.82,
+          "w": 54.73,
+          "h": 21.75
+        },
+        {
+          "r": 2,
+          "c": 0,
+          "x": 60,
+          "y": 629.07,
+          "w": 54.73,
+          "h": 21.75
+        },
+        {
+          "r": 2,
+          "c": 1,
+          "x": 114.73,
+          "y": 629.07,
+          "w": 342.05,
+          "h": 21.75
+        },
+        {
+          "r": 2,
+          "c": 2,
+          "x": 456.77,
+          "y": 629.07,
+          "w": 54.73,
+          "h": 21.75
+        },
+        {
+          "r": 3,
+          "c": 0,
+          "x": 60,
+          "y": 607.32,
+          "w": 54.73,
+          "h": 21.75
+        },
+        {
+          "r": 3,
+          "c": 1,
+          "x": 114.73,
+          "y": 607.32,
+          "w": 342.05,
+          "h": 21.75
+        },
+        {
+          "r": 3,
+          "c": 2,
+          "x": 456.77,
+          "y": 607.32,
+          "w": 54.73,
+          "h": 21.75
+        },
+        {
+          "r": 4,
+          "c": 0,
+          "x": 60,
+          "y": 585.57,
+          "w": 54.73,
+          "h": 21.75
+        },
+        {
+          "r": 4,
+          "c": 1,
+          "x": 114.73,
+          "y": 585.57,
+          "w": 342.05,
+          "h": 21.75
+        },
+        {
+          "r": 4,
+          "c": 2,
+          "x": 456.77,
+          "y": 585.57,
+          "w": 54.73,
+          "h": 21.75
+        },
+        {
+          "r": 5,
+          "c": 0,
+          "x": 60,
+          "y": 563.82,
+          "w": 54.73,
+          "h": 21.75
+        },
+        {
+          "r": 5,
+          "c": 1,
+          "x": 114.73,
+          "y": 563.82,
+          "w": 342.05,
+          "h": 21.75
+        },
+        {
+          "r": 5,
+          "c": 2,
+          "x": 456.77,
+          "y": 563.82,
+          "w": 54.73,
+          "h": 21.75
+        },
+        {
+          "r": 6,
+          "c": 0,
+          "x": 60,
+          "y": 542.07,
+          "w": 54.73,
+          "h": 21.75
+        },
+        {
+          "r": 6,
+          "c": 1,
+          "x": 114.73,
+          "y": 542.07,
+          "w": 342.05,
+          "h": 21.75
+        },
+        {
+          "r": 6,
+          "c": 2,
+          "x": 456.77,
+          "y": 542.07,
+          "w": 54.73,
+          "h": 21.75
+        },
+        {
+          "r": 7,
+          "c": 0,
+          "x": 60,
+          "y": 520.32,
+          "w": 54.73,
+          "h": 21.75
+        },
+        {
+          "r": 7,
+          "c": 1,
+          "x": 114.73,
+          "y": 520.32,
+          "w": 342.05,
+          "h": 21.75
+        },
+        {
+          "r": 7,
+          "c": 2,
+          "x": 456.77,
+          "y": 520.32,
+          "w": 54.73,
+          "h": 21.75
+        },
+        {
+          "r": 8,
+          "c": 0,
+          "x": 60,
+          "y": 498.57,
+          "w": 54.73,
+          "h": 21.75
+        },
+        {
+          "r": 8,
+          "c": 1,
+          "x": 114.73,
+          "y": 498.57,
+          "w": 342.05,
+          "h": 21.75
+        },
+        {
+          "r": 8,
+          "c": 2,
+          "x": 456.77,
+          "y": 498.57,
+          "w": 54.73,
+          "h": 21.75
+        }
+      ],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b61",
+      "kind": "kicker",
+      "part": 0,
+      "anchor": "how-we-move-forward",
+      "page": 12,
+      "x": 60,
+      "y": 756.41,
+      "w": 478.0,
+      "h": 26.0,
+      "y_top": 59.48,
+      "lines": [],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b62",
+      "kind": "page_title",
+      "part": 0,
+      "anchor": "",
+      "page": 12,
+      "x": 60,
+      "y": 719.42,
+      "w": 478.0,
+      "h": 29.9,
+      "y_top": 92.57,
+      "lines": [
+        {
+          "text": "Next steps",
+          "x": 60,
+          "baseline": 723.32
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b63",
+      "kind": "steps",
+      "part": 0,
+      "anchor": "",
+      "page": 12,
+      "x": 60,
+      "y": 561.91,
+      "w": 478.0,
+      "h": 144.0,
+      "y_top": 135.98,
+      "lines": [
+        {
+          "text": "01",
+          "x": 70.5,
+          "baseline": 678.81
+        },
+        {
+          "text": "Confirm the",
+          "x": 70.5,
+          "baseline": 659.95
+        },
+        {
+          "text": "server",
+          "x": 70.5,
+          "baseline": 647.3
+        },
+        {
+          "text": "The client confirms",
+          "x": 70.5,
+          "baseline": 632.66
+        },
+        {
+          "text": "the Linux server,",
+          "x": 70.5,
+          "baseline": 621.73
+        },
+        {
+          "text": "the graphics card,",
+          "x": 70.5,
+          "baseline": 610.81
+        },
+        {
+          "text": "and remote access.",
+          "x": 70.5,
+          "baseline": 599.88
+        },
+        {
+          "text": "02",
+          "x": 189.5,
+          "baseline": 678.81
+        },
+        {
+          "text": "Share",
+          "x": 189.5,
+          "baseline": 659.95
+        },
+        {
+          "text": "telephony and",
+          "x": 189.5,
+          "baseline": 647.3
+        },
+        {
+          "text": "network",
+          "x": 189.5,
+          "baseline": 634.65
+        },
+        {
+          "text": "The client sends",
+          "x": 189.5,
+          "baseline": 620.01
+        },
+        {
+          "text": "the SIP details,",
+          "x": 189.5,
+          "baseline": 609.08
+        },
+        {
+          "text": "PBX access, the",
+          "x": 189.5,
+          "baseline": 598.16
+        },
+        {
+          "text": "static address, and",
+          "x": 189.5,
+          "baseline": 587.23
+        },
+        {
+          "text": "the firewall path.",
+          "x": 189.5,
+          "baseline": 576.31
+        },
+        {
+          "text": "03",
+          "x": 308.5,
+          "baseline": 678.81
+        },
+        {
+          "text": "Configure the",
+          "x": 308.5,
+          "baseline": 659.95
+        },
+        {
+          "text": "agent",
+          "x": 308.5,
+          "baseline": 647.3
+        },
+        {
+          "text": "Spark Technologies",
+          "x": 308.5,
+          "baseline": 632.66
+        },
+        {
+          "text": "installs the system",
+          "x": 308.5,
+          "baseline": 621.73
+        },
+        {
+          "text": "and applies the call",
+          "x": 308.5,
+          "baseline": 610.81
+        },
+        {
+          "text": "flow, languages,",
+          "x": 308.5,
+          "baseline": 599.88
+        },
+        {
+          "text": "and transfer rules.",
+          "x": 308.5,
+          "baseline": 588.96
+        },
+        {
+          "text": "04",
+          "x": 427.5,
+          "baseline": 678.81
+        },
+        {
+          "text": "Test and go live",
+          "x": 427.5,
+          "baseline": 659.95
+        },
+        {
+          "text": "The checks in this",
+          "x": 427.5,
+          "baseline": 645.31
+        },
+        {
+          "text": "document are run",
+          "x": 427.5,
+          "baseline": 634.38
+        },
+        {
+          "text": "with the client, and",
+          "x": 427.5,
+          "baseline": 623.46
+        },
+        {
+          "text": "the agent takes",
+          "x": 427.5,
+          "baseline": 612.53
+        },
+        {
+          "text": "calls once those",
+          "x": 427.5,
+          "baseline": 601.61
+        },
+        {
+          "text": "checks pass.",
+          "x": 427.5,
+          "baseline": 590.68
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": [
+        {
+          "x": 60.0,
+          "y": 561.91,
+          "w": 106.0,
+          "h": 144.0
+        },
+        {
+          "x": 179.0,
+          "y": 561.91,
+          "w": 106.0,
+          "h": 144.0
+        },
+        {
+          "x": 298.0,
+          "y": 561.91,
+          "w": 106.0,
+          "h": 144.0
+        },
+        {
+          "x": 417.0,
+          "y": 561.91,
+          "w": 106.0,
+          "h": 144.0
+        }
+      ]
+    },
+    {
+      "id": "b64",
+      "kind": "contact",
+      "part": 0,
+      "anchor": "",
+      "page": 12,
+      "x": 60,
+      "y": 484.91,
+      "w": 478.0,
+      "h": 45,
+      "y_top": 311.98,
+      "lines": [],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b65",
+      "kind": "kicker",
+      "part": 0,
+      "anchor": "why-spark-technologies",
+      "page": 13,
+      "x": 60,
+      "y": 756.41,
+      "w": 478.0,
+      "h": 26.0,
+      "y_top": 59.48,
+      "lines": [],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b66",
+      "kind": "compact_title",
+      "part": 0,
+      "anchor": "",
+      "page": 13,
+      "x": 60,
+      "y": 726.68,
+      "w": 478.0,
+      "h": 16.1,
+      "y_top": 99.11,
+      "lines": [
+        {
+          "text": "Why Choose Us",
+          "x": 60,
+          "baseline": 728.78
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b67",
+      "kind": "cards",
+      "part": 0,
+      "anchor": "",
+      "page": 13,
+      "x": 60,
+      "y": 463.05,
+      "w": 478.0,
+      "h": 245.25,
+      "y_top": 133.58,
+      "lines": [
+        {
+          "text": "Domain-Led Delivery",
+          "x": 69.0,
+          "baseline": 690.68
+        },
+        {
+          "text": "Engineers who know the client's operating",
+          "x": 69.0,
+          "baseline": 675.65
+        },
+        {
+          "text": "context work with the AI team through design,",
+          "x": 69.0,
+          "baseline": 664.72
+        },
+        {
+          "text": "calibration, and handover.",
+          "x": 69.0,
+          "baseline": 653.8
+        },
+        {
+          "text": "End-to-End Delivery",
+          "x": 304.5,
+          "baseline": 690.68
+        },
+        {
+          "text": "We own the full delivery lifecycle from discovery",
+          "x": 304.5,
+          "baseline": 675.65
+        },
+        {
+          "text": "and build through to implementation, training,",
+          "x": 304.5,
+          "baseline": 664.72
+        },
+        {
+          "text": "and ongoing support \u2014 with no dependency on",
+          "x": 304.5,
+          "baseline": 653.8
+        },
+        {
+          "text": "third-party vendors.",
+          "x": 304.5,
+          "baseline": 642.87
+        },
+        {
+          "text": "AI Built for the Work",
+          "x": 69.0,
+          "baseline": 596.39
+        },
+        {
+          "text": "Purpose-built AI systems trained on the client's",
+          "x": 69.0,
+          "baseline": 581.36
+        },
+        {
+          "text": "own data. Not generic tools repurposed \u2014 every",
+          "x": 69.0,
+          "baseline": 570.44
+        },
+        {
+          "text": "model is designed for the domain.",
+          "x": 69.0,
+          "baseline": 559.51
+        },
+        {
+          "text": "Speed to Value",
+          "x": 304.5,
+          "baseline": 596.39
+        },
+        {
+          "text": "Structured delivery with clear milestones. The",
+          "x": 304.5,
+          "baseline": 581.36
+        },
+        {
+          "text": "client sees measurable results at every stage",
+          "x": 304.5,
+          "baseline": 570.44
+        },
+        {
+          "text": "before committing to the next.",
+          "x": 304.5,
+          "baseline": 559.51
+        },
+        {
+          "text": "Outcome Guarantee",
+          "x": 69.0,
+          "baseline": 513.03
+        },
+        {
+          "text": "We back our delivery with measurable KPIs. If",
+          "x": 69.0,
+          "baseline": 498.0
+        },
+        {
+          "text": "outcomes are not met, we keep working until",
+          "x": 69.0,
+          "baseline": 487.08
+        },
+        {
+          "text": "they are.",
+          "x": 69.0,
+          "baseline": 476.15
+        },
+        {
+          "text": "Data Security & Sovereignty",
+          "x": 304.5,
+          "baseline": 513.03
+        },
+        {
+          "text": "All data remains within the client's infrastructure.",
+          "x": 304.5,
+          "baseline": 498.0
+        },
+        {
+          "text": "Role-based access controls, encryption at rest",
+          "x": 304.5,
+          "baseline": 487.08
+        },
+        {
+          "text": "and in transit, and full audit trails as standard.",
+          "x": 304.5,
+          "baseline": 476.15
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": [
+        {
+          "x": 60.0,
+          "y": 629.77,
+          "w": 222,
+          "h": 78.53
+        },
+        {
+          "x": 295.5,
+          "y": 629.77,
+          "w": 222,
+          "h": 78.53
+        },
+        {
+          "x": 60.0,
+          "y": 546.41,
+          "w": 222,
+          "h": 67.61
+        },
+        {
+          "x": 295.5,
+          "y": 546.41,
+          "w": 222,
+          "h": 67.61
+        },
+        {
+          "x": 60.0,
+          "y": 463.05,
+          "w": 222,
+          "h": 67.61
+        },
+        {
+          "x": 295.5,
+          "y": 463.05,
+          "w": 222,
+          "h": 67.61
+        }
+      ]
+    },
+    {
+      "id": "b74",
+      "kind": "contact",
+      "part": 0,
+      "anchor": "",
+      "page": 13,
+      "x": 60,
+      "y": 386.9,
+      "w": 478.0,
+      "h": 45,
+      "y_top": 409.99,
+      "lines": [],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    }
+  ]
+}

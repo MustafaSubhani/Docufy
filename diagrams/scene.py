@@ -9,7 +9,7 @@ from PIL import ImageFont
 
 from . import style as S
 from .layout import elk_layout, simple_layout
-from .spec import Diagram, Node
+from .spec import Diagram, Node, elk_node, pin_graph
 
 DEFAULT_LEGEND = {
     "blue": "Input",
@@ -106,7 +106,12 @@ class Scene:
 
 def node_text(n: Node, ramp: str, max_text_w: float = S.NODE_MAX_TEXT_W) -> tuple[list[TextLine], float, float]:
     if n.shape == "label":
-        return [TextLine(n.title, S.HEADER_SIZE, S.HEADER_COLOR, n.bold)], text_w(n.title, S.HEADER_SIZE, n.bold), 20.0
+        lines = [TextLine(n.title, S.HEADER_SIZE, S.HEADER_COLOR, True)]
+        if n.subtitle:
+            lines += [TextLine(t, S.LABEL_SIZE, S.HEADER_COLOR) for t in wrap(n.subtitle, S.LABEL_SIZE, max_text_w)]
+        width = max(text_w(ln.text, ln.size, ln.bold) for ln in lines)
+        height = 4 + sum(18 if ln.size >= S.HEADER_SIZE else 15 for ln in lines)
+        return lines, width, height
     r = S.ramp(ramp)
     title_lines = wrap(n.title, S.TITLE_SIZE, max_text_w)
     lines = [TextLine(t, S.TITLE_SIZE, r[S.STOP["800"]], n.bold) for t in title_lines]
@@ -180,6 +185,86 @@ def snake_layout(d: Diagram, chain: list[str], measured) -> dict:
     return {"id": "root", "children": children, "edges": edges, "width": width, "height": height}
 
 
+def route_edges(d: Diagram, rects: dict[str, tuple[float, float, float, float]]) -> list[dict]:
+    """Straight, elbow, or bus arrows between placed nodes. A bus merges 3+ arrows into one."""
+    from collections import defaultdict
+
+    by_dst: dict[str, list] = defaultdict(list)
+    for i, e in enumerate(d.edges):
+        if e.src in rects and e.dst in rects:
+            by_dst[e.dst].append((i, e))
+    bus_ids: set[int] = set()
+    edges: list[dict] = []
+    for dst, items in by_dst.items():
+        node = d.node(dst)
+        above = []
+        for i, e in items:
+            ax, ay, aw, ah = rects[e.src]
+            bx, by, bw, bh = rects[dst]
+            if ay + ah <= by + 1:
+                above.append((i, e, ax + aw / 2, ay + ah))
+        if node and any(e.route == "bus" for _, e in items) and len(above) >= 2:
+            bus_ids.update(i for i, _, _, _ in above)
+            rail = (max(src_bottom for _, _, _, src_bottom in above) + rects[dst][1]) / 2
+            xs = [x for _, _, x, _ in above]
+            ramp = node.category or "gray"
+            for k, (_, _, x, src_bottom) in enumerate(above):
+                edges.append(_synthetic(f"busfeed:{dst}:{k}", ramp, False, [(x, src_bottom), (x, rail)]))
+            edges.append(_synthetic(f"busrail:{dst}", ramp, False, [(min(xs), rail), (max(xs), rail)]))
+            drop = rects[dst][0] + rects[dst][2] / 2
+            edges.append(_synthetic(f"busdrop:{dst}", ramp, True, [(drop, rail), (drop, rects[dst][1])]))
+    for i, e in enumerate(d.edges):
+        if i in bus_ids or e.src not in rects or e.dst not in rects:
+            continue
+        ax, ay, aw, ah = rects[e.src]
+        bx, by, bw, bh = rects[e.dst]
+        acx, acy, bcx, bcy = ax + aw / 2, ay + ah / 2, bx + bw / 2, by + bh / 2
+        dx, dy = bcx - acx, bcy - acy
+        src_n, dst_n = d.node(e.src), d.node(e.dst)
+        if src_n and src_n.shape == "band" and by >= ay + ah - 1:
+            x = min(max(bcx, ax + 16), ax + aw - 16)
+            pts = [(x, ay + ah), (x, by)]
+        elif dst_n and dst_n.shape == "band" and ay + ah <= by + 1:
+            x = min(max(acx, bx + 16), bx + bw - 16)
+            pts = [(x, ay + ah), (x, by)]
+        elif e.route == "elbow":
+            if abs(dy) >= abs(dx) or abs(dx) < 1:
+                s = (acx, ay + ah if dy > 0 else ay)
+                t = (bcx, by if dy > 0 else by + bh)
+                mid = (s[1] + t[1]) / 2
+                pts = [s, (s[0], mid), (t[0], mid), t]
+            else:
+                s = (ax + aw if dx > 0 else ax, acy)
+                t = (bx if dx > 0 else bx + bw, bcy)
+                mid = (s[0] + t[0]) / 2
+                pts = [s, (mid, s[1]), (mid, t[1]), t]
+        elif abs(dy) < min(ah, bh) / 2:
+            pts = [(ax + aw if dx > 0 else ax, acy), (bx if dx > 0 else bx + bw, acy)]
+        elif abs(dx) < min(aw, bw) / 2:
+            x = (max(ax, bx) + min(ax + aw, bx + bw)) / 2
+            pts = [(x, ay + ah if dy > 0 else ay), (x, by if dy > 0 else by + bh)]
+        elif abs(dx) >= abs(dy):
+            ty_ = bcy + max(min((acy - bcy) * 0.35, bh * 0.3), -bh * 0.3)
+            sy = acy + max(min((bcy - acy) * 0.35, ah * 0.3), -ah * 0.3)
+            pts = [(ax + aw if dx > 0 else ax, sy), (bx if dx > 0 else bx + bw, ty_)]
+        else:
+            tx_ = bcx + max(min((acx - bcx) * 0.35, bw * 0.3), -bw * 0.3)
+            sx = acx + max(min((bcx - acx) * 0.35, aw * 0.3), -aw * 0.3)
+            pts = [(sx, ay + ah if dy > 0 else ay), (tx_, by if dy > 0 else by + bh)]
+        sections = {"startPoint": {"x": pts[0][0], "y": pts[0][1]}, "endPoint": {"x": pts[-1][0], "y": pts[-1][1]}, "bendPoints": [{"x": x, "y": y} for x, y in pts[1:-1]]}
+        edge = {"id": f"e{i}", "sections": [sections]}
+        if e.label:
+            mx, my = (pts[len(pts) // 2 - 1][0] + pts[len(pts) // 2][0]) / 2, (pts[len(pts) // 2 - 1][1] + pts[len(pts) // 2][1]) / 2
+            lw = text_w(e.label, S.LABEL_SIZE) + 6
+            edge["labels"] = [{"text": e.label, "x": mx - lw / 2, "y": my - 8, "width": lw, "height": 16}]
+        edges.append(edge)
+    return edges
+
+
+def _synthetic(edge_id: str, ramp: str, arrow: bool, pts: list[tuple[float, float]]) -> dict:
+    return {"id": edge_id, "synthetic": {"ramp": ramp, "arrow": arrow, "points": [{"x": x, "y": y} for x, y in pts]}}
+
+
 def grid_layout(d: Diagram, measured) -> dict:
     """Place nodes on a row/column grid (Claude's hand-layout style) and route straight arrows."""
     nodes = [n for n in d.nodes if n.row is not None and n.col is not None]
@@ -222,7 +307,9 @@ def grid_layout(d: Diagram, measured) -> dict:
         col_x.append(col_x[-1] + col_w[c - 1] + gap_x)
     row_y = [0.0]
     for r in range(1, nrows):
-        row_y.append(row_y[-1] + row_h[r - 1] + (6 if (r - 1) in label_rows else gap_y))
+        band_row = any(n.row == r and n.shape == "band" for n in nodes)
+        gap = (6 if (r - 1) in label_rows else gap_y) + (S.BAND_GAP if band_row else 0)
+        row_y.append(row_y[-1] + row_h[r - 1] + gap)
 
     rects: dict[str, tuple[float, float, float, float]] = {}
     children = []
@@ -241,48 +328,108 @@ def grid_layout(d: Diagram, measured) -> dict:
         rects[n.id] = (x, y, w, h)
         children.append({"id": n.id, "x": x, "y": y, "width": w, "height": h})
 
-    edges = []
-    for i, e in enumerate(d.edges):
-        if e.src not in rects or e.dst not in rects:
-            continue
-        ax, ay, aw, ah = rects[e.src]
-        bx, by, bw, bh = rects[e.dst]
-        acx, acy, bcx, bcy = ax + aw / 2, ay + ah / 2, bx + bw / 2, by + bh / 2
-        dx, dy = bcx - acx, bcy - acy
-        pts: list[tuple[float, float]]
-        if e.route == "elbow":
-            if abs(dy) >= abs(dx) or abs(dx) < 1:
-                s = (acx, ay + ah if dy > 0 else ay)
-                t = (bcx, by if dy > 0 else by + bh)
-                mid = (s[1] + t[1]) / 2
-                pts = [s, (s[0], mid), (t[0], mid), t]
-            else:
-                s = (ax + aw if dx > 0 else ax, acy)
-                t = (bx if dx > 0 else bx + bw, bcy)
-                mid = (s[0] + t[0]) / 2
-                pts = [s, (mid, s[1]), (mid, t[1]), t]
-        elif abs(dy) < min(ah, bh) / 2:  # same row
-            pts = [(ax + aw if dx > 0 else ax, acy), (bx if dx > 0 else bx + bw, acy)]
-        elif abs(dx) < min(aw, bw) / 2:  # same column
-            x = (max(ax, bx) + min(ax + aw, bx + bw)) / 2
-            pts = [(x, ay + ah if dy > 0 else ay), (x, by if dy > 0 else by + bh)]
-        elif abs(dx) >= abs(dy):  # mostly sideways: fan in/out between facing sides
-            ty_ = bcy + max(min((acy - bcy) * 0.35, bh * 0.3), -bh * 0.3)
-            sy = acy + max(min((bcy - acy) * 0.35, ah * 0.3), -ah * 0.3)
-            pts = [(ax + aw if dx > 0 else ax, sy), (bx if dx > 0 else bx + bw, ty_)]
-        else:  # mostly vertical
-            tx_ = bcx + max(min((acx - bcx) * 0.35, bw * 0.3), -bw * 0.3)
-            sx = acx + max(min((bcx - acx) * 0.35, aw * 0.3), -aw * 0.3)
-            pts = [(sx, ay + ah if dy > 0 else ay), (tx_, by if dy > 0 else by + bh)]
-        sections = {"startPoint": {"x": pts[0][0], "y": pts[0][1]}, "endPoint": {"x": pts[-1][0], "y": pts[-1][1]}, "bendPoints": [{"x": x, "y": y} for x, y in pts[1:-1]]}
-        edge = {"id": f"e{i}", "sections": [sections]}
-        if e.label:
-            mx, my = (pts[len(pts) // 2 - 1][0] + pts[len(pts) // 2][0]) / 2, (pts[len(pts) // 2 - 1][1] + pts[len(pts) // 2][1]) / 2
-            lw = text_w(e.label, S.LABEL_SIZE) + 6
-            edge["labels"] = [{"text": e.label, "x": mx - lw / 2, "y": my - 8, "width": lw, "height": 16}]
-        edges.append(edge)
+    edges = route_edges(d, rects)
     width = max(c["x"] + c["width"] for c in children)
     height = max(c["y"] + c["height"] for c in children)
+    return {"id": "root", "children": children, "edges": edges, "width": width, "height": height}
+
+
+def rows_layout(d: Diagram, measured) -> dict:
+    """Equal cards per row, centered. A band spans the full width. Lane labels sit above a row."""
+    rows: dict[int, list[Node]] = {}
+    for n in d.nodes:
+        rows.setdefault(n.row if n.row is not None else 0, []).append(n)
+    order = sorted(rows)
+    gap_x, gap_y = S.GRID_COL_GAP, S.GRID_ROW_GAP
+    avail = S.CANVAS_W - 2 * S.GRID_MARGIN
+
+    def cards(ns: list[Node]) -> list[Node]:
+        return [n for n in ns if n.shape not in {"label", "band"}]
+
+    max_cards = max((len(cards(rows[r])) for r in order), default=1)
+    title_w = max(
+        (text_w(n.title, S.TITLE_SIZE, True) + 2 * S.NODE_PAD_X for n in d.nodes if n.shape not in {"label", "band"}),
+        default=S.NODE_MIN_W,
+    )
+    col_w = max((avail - gap_x * (max_cards - 1)) / max(max_cards, 1), title_w)
+    avail = max(avail, max_cards * col_w + gap_x * (max_cards - 1))
+    for n in d.nodes:
+        ramp = measured[n.id][3]
+        if n.shape == "label":
+            continue
+        limit = (avail if n.shape == "band" else col_w) - 2 * S.NODE_PAD_X
+        lines, w, h = node_text(n, ramp, limit)
+        measured[n.id] = (lines, avail if n.shape == "band" else col_w, h, ramp)
+
+    rects: dict[str, tuple[float, float, float, float]] = {}
+    children = []
+    y = 0.0
+    for r in order:
+        ns = rows[r]
+        if ns and all(n.shape == "label" for n in ns):
+            h = max(measured[n.id][2] for n in ns)
+            if len(ns) == 1:
+                n = ns[0]
+                w = measured[n.id][1]
+                rects[n.id] = ((avail - w) / 2, y, w, h)
+            else:
+                slot = (avail - gap_x * (len(ns) - 1)) / len(ns)
+                for i, n in enumerate(ns):
+                    w = min(measured[n.id][1], slot)
+                    rects[n.id] = (i * (slot + gap_x) + (slot - w) / 2, y, w, h)
+            y += h + 8
+        elif len(ns) == 1 and ns[0].shape == "band":
+            n = ns[0]
+            h = measured[n.id][2]
+            y += S.BAND_GAP / 2
+            rects[n.id] = (0.0, y, avail, h)
+            y += h + gap_y
+        else:
+            h = max(measured[n.id][2] for n in ns)
+            count = len(ns)
+            row_w = count * col_w + (count - 1) * gap_x
+            x0 = (avail - row_w) / 2
+            for i, n in enumerate(ns):
+                measured[n.id] = (measured[n.id][0], col_w, h, measured[n.id][3])
+                rects[n.id] = (x0 + i * (col_w + gap_x), y, col_w, h)
+            y += h + gap_y
+        for n in ns:
+            x, yy, w, h = rects[n.id]
+            children.append({"id": n.id, "x": x, "y": yy, "width": w, "height": h})
+    return {"id": "root", "children": children, "edges": route_edges(d, rects), "width": avail, "height": max(y, 1)}
+
+
+def timeline_layout(d: Diagram, measured) -> dict:
+    """Phases left to right, with a spine underneath."""
+    nodes = list(d.nodes)
+    if not nodes:
+        return {"id": "root", "children": [], "edges": [], "width": 1, "height": 1}
+    count = len(nodes)
+    gap = 28.0
+    avail = S.CANVAS_W - 2 * S.GRID_MARGIN
+    card_w = min(160.0, (avail - gap * (count - 1)) / count)
+    for n in nodes:
+        lines, _w, h = node_text(n, measured[n.id][3], card_w - 2 * S.NODE_PAD_X)
+        measured[n.id] = (lines, card_w, h, measured[n.id][3])
+    card_h = max(measured[n.id][2] for n in nodes)
+    for n in nodes:
+        measured[n.id] = (measured[n.id][0], card_w, card_h, measured[n.id][3])
+    children = []
+    for i, n in enumerate(nodes):
+        children.append({"id": n.id, "x": i * (card_w + gap), "y": 0.0, "width": card_w, "height": card_h})
+    edges: list[dict] = []
+    if count >= 2:
+        spine_y = card_h + 18
+        x0 = card_w / 2
+        x1 = (count - 1) * (card_w + gap) + card_w / 2
+        edges.append(_synthetic("spine", "gray", False, [(x0, spine_y), (x1, spine_y)]))
+        for i, n in enumerate(nodes):
+            cx = i * (card_w + gap) + card_w / 2
+            edges.append(_synthetic(f"tick{i}", measured[n.id][3], False, [(cx, card_h), (cx, spine_y)]))
+        height = spine_y + 10
+    else:
+        height = card_h
+    width = (count - 1) * (card_w + gap) + card_w
     return {"id": "root", "children": children, "edges": edges, "width": width, "height": height}
 
 
@@ -294,6 +441,10 @@ def build_scene(d: Diagram) -> Scene:
         measured[n.id] = (lines, w, h, ramp)
     if d.layout == "grid":
         return finish_scene(d, grid_layout(d, measured), measured, groups_ok=False)
+    if d.layout == "rows":
+        return finish_scene(d, rows_layout(d, measured), measured, groups_ok=False)
+    if d.layout == "timeline":
+        return finish_scene(d, timeline_layout(d, measured), measured, groups_ok=False)
 
     # tidy sizes: equal widths when they are close, equal heights for LR pipelines
     widths = sorted(m[1] for m in measured.values())
@@ -309,7 +460,7 @@ def build_scene(d: Diagram) -> Scene:
     for n in d.nodes:
         lines, w, h, ramp = measured[n.id]
         parent = n.group if n.group in group_ids else None
-        children.setdefault(parent, []).append({"id": n.id, "width": w, "height": h})
+        children.setdefault(parent, []).append(elk_node(n.id, w, h, n.pin_x, n.pin_y))
     root_children = list(children.get(None, []))
     for g in d.groups:
         if children.get(g.id):
@@ -350,12 +501,23 @@ def build_scene(d: Diagram) -> Scene:
         "children": root_children,
         "edges": edges,
     }
+    pin_graph(graph, d.nodes)
     chain = linear_chain(d)
     laid = snake_layout(d, chain, measured) if chain and not d.groups else elk_layout(graph)
     if laid is None:
         flat = [c for group in children.values() for c in group]
         laid = simple_layout(flat, edges, d.direction, S.NODE_GAP, S.LAYER_GAP)
-    return finish_scene(d, laid, measured, groups_ok=True)
+    scene = finish_scene(d, laid, measured, groups_ok=True)
+    if d.direction == "TB" and d.layout == "auto" and not getattr(d, "_height_retried", False) and scene.height > S.MAX_SCENE_H:
+        import copy
+
+        alt = copy.deepcopy(d)
+        alt.direction = "LR"
+        alt._height_retried = True
+        other = build_scene(alt)
+        if other.height < scene.height * 0.9:
+            return other
+    return scene
 
 
 def finish_scene(d: Diagram, laid: dict, measured, groups_ok: bool) -> Scene:
@@ -413,6 +575,13 @@ def finish_scene(d: Diagram, laid: dict, measured, groups_ok: bool) -> Scene:
     ramp_of = {sn.id: sn.ramp for sn in scene.nodes}
     spec_edges = {f"e{i}": e for i, e in enumerate(d.edges)}
     for le in all_edges:
+        syn = le.get("synthetic")
+        if syn:
+            pts = [(tx(p["x"]), ty(p["y"])) for p in syn.get("points") or []]
+            if len(pts) >= 2:
+                ramp = S.resolve_ramp(syn.get("ramp"))
+                scene.edges.append(SEdge(pts, S.ramp(ramp)[S.STOP["600"]], False, "", None, arrow=bool(syn.get("arrow", True))))
+            continue
         e = spec_edges.get(le["id"])
         if e is None:
             continue

@@ -20,17 +20,31 @@ from .spec import Diagram
 
 FONT = "SparkDiagram"
 FONT_B = "SparkDiagram-Bold"
-_registered = False
 PNG_CACHE = S.ROOT / "assets" / "diagrams" / "claude"
 
 
+_registered_path: str | None = None
+
+
 def register() -> None:
-    global _registered
-    if _registered:
+    global _registered_path
+    path = str(S.FONT_REGULAR)
+    if _registered_path == path:
         return
-    pdfmetrics.registerFont(TTFont(FONT, str(S.FONT_REGULAR)))
+    pdfmetrics.registerFont(TTFont(FONT, path))
     pdfmetrics.registerFont(TTFont(FONT_B, str(S.FONT_BOLD)))
-    _registered = True
+    _registered_path = path
+
+
+def _draw_label(c, node, s, X, Y) -> None:
+    heights = [18 if ln.size >= S.HEADER_SIZE else 15 for ln in node.lines]
+    top = node.y + (node.h - sum(heights)) / 2
+    for ln, lh in zip(node.lines, heights):
+        base = top + (lh + ln.size * 0.72) / 2
+        c.setFillColor(HexColor(ln.color))
+        c.setFont(FONT_B if ln.bold else FONT, ln.size * s)
+        c.drawCentredString(X(node.x + node.w / 2), Y(base), ln.text)
+        top += lh
 
 
 def draw_scene(c, scene: Scene, s: float, height_pt: float) -> None:
@@ -101,10 +115,7 @@ def draw_scene(c, scene: Scene, s: float, height_pt: float) -> None:
     # nodes
     for n in scene.nodes:
         if n.shape == "label":
-            ln = n.lines[0]
-            c.setFillColor(HexColor(ln.color))
-            c.setFont(FONT_B if ln.bold else FONT, ln.size * s)
-            c.drawCentredString(X(n.x + n.w / 2), Y(n.y + n.h / 2 + ln.size * 0.36), ln.text)
+            _draw_label(c, n, s, X, Y)
             continue
         r = S.ramp(n.ramp)
         c.setFillColor(HexColor(r[S.STOP["50"]]))
@@ -120,7 +131,7 @@ def draw_scene(c, scene: Scene, s: float, height_pt: float) -> None:
             p.close()
             c.drawPath(p, stroke=1, fill=1)
         else:
-            radius = n.h / 2 if n.shape == "pill" else S.RADIUS
+            radius = n.h / 2 if n.shape == "pill" else (10 if n.shape == "band" else S.RADIUS)
             c.roundRect(X(n.x), Y(n.y + n.h), n.w * s, n.h * s, radius * s, stroke=1, fill=1)
         heights = [18 if ln.size == S.TITLE_SIZE else 16 for ln in n.lines]
         top = n.y + (n.h - sum(heights)) / 2
@@ -169,7 +180,7 @@ class DiagramFlowable(Flowable):
         self.canv.restoreState()
 
 
-_ENGINE_FILES = ("style.py", "scene.py", "render.py", "layout.py", "sequence.py")
+_ENGINE_FILES = ("style.py", "scene.py", "render.py", "layout.py", "sequence.py", "qa.py")
 
 
 def scene_from_spec(spec: dict) -> Scene:
@@ -178,7 +189,11 @@ def scene_from_spec(spec: dict) -> Scene:
         from .sequence import build_scene as build_sequence
 
         return build_sequence(spec)
-    return build_scene(Diagram.from_dict(spec))
+    token = S.push_font(spec.get("font") or "")
+    try:
+        return build_scene(Diagram.from_dict(spec))
+    finally:
+        S.pop_font(token)
 
 
 def render_png_spec(spec: dict, zoom: float = 3.0) -> Path:
@@ -189,12 +204,16 @@ def render_png_spec(spec: dict, zoom: float = 3.0) -> Path:
     out = PNG_CACHE / f"{key}_{int(zoom * 100)}.png"
     if out.is_file():
         return out
-    scene = scene_from_spec(spec)
-    buf = io.BytesIO()
-    cv = Canvas(buf, pagesize=(scene.width, scene.height))
-    draw_scene(cv, scene, 1.0, scene.height)
-    cv.showPage()
-    cv.save()
+    token = S.push_font(spec.get("font") or "")
+    try:
+        scene = scene_from_spec(spec)
+        buf = io.BytesIO()
+        cv = Canvas(buf, pagesize=(scene.width, scene.height))
+        draw_scene(cv, scene, 1.0, scene.height)
+        cv.showPage()
+        cv.save()
+    finally:
+        S.pop_font(token)
     doc = pymupdf.open(stream=buf.getvalue(), filetype="pdf")
     pix = doc[0].get_pixmap(matrix=pymupdf.Matrix(zoom, zoom), alpha=False)
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -216,7 +235,11 @@ def render_png(d: Diagram, zoom: float = 3.0) -> Path:
 
 
 def render_svg(d: Diagram) -> str:
-    scene = build_scene(d)
+    token = S.push_font(d.font)
+    try:
+        scene = build_scene(d)
+    finally:
+        S.pop_font(token)
     parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {scene.width:.0f} {scene.height:.0f}" width="100%" font-family="DejaVu Sans, sans-serif">']
     for g in scene.groups:
         parts.append(f'<rect x="{g.x:.1f}" y="{g.y:.1f}" width="{g.w:.1f}" height="{g.h:.1f}" rx="12" fill="{S.ramp(g.ramp)[0] if g.ramp else "none"}" stroke="{S.ramp(g.ramp or "gray")[2]}" stroke-dasharray="4 3" stroke-width="0.75"/>')
@@ -225,7 +248,8 @@ def render_svg(d: Diagram) -> str:
     for e in scene.edges:
         pts = " ".join(f"{x:.1f},{y:.1f}" for x, y in e.points)
         dash = ' stroke-dasharray="5 4"' if e.dashed else ""
-        parts.append(f'<polyline points="{pts}" fill="none" stroke="{e.color}" stroke-width="{S.EDGE_W}" stroke-linejoin="round" stroke-linecap="round"{dash} marker-end="url(#a{e.color[1:]})"/>')
+        marker = "" if not e.arrow else f' marker-end="url(#a{e.color[1:]})"'
+        parts.append(f'<polyline points="{pts}" fill="none" stroke="{e.color}" stroke-width="{S.EDGE_W}" stroke-linejoin="round" stroke-linecap="round"{dash}{marker}/>')
     colors = {e.color for e in scene.edges}
     defs = "".join(
         f'<marker id="a{c[1:]}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M1 1L9 5L1 9" fill="none" stroke="{c}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker>'
@@ -234,11 +258,16 @@ def render_svg(d: Diagram) -> str:
     parts.insert(1, f"<defs>{defs}</defs>")
     for n in scene.nodes:
         if n.shape == "label":
-            ln = n.lines[0]
-            parts.append(f'<text x="{n.x + n.w / 2:.1f}" y="{n.y + n.h / 2 + ln.size * 0.36:.1f}" font-size="{ln.size}" fill="{ln.color}" text-anchor="middle">{escape(ln.text)}</text>')
+            heights = [18 if ln.size >= S.HEADER_SIZE else 15 for ln in n.lines]
+            top = n.y + (n.h - sum(heights)) / 2
+            for ln, lh in zip(n.lines, heights):
+                base = top + (lh + ln.size * 0.72) / 2
+                weight = ' font-weight="600"' if ln.bold else ""
+                parts.append(f'<text x="{n.x + n.w / 2:.1f}" y="{base:.1f}" font-size="{ln.size}" fill="{ln.color}" text-anchor="middle"{weight}>{escape(ln.text)}</text>')
+                top += lh
             continue
         r = S.ramp(n.ramp)
-        rx = n.h / 2 if n.shape == "pill" else S.RADIUS
+        rx = n.h / 2 if n.shape == "pill" else (10 if n.shape == "band" else S.RADIUS)
         parts.append(f'<rect x="{n.x:.1f}" y="{n.y:.1f}" width="{n.w:.1f}" height="{n.h:.1f}" rx="{rx}" fill="{r[0]}" stroke="{r[3]}" stroke-width="0.75"/>')
         heights = [18 if ln.size == S.TITLE_SIZE else 16 for ln in n.lines]
         top = n.y + (n.h - sum(heights)) / 2

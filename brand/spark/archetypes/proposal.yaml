@@ -1,0 +1,19 @@
+id: proposal
+doc_type: PROPOSAL
+spark_content: true
+industry: construction
+move_forward: true
+description: Client proposal. Company intro first, Why Choose Us last, contact banner on.
+slots:
+  - {id: cover, required: true, component: cover}
+  - {id: executive_summary, kicker: Executive Summary, title: Proposal Overview, required: true, components: [columns, callout]}
+  - {id: about, kicker: About Spark Technologies, required: true, spark_content: true, boilerplate: company_intro}
+  - {id: solution, kicker: Solution Overview, title: Our Assessment, required: true, components: [heading, table]}
+  - {id: scope, kicker: Scope of Work, required: true, components: [label, list, diagram, table]}
+  - {id: responsibilities, kicker: Client Responsibilities, required: true, components: [list]}
+  - {id: timeline, kicker: Implementation Timeline & KPIs, required: true, components: [roadmap, kpis]}
+  - {id: commercial, kicker: Commercial Proposal, required: true, components: [commercial]}
+  - {id: conclusion, kicker: Conclusion, title: The Path Forward, required: true, boilerplate: path_forward}
+  - {id: next_steps, kicker: Next Steps & Sign-off, title: How We Move Forward, required: true, boilerplate: move_forward, components: [steps, contact]}
+  - {id: addendum, kicker: Addendum, required: false, component: addendum}
+  - {id: why_choose, kicker: Why Spark Technologies, title: Why Choose Us, required: true, spark_content: true, boilerplate: why_choose_us}

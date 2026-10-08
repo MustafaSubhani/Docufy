@@ -9,55 +9,65 @@ todos:
     content: "DONE: measure tool, themes/spark/tokens.yaml from ADICC, importer (PDF -> Spark md), conformance checker (line match, baselines, SSIM, side-by-side), golden test: 98.5% of 1,119 reference lines break identically, 34/34 pages"
     status: completed
   - id: renderer-fixes
-    content: "DONE: token-driven renderer with baseline spacing model, measured break widths, steps/roadmap/commercial/KPIs/addendum cover/tight/large/ruled titles, keep-together, figure whitespace trim. Remaining: layout map, glyph fallback, link checks"
-    status: in_progress
+    content: "DONE: token-driven renderer, layout map (block, line, cell, card, diagram node boxes plus PDF outline), glyph fallbacks, link checks (anchors, autolinks, reference links, footnotes)"
+    status: completed
   - id: diagram-engine
-    content: "MVP DONE: spec, mermaid flowchart import, persistent ELK worker, DejaVu Sans (the font in Claude exports), Claude ramps, vector PDF + PNG + SVG, snake layout for long chains, LR->TB fallback. Remaining: pixel calibration vs ADICC crops, sequence/timeline renderers, band nodes and lane labels, geometry QA, image-to-diagram"
+    content: "DONE: flowcharts, sequence, timeline, grid and row layouts, band nodes, lane labels, bus merge, geometry QA, height relayout, calibration sheets for ADICC pages 6, 8, 14, 24, 27. Remaining: image-to-diagram once a vision model is installed"
     status: in_progress
   - id: ir-formats
-    content: Document IR (Pydantic) with stable block ids, Spark-markdown <-> IR round trip, DOCX rebuilt on a styled reference template, MD/GFM export
-    status: pending
+    content: "DONE: Pydantic Doc/Section/Block, stable b1.. ids, Spark markdown round trip, GFM with diagram image links, DOCX named styles (Spark Kicker, Spark Title, Body Justified 11.5pt), tblHeader, cantSplit, bookmarks and hyperlinks. DOCX is component-accurate, not pixel-identical. PDF renderer unchanged."
+    status: completed
   - id: spark-content-toggle
-    content: "Include Spark content switch. DONE (CLI/frontmatter): intro after 01, outro + banner at the end, {{client}} placeholders, dedupe, renumbering, --spark-content/--no-spark-content, tests. Remaining: archetype defaults, sub-toggles UI"
+    content: "Include Spark content switch. DONE: intro after 01, outro + banner, {{client}}, dedupe, renumbering, CLI flags, archetype defaults (proposal on, internal off, explicit frontmatter wins). Remaining: sub-toggles UI"
     status: in_progress
   - id: brand-pack
-    content: "Brand pack: facts.yaml, boilerplate (Who We Are, Solution Areas, Why Choose Us variants, Path Forward + Move Forward patterns), archetypes (proposal, technical_document, internal_report, client_guide, questionnaire, addendum), voice + lexicon, exemplar crops"
-    status: pending
+    content: "DONE: facts.yaml drives contact and confidentiality, boilerplate (intro, Why Choose Us by industry, Path Forward, How We Move Forward), archetype slots with spark-content defaults, UK lexicon, exemplar crops in themes/spark/exemplars."
+    status: completed
   - id: agent-core
-    content: "Agent core: ModelRouter over LiteLLM with roles/fallbacks/budgets, tool registry (calc, now, brand, render, inspect, diagram), LangGraph graph with checkpoints and interrupts, Smart Convert milestone on existing input files"
-    status: pending
+    content: "DONE: tool registry (calc, now, brand, render, inspect, diagram), run governor (dev 1 worker, cloud 4), per-run budget and cloud fallback, Smart Convert split into build_plan/execute_plan, SQLite checkpoint graph with approve interrupt and resume. LangGraph the package waits until the web/API phase."
+    status: completed
   - id: verify-loop
-    content: "Verification loop: hard deterministic checks, vision critic with bbox-required issues, fixer ladder (auto-fix, block patch, section regen, escalate), best-version tracking, stop rules"
-    status: pending
+    content: "DONE: hard checks (content, numbers, lexicon, numbering, contact, page budget, overflow, leaks, blank pages), critic issues dropped without a page and bbox, fixer ladder (auto, patch, regen, escalate), best-version tracking, stop on clean, plateau, cap, reintroduced issue, or budget. Visual exemplar comparison stays in visual-verify-fix."
+    status: completed
   - id: scoped-edits
-    content: "Review mode scoped edits: fine-grained layout map (lines, cells, cards, diagram nodes), selection-to-IR mapping, EditRequest contract, scope guard hash check, consistency ripple suggestions, diagram tweak (stable ELK layout) vs remake, before/after diff with variants, patch-log versions and undo, locks and manual edits, create_doc.py edit CLI"
+    content: "DONE: EditRequest contract, selection from a phrase, quote, region, list item, or table cell, scope-guard hashes, ripple suggestions, diagram tweak (pinned ELK positions) vs remake, variants, append-only undo/redo, locks and hand edits, create_doc.py edit. Style screenshots stay in style-edits. The preview UI stays in the web app."
+    status: completed
   - id: visual-verify-fix
-    content: "Section-by-section visual comparison against theme exemplars (measurement + SSIM + vision judge), direct scoped fixes in the verify loop (declarative first, then layout, re-slot, sandboxed custom component, escalate), sandbox policy, seeded-defect test suite"
+    content: "DONE: component comparison (token measurement, small-image SSIM, vision issues kept only with a page and bbox), mismatch when measurement fails or two signals agree, scoped repair ladder (declarative, layout, re-slot, sandbox, escalate), sandbox import and path limits, seeded-defect tests. Run with py -m spark_agent visual."
+    status: completed
   - id: style-edits
-    content: "Styling edits with screenshots: attachments on EditRequest, vision StyleIntent extraction, k-means color sampling snapped to theme, template-matching to locate preview screenshots, variant/override/new-variant/custom mapping, apply-to scope, brand guard, vision similarity check"
+    content: "DONE: screenshot style edits in spark_agent/style.py. Attachments on EditRequest, vision StyleIntent, k-means colors snapped to the theme, preview template match, variant then override then declarative then sandbox, apply-to scope, brand guard, vision check. py create_doc.py edit --image."
+    status: completed
   - id: learning-memory
-    content: "Learning memory: preferences, lessons (mistake to fix) captured from verifier and user corrections, client facts, retrieval checklist before plan/draft/verify/edit, governance (trusted signals only, candidate to active, decay, scopes), Memory panel; later skill distillation and promotion to lint rules"
+    content: "DONE: personal memory in spark_agent/memory.py. Preferences, verified lessons, and client facts in SQLite. Hand edits stay candidates until confirmed. Checklist injected before plan, edit, and verify. Narrower scope wins. Unused lessons expire. Repeated misses retire a lesson. Three hits promote a skill file and a replace rule. py -m spark_agent memory. The Memory panel UI waits for the web app."
+    status: completed
   - id: research-mode
-    content: "Research mode: ingestion for PDF/DOCX/PPTX/CSV/XLSX/images/audio/video/URLs, hybrid index with anchors, source cards, research brief + plan approval"
+    content: "DONE: local ingestion and a research brief in spark_agent/ingest.py and research.py. PDF, DOCX, PPTX, CSV, XLSX, text, HTML, and images, with anchors, table profiles, BM25 chunks, source cards, and an approval brief. Macros, zip bombs, oversized files, and hidden PDF text are refused or flagged. Audio and video keep file facts until a transcriber is added. py -m spark_agent research. Deep web research is the next phase."
+    status: completed
   - id: deep-research
-    content: "Deep web research engine: Quick/Standard/Deep modes with budgets, editable research tree, query generation (operators, Arabic, disconfirming, date-aware, confidential sanitizer), connector plugins with Google results first (Serper or SerpAPI, Gemini Google Search grounding), Brave and Exa as second index, specialised sources (UAE statistics and open data, DFM/ADX and EDGAR filings, gov allowlists, Scholar/Semantic Scholar/OpenAlex/arXiv/Unpaywall, Google News/GDELT, Google Patents, Wikidata as leads), per-question source routing, SearXNG/ddgs in dev, provider-native agents as leads with RRF fusion + MinHash dedupe + cross-encoder rerank, full-content fetch (trafilatura, Crawl4AI/Playwright, PDF, Wayback), claim extraction, citation snowballing to primary sources, source tiers, claim board triangulation, gap loop, cited synthesis, quote-match + entailment citation check, research UI, evals vs ChatGPT/Claude deep research"
-    status: pending
+    content: "DONE: web research in spark_agent/deep.py. Quick, Standard, and Deep budgets, an editable question tree, sanitized queries (operators, Arabic, disconfirming, date), connector plugins, RRF, near-duplicate removal, full-page fetch, primary-source follow, tiers, claim board, gap stop, and quote checks. py -m spark_agent deep. Dev search is DuckDuckGo and OpenAlex. Serper, Brave, and Exa run when their keys are set. The live research panel waits for the web app."
+    status: completed
   - id: webapp
-    content: "Web app: FastAPI (projects, uploads, runs, SSE, HITL, IR patch, preview, export, settings) + React UI (sources, chat/timeline, plan card, pdf.js preview with click-to-comment, diagram editor)"
-    status: pending
+    content: "DONE: local studio at py -m spark_agent serve. Left is chat history, center is the conversation, the document opens on the right. Files search opens the chat that made the document. Settings shows usage, the model profile, and Spark pages. Review selection, the memory editor, and the diagram editor are not in this shell."
+    status: completed
   - id: imagegen-charts
-    content: Image generation provider interface (OpenAI, Gemini/Imagen, Stability, Flux, ComfyUI) with brand presets and asset provenance; branded charts via Vega-Lite/matplotlib
-    status: pending
+    content: "DONE: spark_agent/imagegen.py and spark_docs/charts.py. OpenAI, Gemini, Stability, Flux, and ComfyUI stay off until a key or COMFY_URL is set. The spark preset is flat navy and purple on white, with no gradients. Logos and diagrams are refused. The same prompt, seed, and preset is cached with a provenance JSON. Charts are Pillow bar and line drawings. A chart fence becomes an image. py -m spark_agent chart and py -m spark_agent image."
+    status: completed
   - id: subagents-governor
-    content: "Bounded subagents: work queue + small worker pool (default 4 active), hard caps (4 LLM calls per provider, 8 fetches / 2 per domain, 2 browser pages, 2 CPU jobs, GPU 1), backpressure with disk-streamed pages, psutil memory watchdog (75/85/92% pause-and-checkpoint), adaptive concurrency on 429s, per-item timeouts and fault isolation, low-resource mode, harmonize pass; sequential in dev profile, parallel on APIs; laptop load test"
+    content: "DONE: spark_agent/governor.py. Dev stays on 1 worker. Cloud uses a pool of 4, with 4 model calls per provider, 8 fetches and 2 per domain, 2 browser pages, 2 CPU jobs, and 1 GPU job. Low-resource mode lowers the caps. At 75% memory new work waits, at 85% caches are dropped, at 92% the run pauses and checkpoints. A 429 halves a lane and three successes give one slot back. Each item has a timeout and a failure stays inside that item. Pages can be spilled to workspace/pages. harmonize() checks glossary forms and quantities. py -m spark_agent governor."
+    status: completed
   - id: token-guard
-    content: "Model registry (LiteLLM map + overrides + Ollama /api/show), token pre-flight with priority compression, Ollama num_ctx/num_predict always set, VRAM-aware KV sizing (flash attention + q8_0), repetition detector, cut-off detection and recovery ladder (continue, partial JSON salvage, raise limit, split, fallback), idempotency keys, checkpoint resume, SSE replay"
+    content: "DONE: spark_agent/tokens.py. Model cards merge a LiteLLM cost row, config/models.yaml overrides, and an Ollama /api/show payload. A prompt that does not fit drops history, then the lowest evidence, and keeps the task. num_ctx stays at 16k unless flash attention and q8 KV are on and the weights fit. A cut-off continues, salvages finished JSON items, raises the limit, splits, then falls back. The same call is not sent twice. A partial reply is checkpointed. GET /api/runs/{id}/stream replays events after Last-Event-ID. py -m spark_agent models."
+    status: completed
   - id: admin-panel
-    content: "Personal settings and usage panel: local data model (runs, run_events, llm_calls with tokens/cost/finish_reason, tool_calls, activity_log, implicit single user_id), pages for my usage and budgets, my documents, runs and logs, model profile switch (dev/claude/openai), API keys in Windows Credential Manager with test connection, model catalog and roles, lanes, dev Ollama settings, privacy, brand, memory, system health"
+    content: "DONE: personal panel in Settings. Usage for today, 30 days, and each model, with a monthly budget warning and an optional hard stop. Runs, tool calls, and a usage CSV. Files can be filtered to client pages or internal only. API keys go through Windows Credential Manager and are not returned to the browser. The catalog, lanes, Ollama check, memory list, and brand contact are on the same page. py -m spark_agent serve, then Settings."
+    status: completed
   - id: production
-    content: "Production readiness for a local tool: one-command uv install + first-run check, spark-doc serve on 127.0.0.1, SQLite WAL + Alembic auto-migrate with backup, checkpoint resume after crash, keyring secrets, upload checks, scheduled workspace backup/restore, project export/import, versioned updates, CI with cassette tests + golden + eval smoke, dependency scanning, fault-injection suite"
+    content: "DONE: local production pass in spark_agent/ops.py and migrate.py. install.ps1 plus py -m spark_agent ready. spark-doc serve binds to 127.0.0.1. SQLite stays in WAL mode and migrates on startup, with a copy first when the database already has rows. A crashed run is marked resumable and is not sent to the model again. Workspace backup and restore, project zip export and import, upload sniffing, an optional app password, and CI. py -m spark_agent backup, restore, export, import, recover."
+    status: completed
   - id: model-profiles-dev
-    content: "Model profiles (dev on Ollama, claude, openai) with switch in settings, FakeLLM + record/replay cassettes for key-free agent development, dev-mode smaller work units, real-use milestone once API keys exist"
+    content: "DONE: dev stays on ollama/qwen2.5-coder:7b and plans 4 blocks at a time. Claude and OpenAI stay in Settings and run when their key is stored. SPARK_CASSETTE replays recorded replies without a key. py -m spark_agent profiles. Real-use evals wait until a key exists."
+    status: completed
   - id: team-later
     content: "Later only: multi-user SSO and roles, team admin view, shared brand facts and memory with approval, shared server (Postgres, Redis, S3/MinIO, Docker Compose, HTTPS), central monitoring"
   - id: new-styles-later
@@ -379,7 +389,7 @@ flowchart LR
 - **Image-to-diagram:** a vision model extracts nodes and edges from an uploaded diagram image into a spec. After re-rendering, a check confirms the node and edge counts match the original.
 - Diagram QA: text fits inside nodes with at least 8px padding; no overlapping nodes or edge labels; edges don't pass through nodes; the effective font is at least 7pt at print size; the aspect ratio fits the placement. If a diagram is too tall, **re-layout** it (switch between TB and LR, or split it). This is only possible because we keep the spec, not a flat PNG.
 - Calibration set: crops from ADICC pages 6, 8, 14, 24, and 27. Re-create each one as a spec and compare the two side by side.
-- Charts: Vega-Lite through `vl-convert`, or matplotlib, with the same palette and font, rendered to SVG then PNG.
+- Charts: Vega-Lite through `vl-convert`, or matplotlib, with the same palette and font, rendered to SVG then PNG. Implemented as flat Pillow charts in `spark_docs/charts.py` (680 by 420, navy and purple). Vega-Lite and matplotlib stay out so the laptop does not take another chart library.
 
 ---
 
@@ -410,6 +420,8 @@ class Doc(BaseModel):
 ---
 
 ## 6. Agent system (Phase 6)
+
+Implemented as a small checkpointed graph in `spark_agent/graph.py` (plan, approve interrupt, resume, draft, export) with SQLite checkpoints. The LangGraph package is deferred until the web/API phase. Tools, the run governor, per-run budgets, and cloud fallbacks are in place. Smart Convert still copies source text; the model only assigns block ids.
 
 ### 6.1 Stack decisions
 
@@ -457,6 +469,8 @@ privacy: { local_only: false }   # true = no cloud calls for this project
   - Agent logic is built and tested against a **FakeLLM with recorded responses** (record/replay cassettes), so tests are repeatable and don't depend on model quality. Ollama is used for live smoke tests.
   - Don't tune prompts to the 7B model. Its weak points (long structured IR, vision critique) will look like agent bugs even though Claude or GPT would handle them. In the `dev` profile, the agent works in smaller units and leans harder on deterministic checks.
   - When keys arrive, switch the profile, run the full eval suite on the target model, and tune prompts there. A small API test budget early is worthwhile, especially to validate the vision critic, where local and API models differ the most.
+
+Implemented with the installed local model left in place. `dev` plans four source blocks at a time and stays on one worker. `claude` and `openai` keep the whole section and run in parallel once you switch profile in Settings. A stored key is copied into the provider environment only for that cloud call, and a local-only run refuses it. `SPARK_CASSETTE` records or replays the reply text. `py -m spark_agent profiles` shows the three profiles. The real-use eval stays until a Claude or OpenAI key is stored.
   - Ollama cloud models (such as the `gemma4:31b-cloud` already installed) can stand in for harder dev tests, but they send data off the machine, so never use them with confidential client files.
 - The critic should use a different model family or prompt from the writer, to reduce self-agreement.
 - Use provider-native features when available, with portable fallbacks: Anthropic prompt caching, citations, web search and fetch tools, and native PDF input; OpenAI strict structured outputs and web search; Gemini native audio and video.
@@ -553,6 +567,8 @@ flowchart TD
 - **Mixed:** local tasks queue on the GPU lane while cloud tasks keep running in parallel. A setting, "run fully sequential while a local model is active", forces everything onto one lane.
 - Parallelism is also capped by the run's remaining budget, so fan-out can't burst past a spending limit.
 
+Implemented in `spark_agent/governor.py`. `py -m spark_agent governor` prints the caps. The dev profile stays sequential. Cloud section planning uses the pool. A fetched page can be written under `workspace/pages` with `spill_page`, and `harmonize()` checks drafted sections for glossary forms, quantities, and a stray em dash. The model registry is in `spark_agent/tokens.py`. Provider token buckets stay with the settings work.
+
 ### 6.6 Token budgets, local KV cache, and cut-off recovery
 
 **Model registry.** Each model records:
@@ -619,6 +635,8 @@ A truncated section is **never rendered silently**. Verification also has a trun
 - The UI reconnects to the SSE stream with `Last-Event-ID` and replays missed events.
 - Cancelling is cooperative, and partial results are kept.
 
+Implemented in `spark_agent/tokens.py`. `py -m spark_agent models` prints the context window and the chosen `num_ctx`. Overrides in `config/models.yaml` win over a LiteLLM cost row, and an Ollama `/api/show` payload wins over both. Counting stays on the character estimate. A call that does not fit drops history, then the lowest-ranked evidence, and keeps the task. `num_ctx` and `num_predict` go out on every Ollama request. 32k is allowed when flash attention and q8 KV are on and the weights plus KV fit in free VRAM. A repeated 8-word phrase, `length`, `max_tokens`, or `MAX_TOKENS` starts the recovery ladder. The same messages, model, and limit reuse the first result. A partial reply is stored on the run checkpoint. `GET /api/runs/{id}/stream` replays events after `Last-Event-ID`. Verification flags a draft that ends mid-word, on an empty list marker, or on "the following:".
+
 ---
 
 ## 7. Tools
@@ -638,11 +656,14 @@ A truncated section is **never rendered silently**. Verification also has a trun
   - Disabled until configured. Planned and budgeted before use.
   - Brand style presets (navy and purple, flat, white background). Stores the prompt, seed, provider, cost, and license.
   - **Never** used for the Spark logo, client logos, or text-heavy diagrams; those go to the diagram engine.
+  - Implemented in `spark_agent/imagegen.py` and `chart.create` in `spark_docs/charts.py`. `py -m spark_agent image` and `py -m spark_agent chart`. A `chart` fence becomes an image block. Providers do not open a socket until a key or `COMFY_URL` is set. The cache stores the prompt, seed, provider, cost, and license beside the PNG.
 - Optional: expose render, diagram, and verify as an **MCP server** so Cursor or Claude Desktop can call them.
 
 ---
 
 ## 8. Verification loop (the "make, verify, adjust" core)
+
+Implemented in `spark_agent/loop.py` and run at the end of a graph convert. Hard checks cover content, traced numbers, lexicon, numbering, contact, page budget, off-page boxes, markdown leaks, and blank pages. Critic issues without a page and a four-number bbox are dropped. Fixes are auto (lexicon, renumber, overflowing cards to a list), then one section patch, then one section regen, then escalate. The best score is kept. The loop stops when the document is clean, the gain is under `score_delta`, the iteration cap is hit, a cleared issue comes back, or the run budget is spent. Section-by-section exemplar comparison (8.1–8.3) is still later.
 
 **Hard checks (deterministic; all must pass):**
 
@@ -665,6 +686,8 @@ A truncated section is **never rendered silently**. Verification also has a trun
 - Keep the best-scoring version. Track issue history so a fix can't reintroduce an earlier problem. Stop at the iteration cap, when the score plateaus (less than δ improvement), or when the budget runs out, and report what's left.
 
 ### 8.1 Section-by-section visual comparison
+
+Implemented in `spark_agent/visual.py`. `py -m spark_agent visual file.md --fix` compares each component with the theme tokens and, when the exemplar crop exists, with a small-image SSIM. A vision note counts only when it includes a page and a box. A component is mismatched when a measurement is outside tolerance, or when two signals agree. The repair ladder changes only that block: the right component, then a content-preserving layout value, then a re-slot, then a sandboxed snippet, then escalate. The sandbox refuses imports outside its allowlist, refuses reads of the renderer and the theme, and dies on a timeout. It does not edit theme or renderer files.
 
 After every render, the layout map is used to crop every section and component. Each crop is compared with the theme exemplar of the same component: cover, section start, columns, callout, cards, step cards, roadmap, commercial table, KPIs, Why Choose Us, contact banner, and figures.
 
@@ -698,6 +721,8 @@ The verifier doesn't just report. For each mismatched section it applies a fix i
 ---
 
 ## 9. Review mode: scoped edits on the finished document
+
+Implemented in `spark_agent/edit.py` and `py create_doc.py edit`. The model rewrites only the target. After the patch, every other block must hash-equal its previous version or the edit is rejected. Text-range edits leave the rest of the paragraph byte-identical. Locks and hand-written blocks are skipped unless the user named that block, and the verify loop will not respell a protected paragraph. Ripple checks are suggestions. Diagram tweaks pin the nodes they do not change; a remake clears the pins. Accepted edits go to an append-only log with undo and redo. The preview, side-by-side page images, and screenshot styling are still later.
 
 Once a document is created, it opens in the preview. The user points at a section, some lines, a table, or a diagram (or names it in chat) and says what to change. The agent changes **only that part**. Everything else stays byte-identical, and code enforces this, not the prompt.
 
@@ -810,6 +835,8 @@ flowchart TD
 
 ### 9.10 Styling edits with screenshots
 
+Implemented in `spark_agent/style.py` and `py create_doc.py edit --image`. A restyle keeps the block text. Colors are measured with k-means and snapped to `themes/spark/tokens.yaml` while brand lock is on; `--unlock-brand` keeps the measured value. A preview crop is located on the rendered page, and red marks are reported separately. The change uses the first rung that fits: an existing component, token overrides, a declarative stack or grid, then a sandboxed snippet. `save_as_variant` writes `themes/spark/variants/<name>.yaml`. The choice is stored on the block and round-trips as a `spark-style` comment. `--vision` asks the vision model; without it the instruction and the sampled colors are enough.
+
 A style edit is a scoped edit where the target is the **look**, not the words. It uses the same selections as 9.1, plus attachments: one or more images and a prompt. The images can be a design the user likes, a screenshot of our own preview with markings, or a photo of a printed page.
 
 **Understanding the image:**
@@ -844,6 +871,8 @@ A style edit is a scoped edit where the target is the **look**, not the words. I
 ---
 
 ## 10. Learning memory (self-healing, per user)
+
+Implemented in `spark_agent/memory.py`. Preferences and client facts are remembered when the user states them. A lesson from the verifier starts active; a hand edit stays a candidate until `py -m spark_agent memory confirm`. Source files and web pages are refused. Before a plan, an edit, or a verify rewrite, the matching active memories are added as a short "watch out for" list. Project beats client beats user beats global. Unused memories expire after 180 days. A lesson that is retrieved three times is written to `workspace/memory/skills`, and a `find -> replace` fix also becomes a rule in `workspace/memory/rules.yaml`. A lesson that keeps missing is retired. The list, confirm, disable, and delete commands are the memory panel until the web app exists.
 
 The goal is that a mistake fixed once for a user is not made again. This follows the same idea as Hermes Agent's learning loop: persistent memory plus skills written from experience and refined as they're used.
 
@@ -884,6 +913,8 @@ The goal is that a mistake fixed once for a user is not made again. This follows
 
 ### 11.1 File ingestion
 
+Implemented in `spark_agent/ingest.py` and `spark_agent/research.py`. `py -m spark_agent research file.pdf data.csv --question "..."` reads the files, chunks them at about 800 tokens, and writes a brief whose status is waiting for approval until `--approve`. Each finding cites a source anchor. Spreadsheets become a column profile and numeric summary, not a dump of every cell. Office files that contain macros or expand too far are refused. A PDF with unreadable tiny text is flagged. Images record size and EXIF; OCR, audio transcription, and video keyframes wait until those engines are installed. Web research is in 11.2.
+
 - Upload types: PDF, TXT/MD, DOCX, PPTX, CSV/XLSX, images, audio, video, and URLs.
   - **PDF:** PyMuPDF with `pymupdf4llm` (markdown) and `find_tables`. Scanned pages go to RapidOCR (ONNX) or vision-model OCR. Docling is an optional high-quality path for complex layouts (heavier, needs torch).
   - **DOCX:** python-docx or mammoth to markdown, keeping headings, tables, and images.
@@ -895,6 +926,10 @@ The goal is that a mistake fixed once for a user is not made again. This follows
 - Safety: size and page limits, zip-bomb guards, no macros, and detection of hidden text in PDFs.
 
 ### 11.2 Deep web research engine
+
+Implemented in `spark_agent/deep.py`. `py -m spark_agent deep "UAE construction output" --depth quick --secret Constech` runs Quick, Standard, or Deep with a hard cap on searches, fetches, and rounds, one question at a time. The question tree can be edited before the run. Queries add the year, `filetype:pdf`, `site:.gov.ae`, `site:arxiv.org`, or `site:sec.gov` when they fit, plus an Arabic query for UAE and GCC questions and a disconfirming query. Client names and figures passed as secrets are removed before anything is sent to a search provider.
+
+Dev search uses DuckDuckGo and OpenAlex. Serper, Brave, and Exa stay off until `SERPER_API_KEY`, `BRAVE_API_KEY`, or `EXA_API_KEY` is set, and their hits are fused with reciprocal rank fusion. Pages are fetched in full (HTML, PDF, and the Wayback Machine when a link is dead). Robots rules and paywalls are skipped. A news page that cites a government link is followed, and the brief cites the official page. A figure is stated only when the quote is on a fetched page and a primary source, or two independent sources, agree. A single blog, a Wikipedia lead, or two sources that disagree stays out of the findings. Instructions inside a page are ignored. The live research panel and a blind comparison with ChatGPT and Claude wait for the web app and for API keys.
 
 **Goal:** research at least as good as the deep research modes in ChatGPT and Claude, with every claim traceable to a fetched page that actually says it.
 
@@ -1071,6 +1106,12 @@ Every source is a **connector plugin** with `search(query, filters)` and `fetch(
 
 ## 12. Web app (Phase 9)
 
+The studio is `py -m spark_agent serve`, then open `http://127.0.0.1:8787`. The left side is chat history. The center is the conversation. When a document is written, its pages open on the right. Files is a search over every generated document, and opening one returns to the chat that made it. Settings shows token use, the model profile (local, Claude, or OpenAI), the spending limit, and whether new documents include Spark pages. Notes are formatted by the existing renderer. Turn on "Use the model for replies" when a model should answer in the chat. Review selection, the memory editor, and the diagram editor are not in this shell.
+
+The app is now called Docufy (`docufy serve`, `docufy.cmd`). Documents keep the Spark Technologies template and contact. Each message picks its model in the composer: Format only, Local, Claude, or OpenAI, each shown with whether it can run now. With a document open, a short message changes it and saves a new version (`spark_agent/revise.py`): replace words, set the title or client, remove a section, switch the company pages, or rewrite a named section through the scoped edit engine when a model is picked. Jobs run on one background worker with a visible step, Stop, and Try again, and a reply left writing by a restart is marked failed on startup. Replies see the last turns of the chat and stream from Ollama. Word, PDF, slides, CSV, and spreadsheet uploads become notes (`spark_agent/uploads.py`), up to 15 MB. Downloads are named after the document, and Markdown is a third download. Settings has tabs for general, models and keys, usage, privacy, data (backups and chat import), system (setup check and health), and memory. Cloud calls record their cost from the model table so the monthly hard stop works. Every test runs on its own database.
+
+Docufy also writes new documents (`spark_agent/draft.py`). A short brief with a writing verb and a document word is outlined by the planner, then one writer agent drafts each section; cloud profiles run the agents through the governor pool, the local profile runs them in turn. Missing facts are written as to be confirmed, em dashes are removed, and company sections are left to the brand pack. The draft then goes through Smart Convert, render, and checks like any notes. Each job records its steps on the message (outline, section agents, layout, render and checks, preview) with start and end times, and the chat shows them live and folded afterwards. A brief sent with Format only waits with a one-click choice of an available model.
+
 - **Backend:** FastAPI.
   - Routes: projects, chunked uploads, sources, runs (start, resume, cancel), **SSE event stream** (tokens, tool calls, status, cost), human-in-the-loop endpoints (approve plan, answer question), IR get and patch, render preview (PDF plus page PNGs), exports, and settings (keys, models, providers, budgets).
   - Jobs run in-process (an asyncio runner with LangGraph checkpoints). No Redis or separate worker is needed for a local tool.
@@ -1144,6 +1185,8 @@ Each person's tool has its own panel, covering only that person: their usage, do
 - The panel reads our own SQLite tables, so it needs nothing else running.
 - Token and cost rows are written by the `ModelRouter` itself, so no call path can skip them.
 
+Implemented in the studio Settings page. `tool_calls` and `activity_log` sit beside the existing run tables, and every row keeps `user_id` `local`. Usage shows today, the last 30 days, and each model, plus a monthly budget that warns at 80% and can stop new model calls at 100%. Files filter to client pages or internal only. Runs and a usage CSV are on the same page. API keys are stored with `keyring` under `spark-doc-agent` and the browser only learns whether a key is stored. The model catalog, lane caps, Ollama reachability, memory list, and brand contact (including the phone) are read from the local packs. Brand files stay read-only here so a settings save cannot change them.
+
 ## 14. Production readiness (for a local tool)
 
 "Production level" here means a local tool that installs cleanly, never loses work, protects keys and client files, and behaves predictably.
@@ -1169,6 +1212,8 @@ Each person's tool has its own panel, covering only that person: their usage, do
 - **Updates:** versioned releases with a changelog. Migrations and theme or archetype version bumps are applied on update.
 - **CI:** GitHub Actions running lint, types, unit tests (FakeLLM cassettes), golden visual tests, and an eval smoke test on every change.
 - **Data deletion:** deleting a project removes its files, vectors, memories, and logs.
+
+Implemented for this local copy in `spark_agent/ops.py` and `spark_agent/migrate.py`. `install.ps1` creates the virtualenv, installs the project, and installs the Node workers. `py -m spark_agent ready` checks Python, the writable workspace, WAL, the schema version, fonts, Node, the diagram worker, a browser, Ollama, and which keys are stored. `spark-doc serve` and `py -m spark_agent serve` bind to `127.0.0.1` and open the studio. Migrations are versioned SQL on the existing sqlite3 connection: a database that already has rows is copied into `workspace/backups` before the version changes. A run left in `running` is marked interrupted on its last checkpoint and is not sent to the model again. `backup` and `restore` snapshot the database plus the studio files, and a backup is taken on serve when the newest one is older than a day. `export` and `import` move one chat as a zip. Uploads are refused when the bytes do not match the name, including a program renamed as a PDF. An optional app password is a hash in `auth.json`, never in `settings.json` or the activity log. Deleting a chat removes its files, project memories, and log lines that name it. Skill files are still promoted from lessons that keep helping. CI is `.github/workflows/ci.yml`.
 
 ### 14.1 Team features (later, Phase 13)
 

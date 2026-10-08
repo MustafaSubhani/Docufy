@@ -1,7 +1,7 @@
 """Spark company content (intro, Why Choose Us, contact banners) and section numbering.
 
 The "Include Spark content" switch:
-  - include_company_intro  -> About Spark Technologies (Who We Are + Solution Areas) after section 01
+  - include_company_intro  -> About Spark Technologies (Who We Are + Solution Areas) before the first section
   - include_company_outro  -> Why Spark Technologies page (Why Choose Us + contact) at the very end
   - strip_spark_content    -> remove company sections and contact banners already in the source
 Blocks inserted from templates are tagged origin=spark_content.
@@ -12,13 +12,14 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+from .brand import apply_archetype_defaults, boilerplate_blocks, industry_of
 from .parser import parse_blocks
 
-TEMPLATES = Path(__file__).resolve().parent / "templates"
 SPARK_SECTION_RE = re.compile(r"(about spark|why spark|who we are|why choose us)", re.I)
 
 
 def apply_company_sections(meta, blocks: list[dict]) -> list[dict]:
+    apply_archetype_defaults(meta)
     out = list(blocks)
     if getattr(meta, "strip_spark_content", False):
         out = strip_spark_content(out)
@@ -27,18 +28,22 @@ def apply_company_sections(meta, blocks: list[dict]) -> list[dict]:
     changed = False
 
     if meta.include_company_intro and not has_intro:
-        intro = tag(fill_placeholders(_load_template(meta.company_intro_path or TEMPLATES / "company_intro.md"), meta))
-        sections = split_h1_sections(out)
-        if sections:
-            out = sections[0] + intro + [b for s in sections[1:] for b in s]
-        else:
-            out = intro + out
+        intro = tag(fill_placeholders(_intro_blocks(meta), meta))
+        out = intro + out
         changed = True
 
     if meta.include_company_outro and not has_outro:
-        outro = tag(fill_placeholders(_load_template(meta.company_outro_path or TEMPLATES / "company_outro.md"), meta))
-        if meta.show_contact and out and out[-1].get("kind") == "contact" and any(b.get("kind") == "contact" for b in outro):
-            out = out[:-1]  # the outro brings its own banner
+        outro = tag(fill_placeholders(_outro_blocks(meta), meta))
+        # A contact that closes How We Move Forward stays. Only a dangling end banner
+        # is dropped, because the Why Choose Us page brings its own.
+        if (
+            meta.show_contact
+            and out
+            and out[-1].get("kind") == "contact"
+            and any(b.get("kind") == "contact" for b in outro)
+            and not any(b.get("kind") == "steps" for b in out[-6:])
+        ):
+            out = out[:-1]
         out = out + outro
         changed = True
 
@@ -94,24 +99,23 @@ def strip_spark_content(blocks: list[dict]) -> list[dict]:
     return out
 
 
+def _intro_blocks(meta) -> list[dict]:
+    if meta.company_intro_path:
+        return _load_template(meta.company_intro_path)
+    return boilerplate_blocks("company_intro")
+
+
+def _outro_blocks(meta) -> list[dict]:
+    if meta.company_outro_path:
+        return _load_template(meta.company_outro_path)
+    return boilerplate_blocks(f"why_choose_us/{industry_of(meta)}")
+
+
 def _load_template(path: Path | str | None) -> list[dict]:
     if path is None or not Path(path).is_file():
         return []
     p = Path(path)
     return parse_blocks(p.read_text(encoding="utf-8").split("\n"), source_dir=p.parent)
-
-
-def split_h1_sections(blocks: list[dict]) -> list[list[dict]]:
-    sections: list[list[dict]] = []
-    current: list[dict] = []
-    for block in blocks:
-        if block.get("kind") == "heading" and block.get("level") == 1 and current:
-            sections.append(current)
-            current = []
-        current.append(block)
-    if current:
-        sections.append(current)
-    return sections
 
 
 def renumber_h1_sections(blocks: list[dict]) -> list[dict]:

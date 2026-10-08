@@ -1,0 +1,18 @@
+id: technical_document
+aliases: [requirements_document]
+doc_type: DOCUMENTATION
+spark_content: true
+industry: generic
+move_forward: true
+description: Client-facing technical or requirements document. Never call it a proposal.
+slots:
+  - {id: cover, required: true, component: cover}
+  - {id: overview, kicker: Overview, required: true, components: [para]}
+  - {id: about, kicker: About Spark Technologies, required: true, spark_content: true, boilerplate: company_intro}
+  - {id: assessment, kicker: Our Assessment, required: true, components: [para, callout]}
+  - {id: scope, kicker: Scope, required: true, components: [list]}
+  - {id: how, kicker: How It Works, required: true, components: [diagram, steps]}
+  - {id: data, kicker: Data and Access Needed, required: true, components: [list]}
+  - {id: path, kicker: The Path Forward, required: true, boilerplate: path_forward}
+  - {id: next_steps, kicker: How We Move Forward, required: true, boilerplate: move_forward, components: [steps]}
+  - {id: why_choose, kicker: Why Spark Technologies, required: true, spark_content: true, boilerplate: why_choose_us}

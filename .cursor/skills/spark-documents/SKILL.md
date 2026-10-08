@@ -20,11 +20,13 @@ py create_doc.py path/to/file.md                 # PDF to output/<title>.pdf
 py create_doc.py path/to/file.md --format both   # PDF + DOCX
 py create_doc.py path/to/file.md --spark-content # client doc: add Who We Are, Why Choose Us, contact banner
 py create_doc.py path/to/file.md --no-spark-content  # internal doc: strip company sections and banners
+py -m spark_agent convert path/to/file.md            # plan structure with the local model, copy source text verbatim
+py -m spark_agent convert path/to/file.md --no-llm   # heading-based plan, no model
 ```
 
 ## Document pattern (ADICC proposal)
 
-Cover, then `# 01 Executive Summary`, `# 02 About Spark Technologies` (added by `--spark-content`),
+Cover, then `# 01 About Spark Technologies` (added by `--spark-content`), `# 02 Executive Summary`,
 `# 03 Solution Overview`, `# 04 Scope of Work`, `# 05 Client Responsibilities`,
 `# 06 Implementation Timeline & KPIs`, `# 07 Commercial Proposal`, `# 08 Conclusion` (The Path Forward,
 three paragraphs), `# 09 Next Steps & Sign-off` (How We Move Forward steps + contact), optional

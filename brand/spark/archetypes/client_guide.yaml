@@ -1,0 +1,14 @@
+id: client_guide
+doc_type: GUIDE
+spark_content: true
+industry: generic
+page_budget: 12
+max_flowcharts: 1
+description: How-to or trial guide for a client. Short and task oriented. Address the reader directly. At most one flowchart unless asked.
+slots:
+  - {id: cover, required: true, component: cover}
+  - {id: overview, kicker: Overview, required: true, components: [para]}
+  - {id: about, kicker: About Spark Technologies, required: false, spark_content: true, boilerplate: company_intro}
+  - {id: steps, kicker: How to Use It, required: true, components: [steps, list]}
+  - {id: next_steps, kicker: How We Move Forward, required: false, boilerplate: move_forward}
+  - {id: why_choose, kicker: Why Spark Technologies, required: false, spark_content: true, boilerplate: why_choose_us}

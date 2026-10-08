@@ -1,4 +1,8 @@
-"""Spark-branded DOCX export (editable companion to the PDF)."""
+"""Spark-branded DOCX export.
+
+Component-accurate companion to the PDF: named styles, repeating header rows,
+and tables that stay together. It is not a pixel match of the PDF.
+"""
 
 from __future__ import annotations
 
@@ -6,12 +10,14 @@ import re
 from pathlib import Path
 
 from docx import Document
-from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.style import WD_STYLE_TYPE
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING
 from docx.opc.constants import RELATIONSHIP_TYPE as RT
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Cm, Inches, Pt, RGBColor
 
+from .glyphs import safe
 from .images import raster_path_for_pdf
 from .layout import fit_image
 from .parser import format_kicker
@@ -30,6 +36,7 @@ def build_docx(meta: Meta, blocks: list[dict], output: Path) -> Path:
     output = Path(output)
     output.parent.mkdir(parents=True, exist_ok=True)
     doc = Document()
+    _ensure_named_styles(doc)
     section = doc.sections[0]
     section.page_width = Cm(21.0)
     section.page_height = Cm(29.7)
@@ -127,6 +134,7 @@ def _cover(doc: Document, meta: Meta) -> None:
         run = p.add_run(meta.confidential_text)
         _font(run, 9, RGBColor(0x64, 0x74, 0x8B), italic=True)
         _set_cell_padding(cell, 120)
+        _finish_table(table)
     doc.add_page_break()
 
 
@@ -136,7 +144,7 @@ def _emit(doc: Document, block: dict, meta: Meta) -> None:
         level = min(block.get("level", 1), 3)
         text = block.get("text") or ""
         if level == 1:
-            p = doc.add_paragraph(format_kicker(text), style="Heading 1")
+            p = doc.add_paragraph(format_kicker(text), style="Spark Kicker")
             for run in p.runs:
                 run.font.color.rgb = PURPLE
                 run.font.size = Pt(8)
@@ -147,7 +155,7 @@ def _emit(doc: Document, block: dict, meta: Meta) -> None:
             return
         if level == 2:
             size = 14 if block.get("compact") else (26 if len(text) < 42 else 20)
-            p = doc.add_paragraph(text)
+            p = doc.add_paragraph(text, style="Spark Title")
             for run in p.runs:
                 _font(run, size, NAVY, bold=True)
             p.paragraph_format.space_after = Pt(10)
@@ -166,7 +174,7 @@ def _emit(doc: Document, block: dict, meta: Meta) -> None:
                 run.font.color.rgb = PURPLE
         return
     if kind == "para":
-        p = doc.add_paragraph()
+        p = doc.add_paragraph(style="Spark Body")
         _add_inline(p, block.get("text") or "")
         return
     if kind == "list":
@@ -193,13 +201,11 @@ def _emit(doc: Document, block: dict, meta: Meta) -> None:
         for r_i, row in enumerate(rows):
             for c_i, val in enumerate(row):
                 cell = table.rows[r_i + 1].cells[c_i]
-                cell.text = _plain(val)
+                cell.text = ""
+                _add_inline(cell.paragraphs[0], val, size=9)
                 if r_i % 2 == 1:
                     _shade(cell, ALT)
-                for p in cell.paragraphs:
-                    for run in p.runs:
-                        run.font.size = Pt(9)
-                        run.font.name = "Arial"
+        _finish_table(table, header=True)
         doc.add_paragraph()
         return
     if kind == "callout":
@@ -224,6 +230,7 @@ def _emit(doc: Document, block: dict, meta: Meta) -> None:
                     p = cell.add_paragraph(style="List Bullet")
                     _add_inline(p, item.get("text") or "")
                     first = False
+        _finish_table(table)
         doc.add_paragraph()
         return
     if kind == "columns":
@@ -242,6 +249,7 @@ def _emit(doc: Document, block: dict, meta: Meta) -> None:
                 if child.get("kind") == "para":
                     p = cell.add_paragraph()
                     _add_inline(p, child.get("text") or "")
+        _finish_table(table, fixed=True)
         doc.add_paragraph()
         return
     if kind == "cards":
@@ -260,6 +268,7 @@ def _emit(doc: Document, block: dict, meta: Meta) -> None:
                     if child.get("kind") == "para":
                         p = cell.add_paragraph()
                         _add_inline(p, child.get("text") or "", size=9.5)
+            _finish_table(table, fixed=True)
             doc.add_paragraph()
         return
     if kind == "stageflow":
@@ -292,6 +301,7 @@ def _emit(doc: Document, block: dict, meta: Meta) -> None:
             if step.get("cap_detail"):
                 p = right.add_paragraph()
                 _add_inline(p, step["cap_detail"], size=8.5)
+            _finish_table(table, fixed=True)
             doc.add_paragraph()
         return
     if kind == "hr":
@@ -340,6 +350,7 @@ def _emit(doc: Document, block: dict, meta: Meta) -> None:
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
             run = p.add_run(c["address"])
             _font(run, 9, WHITE)
+        _finish_table(table)
         doc.add_paragraph()
         return
     if kind == "pagebreak":
@@ -359,7 +370,7 @@ def _emit(doc: Document, block: dict, meta: Meta) -> None:
         p.add_run().add_picture(str(png), width=Inches(w_pt / 72), height=Inches(h_pt / 72))
         return
     if kind == "label":
-        p = doc.add_paragraph()
+        p = doc.add_paragraph(style="Spark Body")
         run = p.add_run((block.get("text") or "").strip("*"))
         _font(run, 10, BODY, bold=True)
         p.paragraph_format.space_after = Pt(4)
@@ -393,6 +404,7 @@ def _emit(doc: Document, block: dict, meta: Meta) -> None:
                 p = cell.add_paragraph()
                 p.alignment = WD_ALIGN_PARAGRAPH.CENTER
                 _font(p.add_run(st["body"]), 9.5, RGBColor(0x55, 0x55, 0x55))
+        _finish_table(table, fixed=True)
         doc.add_paragraph()
         return
     if kind in {"roadmap", "commercial"}:
@@ -403,6 +415,7 @@ def _emit(doc: Document, block: dict, meta: Meta) -> None:
         head_fill = "1E293B" if kind == "commercial" else "EEF4FB"
         table = doc.add_table(rows=1 + len(rows) + (1 if total else 0), cols=ncols)
         table.style = "Table Grid"
+        _finish_table(table, header=True)
         all_rows = [headers] + rows + ([total] if total else [])
         for r_i, row in enumerate(all_rows):
             for c_i in range(ncols):
@@ -443,6 +456,7 @@ def _emit(doc: Document, block: dict, meta: Meta) -> None:
             for item in group.get("items") or []:
                 p = cell.add_paragraph(style="List Bullet")
                 _font(p.add_run(item), 11, RGBColor(0x43, 0x43, 0x43))
+        _finish_table(table)
         doc.add_paragraph()
         return
     if kind == "addendum":
@@ -515,7 +529,7 @@ def _add_card_title(p, title: str) -> None:
 
 
 INLINE_TOKEN_RE = re.compile(
-    r"(\*\*.+?\*\*|\*(?!\*).+?\*|`[^`]+`|\[[^\]]+\]\([^)]+\)|https?://[^\s\])<>\"']+)"
+    r"(\*\*\*.+?\*\*\*|\*\*.+?\*\*|\*(?!\*).+?\*|`[^`]+`|\[[^\]]+\]\([^)]+\)|https?://[^\s\])<>\"']+)"
 )
 MD_LINK_RE = re.compile(r"^\[([^\]]+)\]\(([^)]+)\)$")
 
@@ -549,6 +563,7 @@ def _add_hyperlink(paragraph, text: str, url: str, size: float = 10) -> None:
 
 
 def _add_inline(p, text: str, size: float = 10) -> None:
+    text = safe(text)
     if not text:
         _font(p.add_run(""), size, BODY)
         return
@@ -558,7 +573,10 @@ def _add_inline(p, text: str, size: float = 10) -> None:
             run = p.add_run(text[pos : m.start()])
             _font(run, size, BODY)
         token = m.group(0)
-        if token.startswith("**"):
+        if token.startswith("***") and token.endswith("***") and len(token) > 6:
+            run = p.add_run(token[3:-3])
+            _font(run, size, BODY, bold=True, italic=True)
+        elif token.startswith("**"):
             run = p.add_run(token[2:-2])
             _font(run, size, BODY, bold=True)
         elif token.startswith("`"):
@@ -617,6 +635,83 @@ def _set_run_font(style, name, size, color, bold=None) -> None:
     rFonts = rPr.get_or_add_rFonts()
     rFonts.set(qn("w:ascii"), name)
     rFonts.set(qn("w:hAnsi"), name)
+
+
+def _style_ppr(style):
+    el = style.element
+    p_pr = el.find(qn("w:pPr"))
+    if p_pr is None:
+        p_pr = OxmlElement("w:pPr")
+        el.append(p_pr)
+    return p_pr
+
+
+def _named_style(doc: Document, name: str):
+    try:
+        return doc.styles[name]
+    except KeyError:
+        style = doc.styles.add_style(name, WD_STYLE_TYPE.PARAGRAPH)
+        style.base_style = doc.styles["Normal"]
+        return style
+
+
+def _ensure_named_styles(doc: Document) -> None:
+    kicker = _named_style(doc, "Spark Kicker")
+    _set_run_font(kicker, "Arial", 9, PURPLE, bold=True)
+    p_pr = _style_ppr(kicker)
+    border = OxmlElement("w:pBdr")
+    bottom = OxmlElement("w:bottom")
+    bottom.set(qn("w:val"), "single")
+    bottom.set(qn("w:sz"), "8")
+    bottom.set(qn("w:space"), "1")
+    bottom.set(qn("w:color"), "C8C8C8")
+    border.append(bottom)
+    p_pr.append(border)
+
+    title = _named_style(doc, "Spark Title")
+    _set_run_font(title, "Arial", 26, NAVY, bold=True)
+
+    body = _named_style(doc, "Spark Body")
+    _set_run_font(body, "Arial", 10, BODY)
+    fmt = body.paragraph_format
+    fmt.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+    fmt.line_spacing_rule = WD_LINE_SPACING.EXACTLY
+    fmt.line_spacing = Pt(11.5)
+
+
+def _tr_pr(row):
+    tr = row._tr
+    tr_pr = tr.find(qn("w:trPr"))
+    if tr_pr is None:
+        tr_pr = OxmlElement("w:trPr")
+        tr.insert(0, tr_pr)
+    return tr_pr
+
+
+def _fixed_widths(table) -> None:
+    count = len(table.columns)
+    if count < 1:
+        return
+    each = Cm(16.8 / count)
+    table.autofit = False
+    tbl_pr = table._tbl.tblPr
+    if tbl_pr.find(qn("w:tblLayout")) is None:
+        layout = OxmlElement("w:tblLayout")
+        layout.set(qn("w:type"), "fixed")
+        tbl_pr.append(layout)
+    for column in table.columns:
+        column.width = each
+
+
+def _finish_table(table, *, header: bool = False, fixed: bool = False) -> None:
+    if fixed:
+        _fixed_widths(table)
+    for i, row in enumerate(table.rows):
+        tr_pr = _tr_pr(row)
+        if header and i == 0 and tr_pr.find(qn("w:tblHeader")) is None:
+            tr_pr.append(OxmlElement("w:tblHeader"))
+        if tr_pr.find(qn("w:cantSplit")) is None:
+            tr_pr.append(OxmlElement("w:cantSplit"))
 
 
 def _hr(doc: Document, color: str, size: str = "8") -> None:

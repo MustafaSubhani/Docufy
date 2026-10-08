@@ -1,0 +1,9 @@
+id: questionnaire
+doc_type: QUESTIONNAIRE
+spark_content: false
+confidential: internal
+description: Discovery questionnaire with numbered question lists per topic.
+slots:
+  - {id: cover, required: true, component: cover}
+  - {id: purpose, kicker: Purpose, required: true, components: [para]}
+  - {id: questions, kicker: Questions, required: true, components: [list]}

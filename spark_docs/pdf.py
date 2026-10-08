@@ -8,9 +8,10 @@ matches the ADICC reference instead of relying on generic spaceBefore/spaceAfter
 
 from __future__ import annotations
 
+import json
 import re
 from dataclasses import dataclass
-from html import escape
+from html import escape, unescape
 from pathlib import Path
 
 from reportlab import rl_config
@@ -25,16 +26,21 @@ from reportlab.platypus import (
     NextPageTemplate,
     PageBreak,
     PageTemplate,
-    Paragraph,
     Table,
     TableStyle,
 )
 from reportlab.platypus import Image as RLImage
+from reportlab.platypus import Paragraph as _Paragraph
 
 from . import tokens as tokmod
 from .fonts import register_fonts
+from .glyphs import problems as glyph_problems
+from .glyphs import reset as reset_glyphs
+from .glyphs import safe
 from .images import raster_path_for_pdf
 from .layout import fit_image
+from .layoutmap import assign_ids, capture, write_layout
+from .links import slug
 from .parser import format_kicker, inline_xml
 from .stageflow import StageFlowDiagram
 from .theme import ASSETS, Meta
@@ -62,6 +68,58 @@ if not LOGO.exists():
 
 def C(name: str) -> HexColor:
     return HexColor(tokmod.color(name))
+
+
+_HREF = re.compile(r'<a href="#([^"]*)"([^>]*)>(.*?)</a>', re.S)
+_LINK_SCOPE: list[dict[str, str]] = []
+
+
+def link_targets(blocks: list[dict]) -> dict[str, str]:
+    """Link keys mapped to the bookmark that serves them. A heading inside a section points at its section."""
+    targets: dict[str, str] = {}
+    current = ""
+    for b in blocks:
+        if not isinstance(b, dict) or b.get("kind") != "heading":
+            continue
+        key = slug(b.get("text") or "")
+        if b.get("level") == 1:
+            current = key
+            targets.setdefault(key, key)
+        elif current:
+            targets.setdefault(key, current)
+    for name in re.findall(r"\[#([A-Za-z0-9_-]+)\]", json.dumps(blocks, default=str)):
+        targets.setdefault(name, name)
+    return targets
+
+
+def _resolve_links(xml: str) -> str:
+    targets = _LINK_SCOPE[-1]
+
+    def sub(m: re.Match) -> str:
+        raw = unescape(m.group(1))
+        name = targets.get(raw) or targets.get(slug(raw))
+        if name:
+            return f'<a href="#{escape(name, quote=True)}"{m.group(2)}>{m.group(3)}</a>'
+        return re.sub(r"</?u>", "", m.group(3))
+
+    return _HREF.sub(sub, xml)
+
+
+class Paragraph(_Paragraph):
+    """A paragraph whose markup ReportLab cannot read is set as plain text, so one line cannot stop the document.
+
+    Inside build_pdf, a link to a section that does not exist keeps its words and loses the link.
+    """
+
+    def __init__(self, text, style=None, *args, **kwargs):
+        if _LINK_SCOPE and isinstance(text, str) and '<a href="#' in text:
+            text = _resolve_links(text)
+        try:
+            super().__init__(text, style, *args, **kwargs)
+        except ValueError:
+            plain = re.sub(r"<[^>]*>", "", str(text or ""))
+            WARNINGS.append(f"markup could not be read and was set as plain text: {plain[:60]}")
+            super().__init__(plain, style, *args, **kwargs)
 
 
 def text_top_adjust(size: float) -> float:
@@ -149,6 +207,19 @@ class SparkDoc(BaseDocTemplate):
         cover = PageTemplate(id="cover", frames=[Frame(LEFT, T.page.bottom, TEXT_W, FRAME_H, id="c", **frame)], onPage=self._draw_cover)
         inner = PageTemplate(id="inner", frames=[Frame(LEFT, T.page.bottom, TEXT_W, FRAME_H, id="i", **frame)])
         self.addPageTemplates([cover, inner] if meta.has_cover() else [inner, cover])
+        self.layout: list[dict] = []
+
+    def afterFlowable(self, flowable):
+        if self.frame is None:
+            return
+        entry = capture(flowable, self.frame._x, self.frame._y, self.page, PAGE_H)
+        if entry:
+            self.layout.append(entry)
+        anchor = getattr(flowable, "spark_anchor", "") or ""
+        if anchor:
+            self.canv.bookmarkPage(anchor)
+            label = getattr(getattr(flowable, "inner", None), "text", "") or anchor
+            self.canv.addOutlineEntry(str(label), anchor, level=0, closed=0)
 
     def _draw_cover(self, canvas, doc):
         draw_cover_page(canvas, self.meta)
@@ -177,6 +248,7 @@ def wrap_words(canvas, text: str, font: str, size: float, width: float) -> list[
 
 def draw_title_block(canvas, cfg, base: float, kicker: str, title: str, subtitle: str, rule_color: str) -> float:
     """Kicker, title, subtitle, rule. Returns the rule y (top-down)."""
+    kicker, title, subtitle = safe(kicker), safe(title), safe(subtitle)
     cv = T.cover
     canvas.setFont(BOLD, cv.kicker_size)
     canvas.setFillColor(C("purple"))
@@ -209,6 +281,7 @@ def draw_meta_lines(canvas, first_base: float, rows: list[tuple[str, str]]) -> f
     for label, value in rows:
         if not value:
             continue
+        value = safe(value)
         prefix = f"{label}:  "
         canvas.setFont(BOLD, 10)
         canvas.setFillColor(C("navy"))
@@ -223,6 +296,7 @@ def draw_meta_lines(canvas, first_base: float, rows: list[tuple[str, str]]) -> f
 
 def draw_note_box(canvas, top: float, text: str, cfg, fill: str, color: str) -> None:
     cv = T.cover
+    text = safe(text)
     width = T.page.box_width
     inner_w = width - 2 * cv.note_inset
     lines = wrap_words(canvas, text, ITALIC, cv.note_size, inner_w)
@@ -331,9 +405,18 @@ class Spaced(Flowable):
         parts = self.inner.split(aw, ah - g)
         if not parts:
             return []
-        out: list[Flowable] = [Spaced(parts[0], g, g)]
+
+        def carry(inner: Flowable, gap: float) -> Spaced:
+            part = Spaced(inner, gap, gap)
+            part.spark_id = getattr(self, "spark_id", None)
+            part.spark_kind = getattr(self, "spark_kind", "")
+            part.spark_part = getattr(self, "spark_part", 0)
+            part.spark_anchor = getattr(self, "spark_anchor", "")
+            return part
+
+        out: list[Flowable] = [carry(parts[0], g)]
         for p in parts[1:]:
-            out.append(Spaced(p, self.top_adjust, self.top_adjust))
+            out.append(carry(p, self.top_adjust))
         return out
 
     def getKeepWithNext(self):
@@ -351,6 +434,9 @@ class Unit:
     bottom_ref: float = 0.0  # last reference line -> flowable bottom
     top_adjust: float = BOX_TOP_ADJUST
     keep: bool = False
+    block_id: str = ""
+    part: int = 0
+    anchor: str = ""
 
 
 def text_unit(kind: str, flowable: Flowable, style: ParagraphStyle, keep: bool = False) -> Unit:
@@ -397,7 +483,7 @@ KEEP_TOGETHER = {"table", "callout", "cards", "steps", "columns", "figure", "con
 class Kicker(Flowable):
     def __init__(self, text: str):
         super().__init__()
-        self.text = text
+        self.text = safe(text)
         self.size = T.type.kicker.size
         self.rule_gap = T.kicker.rule_y - T.kicker.base
 
@@ -597,9 +683,16 @@ class Builder:
         self.units: list[Unit | str] = []
         self.after_kicker = False
         self.sections_seen = 0
+        self._block_id = ""
+        self._part = 0
+        self._anchor = ""
 
     # helpers -------------------------------------------------------------
     def add(self, unit: Unit):
+        unit.block_id = self._block_id
+        unit.part = self._part
+        unit.anchor = self._anchor if unit.kind == "kicker" else ""
+        self._part += 1
         self.units.append(unit)
         self.after_kicker = unit.kind == "kicker"
 
@@ -616,8 +709,16 @@ class Builder:
     def block(self, b: dict, nxt: dict | None):
         k = b.get("kind")
         handler = getattr(self, f"b_{k}", None)
-        if handler:
+        if not handler:
+            return
+        prev = (self._block_id, self._anchor)
+        self._block_id = b.get("id") or self._block_id
+        self._anchor = slug(b.get("text") or "") if k == "heading" and b.get("level") == 1 else ""
+        self._part = 0
+        try:
             handler(b, nxt)
+        finally:
+            self._block_id, self._anchor = prev
 
     def b_heading(self, b, nxt):
         level = b.get("level", 1)
@@ -1107,6 +1208,13 @@ class CenteredImage(Flowable):
 # ---------------------------------------------------------------------------
 
 
+def _tag(flow: Flowable, unit: Unit) -> None:
+    flow.spark_id = unit.block_id
+    flow.spark_kind = unit.kind
+    flow.spark_part = unit.part
+    flow.spark_anchor = unit.anchor
+
+
 def assemble(units: list[Unit | str]) -> list[Flowable]:
     story: list[Flowable] = []
     prev: Unit | None = None
@@ -1117,26 +1225,43 @@ def assemble(units: list[Unit | str]) -> list[Flowable]:
             continue
         assert isinstance(u, Unit)
         if u.kind == "addendum":
+            _tag(u.flowable, u)
             story.append(u.flowable)
             prev = None
             continue
         gap = 0.0 if prev is None else spacing(prev.kind, u.kind) - prev.bottom_ref - u.top_ref
-        story.append(Spaced(u.flowable, gap, u.top_adjust, keep_with_next=u.keep, keep_together=family(u.kind) in KEEP_TOGETHER))
+        spaced = Spaced(u.flowable, gap, u.top_adjust, keep_with_next=u.keep, keep_together=family(u.kind) in KEEP_TOGETHER)
+        _tag(spaced, u)
+        story.append(spaced)
         prev = u
     return story
 
 
+LAST_LAYOUT: list[dict] = []
+
+
 def build_pdf(meta: Meta, blocks: list[dict], output: Path) -> Path:
     register_fonts()
+    reset_glyphs()
+    WARNINGS.clear()
+    assign_ids(blocks)
     output = Path(output)
     output.parent.mkdir(parents=True, exist_ok=True)
     doc = SparkDoc(str(output), meta=meta)
     builder = Builder(meta)
-    for i, block in enumerate(blocks):
-        builder.block(block, blocks[i + 1] if i + 1 < len(blocks) else None)
-    story: list[Flowable] = []
-    if meta.has_cover():
-        story += [NextPageTemplate("inner"), PageBreak()]
-    story += assemble(builder.units)
-    doc.build(story)
+    _LINK_SCOPE.append(link_targets(blocks))
+    try:
+        for i, block in enumerate(blocks):
+            builder.block(block, blocks[i + 1] if i + 1 < len(blocks) else None)
+        story: list[Flowable] = []
+        if meta.has_cover():
+            story += [NextPageTemplate("inner"), PageBreak()]
+        story += assemble(builder.units)
+        doc.build(story)
+    finally:
+        _LINK_SCOPE.pop()
+    WARNINGS.extend(glyph_problems())
+    LAST_LAYOUT.clear()
+    LAST_LAYOUT.extend(doc.layout)
+    write_layout(output.with_suffix(".layout.json"), doc.layout, doc.page)
     return output

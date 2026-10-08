@@ -1,0 +1,4350 @@
+{
+  "pages": 13,
+  "blocks": [
+    {
+      "id": "b1",
+      "kind": "kicker",
+      "part": 0,
+      "anchor": "about-spark-technologies",
+      "page": 2,
+      "x": 60,
+      "y": 756.41,
+      "w": 478.0,
+      "h": 26.0,
+      "y_top": 59.48,
+      "lines": [],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b2",
+      "kind": "page_title",
+      "part": 0,
+      "anchor": "",
+      "page": 2,
+      "x": 60,
+      "y": 719.42,
+      "w": 478.0,
+      "h": 29.9,
+      "y_top": 92.57,
+      "lines": [
+        {
+          "text": "Who We Are",
+          "x": 60,
+          "baseline": 723.32
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b3",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 2,
+      "x": 60,
+      "y": 683.43,
+      "w": 478.0,
+      "h": 23.0,
+      "y_top": 135.46,
+      "lines": [
+        {
+          "text": "We are a Dubai-based Full Spectrum AI technology company specialising in enterprise-grade AI solutions",
+          "x": 60,
+          "baseline": 696.43
+        },
+        {
+          "text": "for the construction, infrastructure, and industrial sectors.",
+          "x": 60,
+          "baseline": 684.93
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b4",
+      "kind": "tight",
+      "part": 0,
+      "anchor": "",
+      "page": 2,
+      "x": 60,
+      "y": 652.43,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 177.96,
+      "lines": [
+        {
+          "text": "Headquartered in Dubai, UAE",
+          "x": 60,
+          "baseline": 653.93
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b4",
+      "kind": "tight",
+      "part": 1,
+      "anchor": "",
+      "page": 2,
+      "x": 60,
+      "y": 635.93,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 194.46,
+      "lines": [
+        {
+          "text": "10+ years in software development and technology delivery",
+          "x": 60,
+          "baseline": 637.43
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b4",
+      "kind": "tight",
+      "part": 2,
+      "anchor": "",
+      "page": 2,
+      "x": 60,
+      "y": 619.43,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 210.96,
+      "lines": [
+        {
+          "text": "1.5+ years focused exclusively on Enterprise AI solutions",
+          "x": 60,
+          "baseline": 620.93
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b4",
+      "kind": "tight",
+      "part": 3,
+      "anchor": "",
+      "page": 2,
+      "x": 60,
+      "y": 602.93,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 227.46,
+      "lines": [
+        {
+          "text": "Deep expertise in UAE regulatory environments, FIDIC contracts, and GCC construction operations",
+          "x": 60,
+          "baseline": 604.43
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b4",
+      "kind": "tight",
+      "part": 4,
+      "anchor": "",
+      "page": 2,
+      "x": 60,
+      "y": 574.93,
+      "w": 478.0,
+      "h": 23.0,
+      "y_top": 243.96,
+      "lines": [
+        {
+          "text": "We combine advanced AI engineering with practical domain knowledge to solve high-impact, real-world",
+          "x": 60,
+          "baseline": 587.93
+        },
+        {
+          "text": "problems across the full construction project lifecycle.",
+          "x": 60,
+          "baseline": 576.43
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b10",
+      "kind": "sub_title",
+      "part": 0,
+      "anchor": "",
+      "page": 2,
+      "x": 60,
+      "y": 523.58,
+      "w": 478.0,
+      "h": 16.1,
+      "y_top": 302.21,
+      "lines": [
+        {
+          "text": "Our Solution Areas",
+          "x": 60,
+          "baseline": 525.68
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b11",
+      "kind": "cards",
+      "part": 0,
+      "anchor": "",
+      "page": 2,
+      "x": 60,
+      "y": 354.25,
+      "w": 478.0,
+      "h": 150.97,
+      "y_top": 336.67,
+      "lines": [
+        {
+          "text": "SME Outcome as a Service",
+          "x": 69.0,
+          "baseline": 487.59
+        },
+        {
+          "text": "AI training, consultation, automation, and",
+          "x": 69.0,
+          "baseline": 472.56
+        },
+        {
+          "text": "custom development for SMEs looking to turn AI",
+          "x": 69.0,
+          "baseline": 461.63
+        },
+        {
+          "text": "into measurable business outcomes.",
+          "x": 69.0,
+          "baseline": 450.71
+        },
+        {
+          "text": "Enterprise Solutions",
+          "x": 304.5,
+          "baseline": 487.59
+        },
+        {
+          "text": "Advanced AI and deep learning solutions for",
+          "x": 304.5,
+          "baseline": 472.56
+        },
+        {
+          "text": "enterprise operations, inspections, prediction,",
+          "x": 304.5,
+          "baseline": 461.63
+        },
+        {
+          "text": "automation, and secure system integration.",
+          "x": 304.5,
+          "baseline": 450.71
+        },
+        {
+          "text": "Custom AI App Development",
+          "x": 69.0,
+          "baseline": 404.23
+        },
+        {
+          "text": "Custom AI apps for enterprises, internal",
+          "x": 69.0,
+          "baseline": 389.2
+        },
+        {
+          "text": "workflow automation, AI-powered document",
+          "x": 69.0,
+          "baseline": 378.27
+        },
+        {
+          "text": "systems, CRM and operations apps.",
+          "x": 69.0,
+          "baseline": 367.35
+        },
+        {
+          "text": "In-House AI Products",
+          "x": 304.5,
+          "baseline": 404.23
+        },
+        {
+          "text": "Ready-to-deploy AI products built for specific",
+          "x": 304.5,
+          "baseline": 389.2
+        },
+        {
+          "text": "industry verticals. Spark Hire, Leadsreach,",
+          "x": 304.5,
+          "baseline": 378.27
+        },
+        {
+          "text": "CircleVoice, and Funnel Flow.",
+          "x": 304.5,
+          "baseline": 367.35
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": [
+        {
+          "x": 60.0,
+          "y": 437.61,
+          "w": 222,
+          "h": 67.61
+        },
+        {
+          "x": 295.5,
+          "y": 437.61,
+          "w": 222,
+          "h": 67.61
+        },
+        {
+          "x": 60.0,
+          "y": 354.25,
+          "w": 222,
+          "h": 67.61
+        },
+        {
+          "x": 295.5,
+          "y": 354.25,
+          "w": 222,
+          "h": 67.61
+        }
+      ]
+    },
+    {
+      "id": "b16",
+      "kind": "kicker",
+      "part": 0,
+      "anchor": "overview",
+      "page": 3,
+      "x": 60,
+      "y": 756.41,
+      "w": 478.0,
+      "h": 26.0,
+      "y_top": 59.48,
+      "lines": [],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b17",
+      "kind": "page_title",
+      "part": 0,
+      "anchor": "",
+      "page": 3,
+      "x": 60,
+      "y": 719.42,
+      "w": 478.0,
+      "h": 29.9,
+      "y_top": 92.57,
+      "lines": [
+        {
+          "text": "Driver check for the Condor fleet",
+          "x": 60,
+          "baseline": 723.32
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b18",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 3,
+      "x": 60,
+      "y": 660.43,
+      "w": 478.0,
+      "h": 46.0,
+      "y_top": 135.46,
+      "lines": [
+        {
+          "text": "At the start of each two week rotation, vehicles are handed to drivers from a paper book in the mechanics",
+          "x": 60,
+          "baseline": 696.43
+        },
+        {
+          "text": "room. The driver signs a waiver. Keys are passed by hand. There is no separate record of who was actually",
+          "x": 60,
+          "baseline": 684.93
+        },
+        {
+          "text": "driving a vehicle at a given time. If something goes wrong, the book is the only evidence, and it depends on",
+          "x": 60,
+          "baseline": 673.43
+        },
+        {
+          "text": "the page being filled in and matching the person who drove.",
+          "x": 60,
+          "baseline": 661.93
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b19",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 3,
+      "x": 60,
+      "y": 583.43,
+      "w": 478.0,
+      "h": 57.5,
+      "y_top": 200.96,
+      "lines": [
+        {
+          "text": "Spark Technologies will replace that book with a digital record, and add one check when the engine starts.",
+          "x": 60,
+          "baseline": 630.93
+        },
+        {
+          "text": "The mechanic still assigns a vehicle to a driver. The assignment is stored in a system, with the time written",
+          "x": 60,
+          "baseline": 619.43
+        },
+        {
+          "text": "automatically. At ignition, the driver confirms who they are. If that person matches the assignment, the trip",
+          "x": 60,
+          "baseline": 607.93
+        },
+        {
+          "text": "is logged. If there is no match, or no check, a manager sees it and reviews it. The system does not take",
+          "x": 60,
+          "baseline": 596.43
+        },
+        {
+          "text": "action on its own.",
+          "x": 60,
+          "baseline": 584.93
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b20",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 3,
+      "x": 60,
+      "y": 540.93,
+      "w": 478.0,
+      "h": 23.0,
+      "y_top": 277.96,
+      "lines": [
+        {
+          "text": "The assignment screen needs no new equipment. The only new equipment is the check inside each",
+          "x": 60,
+          "baseline": 553.93
+        },
+        {
+          "text": "vehicle. Condor chooses which kind is fitted. Nothing is installed until that choice is confirmed.",
+          "x": 60,
+          "baseline": 542.43
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b21",
+      "kind": "columns",
+      "part": 0,
+      "anchor": "",
+      "page": 3,
+      "x": 60,
+      "y": 470.64,
+      "w": 478.0,
+      "h": 51.79,
+      "y_top": 319.46,
+      "lines": [
+        {
+          "text": "Today",
+          "x": 66.0,
+          "baseline": 511.43
+        },
+        {
+          "text": "A paper book, a signed waiver, and keys",
+          "x": 66.0,
+          "baseline": 493.64
+        },
+        {
+          "text": "handed over by hand. A change of driver",
+          "x": 66.0,
+          "baseline": 482.14
+        },
+        {
+          "text": "during a shift is often not written down.",
+          "x": 66.0,
+          "baseline": 470.64
+        },
+        {
+          "text": "With the driver check",
+          "x": 300.0,
+          "baseline": 511.43
+        },
+        {
+          "text": "The same handover, on a screen. One check",
+          "x": 300.0,
+          "baseline": 493.64
+        },
+        {
+          "text": "at ignition. A short list of mismatches for a",
+          "x": 300.0,
+          "baseline": 482.14
+        },
+        {
+          "text": "manager to review.",
+          "x": 300.0,
+          "baseline": 470.64
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b24",
+      "kind": "callout",
+      "part": 0,
+      "anchor": "",
+      "page": 3,
+      "x": 60,
+      "y": 388.09,
+      "w": 478.0,
+      "h": 59.0,
+      "y_top": 394.8,
+      "lines": [
+        {
+          "text": "What Condor receives",
+          "x": 71.2,
+          "baseline": 427.73
+        },
+        {
+          "text": "A record of who was assigned each vehicle, a check of who started it, and a list of exceptions for",
+          "x": 71.2,
+          "baseline": 411.04
+        },
+        {
+          "text": "review. Each person and each vehicle uses one identity, so records line up across systems.",
+          "x": 71.2,
+          "baseline": 399.54
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b26",
+      "kind": "kicker",
+      "part": 0,
+      "anchor": "how-it-works",
+      "page": 4,
+      "x": 60,
+      "y": 756.41,
+      "w": 478.0,
+      "h": 26.0,
+      "y_top": 59.48,
+      "lines": [],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b27",
+      "kind": "page_title",
+      "part": 0,
+      "anchor": "",
+      "page": 4,
+      "x": 60,
+      "y": 719.42,
+      "w": 478.0,
+      "h": 29.9,
+      "y_top": 92.57,
+      "lines": [
+        {
+          "text": "From the book to the screen",
+          "x": 60,
+          "baseline": 723.32
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b28",
+      "kind": "h3",
+      "part": 0,
+      "anchor": "",
+      "page": 4,
+      "x": 60,
+      "y": 681.37,
+      "w": 478.0,
+      "h": 14.95,
+      "y_top": 145.57,
+      "lines": [
+        {
+          "text": "Today, at handover",
+          "x": 60,
+          "baseline": 683.32
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b29",
+      "kind": "bullets",
+      "part": 0,
+      "anchor": "",
+      "page": 4,
+      "x": 60,
+      "y": 665.54,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 164.85,
+      "lines": [
+        {
+          "text": "The mechanic hands the keys to the driver listed for that vehicle.",
+          "x": 87.8,
+          "baseline": 667.04
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b29",
+      "kind": "bullets",
+      "part": 1,
+      "anchor": "",
+      "page": 4,
+      "x": 60,
+      "y": 651.04,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 179.35,
+      "lines": [
+        {
+          "text": "The driver signs a waiver in the book.",
+          "x": 87.8,
+          "baseline": 652.54
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b29",
+      "kind": "bullets",
+      "part": 2,
+      "anchor": "",
+      "page": 4,
+      "x": 60,
+      "y": 636.54,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 193.85,
+      "lines": [
+        {
+          "text": "The mechanic writes the vehicle, the driver, and the date by hand.",
+          "x": 87.8,
+          "baseline": 638.04
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b29",
+      "kind": "bullets",
+      "part": 3,
+      "anchor": "",
+      "page": 4,
+      "x": 60,
+      "y": 610.54,
+      "w": 478.0,
+      "h": 23.0,
+      "y_top": 208.35,
+      "lines": [
+        {
+          "text": "If the keys are passed to someone else, or the vehicle breaks down, there is usually no written",
+          "x": 87.8,
+          "baseline": 623.54
+        },
+        {
+          "text": "record.",
+          "x": 87.8,
+          "baseline": 612.04
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b30",
+      "kind": "h3",
+      "part": 0,
+      "anchor": "",
+      "page": 4,
+      "x": 60,
+      "y": 585.49,
+      "w": 478.0,
+      "h": 14.95,
+      "y_top": 241.45,
+      "lines": [
+        {
+          "text": "With the driver check",
+          "x": 60,
+          "baseline": 587.44
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b31",
+      "kind": "bullets",
+      "part": 0,
+      "anchor": "",
+      "page": 4,
+      "x": 60,
+      "y": 569.66,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 260.73,
+      "lines": [
+        {
+          "text": "The mechanic opens the assignment screen and links the driver to the vehicle for the rotation.",
+          "x": 87.8,
+          "baseline": 571.16
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b31",
+      "kind": "bullets",
+      "part": 1,
+      "anchor": "",
+      "page": 4,
+      "x": 60,
+      "y": 555.16,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 275.23,
+      "lines": [
+        {
+          "text": "The system records the time. There is no handwriting.",
+          "x": 87.8,
+          "baseline": 556.66
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b31",
+      "kind": "bullets",
+      "part": 2,
+      "anchor": "",
+      "page": 4,
+      "x": 60,
+      "y": 540.66,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 289.73,
+      "lines": [
+        {
+          "text": "When the engine starts, the driver confirms who they are, by card tap or by face check.",
+          "x": 87.8,
+          "baseline": 542.16
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b31",
+      "kind": "bullets",
+      "part": 3,
+      "anchor": "",
+      "page": 4,
+      "x": 60,
+      "y": 514.66,
+      "w": 478.0,
+      "h": 23.0,
+      "y_top": 304.23,
+      "lines": [
+        {
+          "text": "The system compares that check with the assignment. A match is logged. A mismatch or a missing",
+          "x": 87.8,
+          "baseline": 527.66
+        },
+        {
+          "text": "check is sent to a manager.",
+          "x": 87.8,
+          "baseline": 516.16
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b32",
+      "kind": "figure",
+      "part": 0,
+      "anchor": "",
+      "page": 4,
+      "x": 60,
+      "y": 62.35,
+      "w": 478.0,
+      "h": 432.7,
+      "y_top": 346.83,
+      "lines": [],
+      "cells": [],
+      "nodes": [
+        {
+          "id": "A",
+          "text": "Rotation starts",
+          "x": 170.63,
+          "y": 444.71,
+          "w": 149.05,
+          "h": 27.97
+        },
+        {
+          "id": "B",
+          "text": "Mechanic links the driver to the vehicle",
+          "x": 170.63,
+          "y": 376.18,
+          "w": 149.05,
+          "h": 40.56
+        },
+        {
+          "id": "C",
+          "text": "Driver starts the engine",
+          "x": 170.63,
+          "y": 320.24,
+          "w": 149.05,
+          "h": 27.97
+        },
+        {
+          "id": "D",
+          "text": "Driver confirms who they are",
+          "x": 170.63,
+          "y": 264.3,
+          "w": 149.05,
+          "h": 27.97
+        },
+        {
+          "id": "E",
+          "text": "Does this match the assignment?",
+          "x": 170.63,
+          "y": 171.44,
+          "w": 149.05,
+          "h": 64.89
+        },
+        {
+          "id": "F",
+          "text": "Trip is logged as normal",
+          "x": 145.46,
+          "y": 76.34,
+          "w": 149.05,
+          "h": 27.97
+        },
+        {
+          "id": "G",
+          "text": "A manager reviews it",
+          "x": 311.89,
+          "y": 76.34,
+          "w": 149.05,
+          "h": 27.97
+        }
+      ],
+      "cards": []
+    },
+    {
+      "id": "b33",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 5,
+      "x": 60,
+      "y": 748.03,
+      "w": 478.0,
+      "h": 34.5,
+      "y_top": 59.36,
+      "lines": [
+        {
+          "text": "The equipment in the vehicle talks to the IMG GPS tracker already fitted. The tracker sends data over the",
+          "x": 60,
+          "baseline": 772.53
+        },
+        {
+          "text": "mobile network to the IMG platform. The driver check reads that information and adds the match and the",
+          "x": 60,
+          "baseline": 761.03
+        },
+        {
+          "text": "review list. The tracker already in the vehicle does not need to be replaced for the first release.",
+          "x": 60,
+          "baseline": 749.53
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b34",
+      "kind": "figure",
+      "part": 0,
+      "anchor": "",
+      "page": 5,
+      "x": 60,
+      "y": 598.37,
+      "w": 478.0,
+      "h": 130.06,
+      "y_top": 113.46,
+      "lines": [],
+      "cells": [],
+      "nodes": [
+        {
+          "id": "A",
+          "text": "Card or camera in the vehicle",
+          "x": 89.22,
+          "y": 673.89,
+          "w": 87.06,
+          "h": 40.56
+        },
+        {
+          "id": "B",
+          "text": "Reader or camera unit",
+          "x": 200.05,
+          "y": 673.89,
+          "w": 87.06,
+          "h": 40.56
+        },
+        {
+          "id": "C",
+          "text": "IMG tracker already fitted",
+          "x": 310.89,
+          "y": 673.89,
+          "w": 87.06,
+          "h": 40.56
+        },
+        {
+          "id": "D",
+          "text": "Mobile network",
+          "x": 421.72,
+          "y": 673.89,
+          "w": 87.06,
+          "h": 40.56
+        },
+        {
+          "id": "E",
+          "text": "IMG platform",
+          "x": 421.72,
+          "y": 612.36,
+          "w": 87.06,
+          "h": 40.56
+        },
+        {
+          "id": "F",
+          "text": "Driver check",
+          "x": 310.89,
+          "y": 612.36,
+          "w": 87.06,
+          "h": 40.56
+        },
+        {
+          "id": "G",
+          "text": "Review list for a manager",
+          "x": 200.05,
+          "y": 612.36,
+          "w": 87.06,
+          "h": 40.56
+        }
+      ],
+      "cards": []
+    },
+    {
+      "id": "b35",
+      "kind": "kicker",
+      "part": 0,
+      "anchor": "two-ways-to-confirm-the-driver",
+      "page": 6,
+      "x": 60,
+      "y": 756.41,
+      "w": 478.0,
+      "h": 26.0,
+      "y_top": 59.48,
+      "lines": [],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b36",
+      "kind": "page_title",
+      "part": 0,
+      "anchor": "",
+      "page": 6,
+      "x": 60,
+      "y": 719.42,
+      "w": 478.0,
+      "h": 29.9,
+      "y_top": 92.57,
+      "lines": [
+        {
+          "text": "Card tap or face check",
+          "x": 60,
+          "baseline": 723.32
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b37",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 6,
+      "x": 60,
+      "y": 671.93,
+      "w": 478.0,
+      "h": 34.5,
+      "y_top": 135.46,
+      "lines": [
+        {
+          "text": "Both answer the same question: who is in the seat when the engine starts. Spark Technologies",
+          "x": 60,
+          "baseline": 696.43
+        },
+        {
+          "text": "recommends the card tap for the whole fleet. The face check can be tried later on a small group of vehicles",
+          "x": 60,
+          "baseline": 684.93
+        },
+        {
+          "text": "if Condor decides the extra check is worth the cost and the consent process.",
+          "x": 60,
+          "baseline": 673.43
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b38",
+      "kind": "h3",
+      "part": 0,
+      "anchor": "",
+      "page": 6,
+      "x": 60,
+      "y": 647.18,
+      "w": 478.0,
+      "h": 14.95,
+      "y_top": 179.76,
+      "lines": [
+        {
+          "text": "Card tap",
+          "x": 60,
+          "baseline": 649.13
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b39",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 6,
+      "x": 60,
+      "y": 596.03,
+      "w": 478.0,
+      "h": 46.0,
+      "y_top": 199.86,
+      "lines": [
+        {
+          "text": "Each driver carries one personal card, like an office door card. A small reader is fitted where the driver can",
+          "x": 60,
+          "baseline": 632.03
+        },
+        {
+          "text": "reach it from the seat. Before starting, the driver taps the card. The reader sends a unique number to the",
+          "x": 60,
+          "baseline": 620.53
+        },
+        {
+          "text": "GPS tracker already in the vehicle. The tracker records the time and attaches that driver to the trip, speed,",
+          "x": 60,
+          "baseline": 609.03
+        },
+        {
+          "text": "and location it already sends.",
+          "x": 60,
+          "baseline": 597.53
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b40",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 6,
+      "x": 60,
+      "y": 542.03,
+      "w": 478.0,
+      "h": 34.5,
+      "y_top": 265.36,
+      "lines": [
+        {
+          "text": "The card has no battery. The reader is wired to the tracker, not to the engine computer, so the fit does not",
+          "x": 60,
+          "baseline": 566.53
+        },
+        {
+          "text": "affect the engine. Condor can choose to hold the ignition until a valid tap, or only to record and flag a",
+          "x": 60,
+          "baseline": 555.03
+        },
+        {
+          "text": "missing tap. Flagging first is the safer start, so a driver is not stuck on site because of a reader.",
+          "x": 60,
+          "baseline": 543.53
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b41",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 6,
+      "x": 60,
+      "y": 488.03,
+      "w": 478.0,
+      "h": 34.5,
+      "y_top": 319.36,
+      "lines": [
+        {
+          "text": "This confirms that a specific card was tapped in a specific vehicle at a specific time. It does not confirm that",
+          "x": 60,
+          "baseline": 512.53
+        },
+        {
+          "text": "the person holding the card is the owner. A simple process for issuing and replacing cards, and a review",
+          "x": 60,
+          "baseline": 501.03
+        },
+        {
+          "text": "when the same problem repeats, covers that gap. Cards can be lost, shared, or left in another vehicle.",
+          "x": 60,
+          "baseline": 489.53
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b42",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 6,
+      "x": 60,
+      "y": 445.53,
+      "w": 478.0,
+      "h": 23.0,
+      "y_top": 373.36,
+      "lines": [
+        {
+          "text": "If the IMG tracker can already read a driver card, the reader plugs into equipment Condor already has. That",
+          "x": 60,
+          "baseline": 458.53
+        },
+        {
+          "text": "question is item 16 below.",
+          "x": 60,
+          "baseline": 447.03
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b43",
+      "kind": "h3",
+      "part": 0,
+      "anchor": "",
+      "page": 6,
+      "x": 60,
+      "y": 420.78,
+      "w": 478.0,
+      "h": 14.95,
+      "y_top": 406.16,
+      "lines": [
+        {
+          "text": "Face check",
+          "x": 60,
+          "baseline": 422.73
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b44",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 6,
+      "x": 60,
+      "y": 358.13,
+      "w": 478.0,
+      "h": 57.5,
+      "y_top": 426.26,
+      "lines": [
+        {
+          "text": "A small camera faces the driver, usually on the windscreen pillar or the dashboard. It can see a face at",
+          "x": 60,
+          "baseline": 405.63
+        },
+        {
+          "text": "night. A chip in the camera, not a remote server, compares the live face with a photo taken when the driver",
+          "x": 60,
+          "baseline": 394.13
+        },
+        {
+          "text": "was enrolled. Only the result, match or no match, needs to leave the vehicle, unless Condor later asks to",
+          "x": 60,
+          "baseline": 382.63
+        },
+        {
+          "text": "keep images for flagged events. The check can run through the start of the trip, so a change of driver",
+          "x": 60,
+          "baseline": 371.13
+        },
+        {
+          "text": "during a shift can be noticed. A card tap happens once.",
+          "x": 60,
+          "baseline": 359.63
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b45",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 6,
+      "x": 60,
+      "y": 304.13,
+      "w": 478.0,
+      "h": 34.5,
+      "y_top": 503.26,
+      "lines": [
+        {
+          "text": "A face is harder to hand to someone else than a card. The check can still fail in sun glare, dust on the lens,",
+          "x": 60,
+          "baseline": 328.63
+        },
+        {
+          "text": "or when the face is covered, for example in cold or dusty conditions. Every driver needs one clear photo",
+          "x": 60,
+          "baseline": 317.13
+        },
+        {
+          "text": "before the check works, and a new photo if people change often.",
+          "x": 60,
+          "baseline": 305.63
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b46",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 6,
+      "x": 60,
+      "y": 250.13,
+      "w": 478.0,
+      "h": 34.5,
+      "y_top": 557.26,
+      "lines": [
+        {
+          "text": "A face image is personal data under Uzbek law. Each driver must agree in writing, and the data must stay",
+          "x": 60,
+          "baseline": 274.63
+        },
+        {
+          "text": "on servers inside Uzbekistan. The camera costs more than a card reader, and the fit takes longer because",
+          "x": 60,
+          "baseline": 263.13
+        },
+        {
+          "text": "the camera needs a clear, stable view of the face.",
+          "x": 60,
+          "baseline": 251.63
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b47",
+      "kind": "callout",
+      "part": 0,
+      "anchor": "",
+      "page": 6,
+      "x": 60,
+      "y": 157.58,
+      "w": 478.0,
+      "h": 70.5,
+      "y_top": 613.81,
+      "lines": [
+        {
+          "text": "Recommendation",
+          "x": 71.2,
+          "baseline": 208.72
+        },
+        {
+          "text": "Start with the card tap across the fleet. It replaces the paper book, it does not use face photos,",
+          "x": 71.2,
+          "baseline": 192.03
+        },
+        {
+          "text": "and it is quicker to fit. Pilot the face check on a small group of vehicles only if Condor later",
+          "x": 71.2,
+          "baseline": 180.53
+        },
+        {
+          "text": "decides continuous checking is worth the cost and the written consent.",
+          "x": 71.2,
+          "baseline": 169.03
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b49",
+      "kind": "h3",
+      "part": 0,
+      "anchor": "",
+      "page": 7,
+      "x": 60,
+      "y": 767.78,
+      "w": 478.0,
+      "h": 14.95,
+      "y_top": 59.16,
+      "lines": [
+        {
+          "text": "What is fitted in each vehicle",
+          "x": 60,
+          "baseline": 769.73
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b50",
+      "kind": "table",
+      "part": 0,
+      "anchor": "",
+      "page": 7,
+      "x": 60,
+      "y": 460.68,
+      "w": 451.5,
+      "h": 287.85,
+      "y_top": 93.36,
+      "lines": [],
+      "cells": [
+        {
+          "r": 0,
+          "c": 0,
+          "x": 60,
+          "y": 726.78,
+          "w": 55.24,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 1,
+          "x": 115.24,
+          "y": 726.78,
+          "w": 141.69,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 2,
+          "x": 256.93,
+          "y": 726.78,
+          "w": 110.47,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 3,
+          "x": 367.4,
+          "y": 726.78,
+          "w": 144.1,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 0,
+          "x": 60,
+          "y": 684.33,
+          "w": 55.24,
+          "h": 42.45
+        },
+        {
+          "r": 1,
+          "c": 1,
+          "x": 115.24,
+          "y": 684.33,
+          "w": 141.69,
+          "h": 42.45
+        },
+        {
+          "r": 1,
+          "c": 2,
+          "x": 256.93,
+          "y": 684.33,
+          "w": 110.47,
+          "h": 42.45
+        },
+        {
+          "r": 1,
+          "c": 3,
+          "x": 367.4,
+          "y": 684.33,
+          "w": 144.1,
+          "h": 42.45
+        },
+        {
+          "r": 2,
+          "c": 0,
+          "x": 60,
+          "y": 652.23,
+          "w": 55.24,
+          "h": 32.1
+        },
+        {
+          "r": 2,
+          "c": 1,
+          "x": 115.24,
+          "y": 652.23,
+          "w": 141.69,
+          "h": 32.1
+        },
+        {
+          "r": 2,
+          "c": 2,
+          "x": 256.93,
+          "y": 652.23,
+          "w": 110.47,
+          "h": 32.1
+        },
+        {
+          "r": 2,
+          "c": 3,
+          "x": 367.4,
+          "y": 652.23,
+          "w": 144.1,
+          "h": 32.1
+        },
+        {
+          "r": 3,
+          "c": 0,
+          "x": 60,
+          "y": 609.78,
+          "w": 55.24,
+          "h": 42.45
+        },
+        {
+          "r": 3,
+          "c": 1,
+          "x": 115.24,
+          "y": 609.78,
+          "w": 141.69,
+          "h": 42.45
+        },
+        {
+          "r": 3,
+          "c": 2,
+          "x": 256.93,
+          "y": 609.78,
+          "w": 110.47,
+          "h": 42.45
+        },
+        {
+          "r": 3,
+          "c": 3,
+          "x": 367.4,
+          "y": 609.78,
+          "w": 144.1,
+          "h": 42.45
+        },
+        {
+          "r": 4,
+          "c": 0,
+          "x": 60,
+          "y": 577.68,
+          "w": 55.24,
+          "h": 32.1
+        },
+        {
+          "r": 4,
+          "c": 1,
+          "x": 115.24,
+          "y": 577.68,
+          "w": 141.69,
+          "h": 32.1
+        },
+        {
+          "r": 4,
+          "c": 2,
+          "x": 256.93,
+          "y": 577.68,
+          "w": 110.47,
+          "h": 32.1
+        },
+        {
+          "r": 4,
+          "c": 3,
+          "x": 367.4,
+          "y": 577.68,
+          "w": 144.1,
+          "h": 32.1
+        },
+        {
+          "r": 5,
+          "c": 0,
+          "x": 60,
+          "y": 545.58,
+          "w": 55.24,
+          "h": 32.1
+        },
+        {
+          "r": 5,
+          "c": 1,
+          "x": 115.24,
+          "y": 545.58,
+          "w": 141.69,
+          "h": 32.1
+        },
+        {
+          "r": 5,
+          "c": 2,
+          "x": 256.93,
+          "y": 545.58,
+          "w": 110.47,
+          "h": 32.1
+        },
+        {
+          "r": 5,
+          "c": 3,
+          "x": 367.4,
+          "y": 545.58,
+          "w": 144.1,
+          "h": 32.1
+        },
+        {
+          "r": 6,
+          "c": 0,
+          "x": 60,
+          "y": 503.13,
+          "w": 55.24,
+          "h": 42.45
+        },
+        {
+          "r": 6,
+          "c": 1,
+          "x": 115.24,
+          "y": 503.13,
+          "w": 141.69,
+          "h": 42.45
+        },
+        {
+          "r": 6,
+          "c": 2,
+          "x": 256.93,
+          "y": 503.13,
+          "w": 110.47,
+          "h": 42.45
+        },
+        {
+          "r": 6,
+          "c": 3,
+          "x": 367.4,
+          "y": 503.13,
+          "w": 144.1,
+          "h": 42.45
+        },
+        {
+          "r": 7,
+          "c": 0,
+          "x": 60,
+          "y": 460.68,
+          "w": 55.24,
+          "h": 42.45
+        },
+        {
+          "r": 7,
+          "c": 1,
+          "x": 115.24,
+          "y": 460.68,
+          "w": 141.69,
+          "h": 42.45
+        },
+        {
+          "r": 7,
+          "c": 2,
+          "x": 256.93,
+          "y": 460.68,
+          "w": 110.47,
+          "h": 42.45
+        },
+        {
+          "r": 7,
+          "c": 3,
+          "x": 367.4,
+          "y": 460.68,
+          "w": 144.1,
+          "h": 42.45
+        }
+      ],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b51",
+      "kind": "h3",
+      "part": 0,
+      "anchor": "",
+      "page": 7,
+      "x": 60,
+      "y": 421.96,
+      "w": 478.0,
+      "h": 14.95,
+      "y_top": 404.98,
+      "lines": [
+        {
+          "text": "What the central system needs",
+          "x": 60,
+          "baseline": 423.91
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b52",
+      "kind": "table",
+      "part": 0,
+      "anchor": "",
+      "page": 7,
+      "x": 60,
+      "y": 251.51,
+      "w": 451.5,
+      "h": 151.2,
+      "y_top": 439.18,
+      "lines": [],
+      "cells": [
+        {
+          "r": 0,
+          "c": 0,
+          "x": 60,
+          "y": 380.96,
+          "w": 108.59,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 1,
+          "x": 168.59,
+          "y": 380.96,
+          "w": 342.91,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 0,
+          "x": 60,
+          "y": 359.21,
+          "w": 108.59,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 1,
+          "x": 168.59,
+          "y": 359.21,
+          "w": 342.91,
+          "h": 21.75
+        },
+        {
+          "r": 2,
+          "c": 0,
+          "x": 60,
+          "y": 337.46,
+          "w": 108.59,
+          "h": 21.75
+        },
+        {
+          "r": 2,
+          "c": 1,
+          "x": 168.59,
+          "y": 337.46,
+          "w": 342.91,
+          "h": 21.75
+        },
+        {
+          "r": 3,
+          "c": 0,
+          "x": 60,
+          "y": 305.36,
+          "w": 108.59,
+          "h": 32.1
+        },
+        {
+          "r": 3,
+          "c": 1,
+          "x": 168.59,
+          "y": 305.36,
+          "w": 342.91,
+          "h": 32.1
+        },
+        {
+          "r": 4,
+          "c": 0,
+          "x": 60,
+          "y": 273.26,
+          "w": 108.59,
+          "h": 32.1
+        },
+        {
+          "r": 4,
+          "c": 1,
+          "x": 168.59,
+          "y": 273.26,
+          "w": 342.91,
+          "h": 32.1
+        },
+        {
+          "r": 5,
+          "c": 0,
+          "x": 60,
+          "y": 251.51,
+          "w": 108.59,
+          "h": 21.75
+        },
+        {
+          "r": 5,
+          "c": 1,
+          "x": 168.59,
+          "y": 251.51,
+          "w": 342.91,
+          "h": 21.75
+        }
+      ],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b53",
+      "kind": "kicker",
+      "part": 0,
+      "anchor": "what-condor-provides",
+      "page": 8,
+      "x": 60,
+      "y": 756.41,
+      "w": 478.0,
+      "h": 26.0,
+      "y_top": 59.48,
+      "lines": [],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b54",
+      "kind": "page_title",
+      "part": 0,
+      "anchor": "",
+      "page": 8,
+      "x": 60,
+      "y": 719.42,
+      "w": 478.0,
+      "h": 29.9,
+      "y_top": 92.57,
+      "lines": [
+        {
+          "text": "Why these items are needed",
+          "x": 60,
+          "baseline": 723.32
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b55",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 8,
+      "x": 60,
+      "y": 671.93,
+      "w": 478.0,
+      "h": 34.5,
+      "y_top": 135.46,
+      "lines": [
+        {
+          "text": "Spark Technologies needs 28 items to build the driver check. Most are documents Condor already holds, or",
+          "x": 60,
+          "baseline": 696.43
+        },
+        {
+          "text": "a short answer. No new equipment is required to start the work. Equipment is fitted only after Condor",
+          "x": 60,
+          "baseline": 684.93
+        },
+        {
+          "text": "chooses the card tap or the face check.",
+          "x": 60,
+          "baseline": 673.43
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b56",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 8,
+      "x": 60,
+      "y": 617.93,
+      "w": 478.0,
+      "h": 34.5,
+      "y_top": 189.46,
+      "lines": [
+        {
+          "text": "Items marked after the confidentiality agreement wait until that agreement is signed. Where a page",
+          "x": 60,
+          "baseline": 642.43
+        },
+        {
+          "text": "contains a name or an identity number, the name can be covered. Spark Technologies needs the shape of",
+          "x": 60,
+          "baseline": 630.93
+        },
+        {
+          "text": "the record and how it moves, not a public copy of personal details.",
+          "x": 60,
+          "baseline": 619.43
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b57",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 8,
+      "x": 60,
+      "y": 575.43,
+      "w": 478.0,
+      "h": 23.0,
+      "y_top": 243.46,
+      "lines": [
+        {
+          "text": "Photos from a phone are enough for paper pages. Please send items by email to the Spark Technologies",
+          "x": 60,
+          "baseline": 588.43
+        },
+        {
+          "text": "team.",
+          "x": 60,
+          "baseline": 576.93
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b58",
+      "kind": "h3",
+      "part": 0,
+      "anchor": "",
+      "page": 8,
+      "x": 60,
+      "y": 550.68,
+      "w": 478.0,
+      "h": 14.95,
+      "y_top": 276.26,
+      "lines": [
+        {
+          "text": "A. How vehicles are handed out today",
+          "x": 60,
+          "baseline": 552.63
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b59",
+      "kind": "table",
+      "part": 0,
+      "anchor": "",
+      "page": 8,
+      "x": 60,
+      "y": 307.78,
+      "w": 451.5,
+      "h": 223.65,
+      "y_top": 310.46,
+      "lines": [],
+      "cells": [
+        {
+          "r": 0,
+          "c": 0,
+          "x": 60,
+          "y": 509.68,
+          "w": 28.22,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 1,
+          "x": 88.22,
+          "y": 509.68,
+          "w": 211.64,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 2,
+          "x": 299.86,
+          "y": 509.68,
+          "w": 211.64,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 0,
+          "x": 60,
+          "y": 467.23,
+          "w": 28.22,
+          "h": 42.45
+        },
+        {
+          "r": 1,
+          "c": 1,
+          "x": 88.22,
+          "y": 467.23,
+          "w": 211.64,
+          "h": 42.45
+        },
+        {
+          "r": 1,
+          "c": 2,
+          "x": 299.86,
+          "y": 467.23,
+          "w": 211.64,
+          "h": 42.45
+        },
+        {
+          "r": 2,
+          "c": 0,
+          "x": 60,
+          "y": 435.13,
+          "w": 28.22,
+          "h": 32.1
+        },
+        {
+          "r": 2,
+          "c": 1,
+          "x": 88.22,
+          "y": 435.13,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 2,
+          "c": 2,
+          "x": 299.86,
+          "y": 435.13,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 3,
+          "c": 0,
+          "x": 60,
+          "y": 392.68,
+          "w": 28.22,
+          "h": 42.45
+        },
+        {
+          "r": 3,
+          "c": 1,
+          "x": 88.22,
+          "y": 392.68,
+          "w": 211.64,
+          "h": 42.45
+        },
+        {
+          "r": 3,
+          "c": 2,
+          "x": 299.86,
+          "y": 392.68,
+          "w": 211.64,
+          "h": 42.45
+        },
+        {
+          "r": 4,
+          "c": 0,
+          "x": 60,
+          "y": 360.58,
+          "w": 28.22,
+          "h": 32.1
+        },
+        {
+          "r": 4,
+          "c": 1,
+          "x": 88.22,
+          "y": 360.58,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 4,
+          "c": 2,
+          "x": 299.86,
+          "y": 360.58,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 5,
+          "c": 0,
+          "x": 60,
+          "y": 307.78,
+          "w": 28.22,
+          "h": 52.8
+        },
+        {
+          "r": 5,
+          "c": 1,
+          "x": 88.22,
+          "y": 307.78,
+          "w": 211.64,
+          "h": 52.8
+        },
+        {
+          "r": 5,
+          "c": 2,
+          "x": 299.86,
+          "y": 307.78,
+          "w": 211.64,
+          "h": 52.8
+        }
+      ],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b60",
+      "kind": "h3",
+      "part": 0,
+      "anchor": "",
+      "page": 8,
+      "x": 60,
+      "y": 269.06,
+      "w": 478.0,
+      "h": 14.95,
+      "y_top": 557.88,
+      "lines": [
+        {
+          "text": "B. Vehicles",
+          "x": 60,
+          "baseline": 271.01
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b61",
+      "kind": "table",
+      "part": 0,
+      "anchor": "",
+      "page": 8,
+      "x": 60,
+      "y": 99.66,
+      "w": 451.5,
+      "h": 150.15,
+      "y_top": 592.08,
+      "lines": [],
+      "cells": [
+        {
+          "r": 0,
+          "c": 0,
+          "x": 60,
+          "y": 228.06,
+          "w": 28.22,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 1,
+          "x": 88.22,
+          "y": 228.06,
+          "w": 211.64,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 2,
+          "x": 299.86,
+          "y": 228.06,
+          "w": 211.64,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 0,
+          "x": 60,
+          "y": 195.96,
+          "w": 28.22,
+          "h": 32.1
+        },
+        {
+          "r": 1,
+          "c": 1,
+          "x": 88.22,
+          "y": 195.96,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 1,
+          "c": 2,
+          "x": 299.86,
+          "y": 195.96,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 2,
+          "c": 0,
+          "x": 60,
+          "y": 163.86,
+          "w": 28.22,
+          "h": 32.1
+        },
+        {
+          "r": 2,
+          "c": 1,
+          "x": 88.22,
+          "y": 163.86,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 2,
+          "c": 2,
+          "x": 299.86,
+          "y": 163.86,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 3,
+          "c": 0,
+          "x": 60,
+          "y": 131.76,
+          "w": 28.22,
+          "h": 32.1
+        },
+        {
+          "r": 3,
+          "c": 1,
+          "x": 88.22,
+          "y": 131.76,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 3,
+          "c": 2,
+          "x": 299.86,
+          "y": 131.76,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 4,
+          "c": 0,
+          "x": 60,
+          "y": 99.66,
+          "w": 28.22,
+          "h": 32.1
+        },
+        {
+          "r": 4,
+          "c": 1,
+          "x": 88.22,
+          "y": 99.66,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 4,
+          "c": 2,
+          "x": 299.86,
+          "y": 99.66,
+          "w": 211.64,
+          "h": 32.1
+        }
+      ],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b62",
+      "kind": "h3",
+      "part": 0,
+      "anchor": "",
+      "page": 9,
+      "x": 60,
+      "y": 767.78,
+      "w": 478.0,
+      "h": 14.95,
+      "y_top": 59.16,
+      "lines": [
+        {
+          "text": "C. Drivers",
+          "x": 60,
+          "baseline": 769.73
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b63",
+      "kind": "table",
+      "part": 0,
+      "anchor": "",
+      "page": 9,
+      "x": 60,
+      "y": 588.03,
+      "w": 451.5,
+      "h": 160.5,
+      "y_top": 93.36,
+      "lines": [],
+      "cells": [
+        {
+          "r": 0,
+          "c": 0,
+          "x": 60,
+          "y": 726.78,
+          "w": 28.22,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 1,
+          "x": 88.22,
+          "y": 726.78,
+          "w": 211.64,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 2,
+          "x": 299.86,
+          "y": 726.78,
+          "w": 211.64,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 0,
+          "x": 60,
+          "y": 684.33,
+          "w": 28.22,
+          "h": 42.45
+        },
+        {
+          "r": 1,
+          "c": 1,
+          "x": 88.22,
+          "y": 684.33,
+          "w": 211.64,
+          "h": 42.45
+        },
+        {
+          "r": 1,
+          "c": 2,
+          "x": 299.86,
+          "y": 684.33,
+          "w": 211.64,
+          "h": 42.45
+        },
+        {
+          "r": 2,
+          "c": 0,
+          "x": 60,
+          "y": 652.23,
+          "w": 28.22,
+          "h": 32.1
+        },
+        {
+          "r": 2,
+          "c": 1,
+          "x": 88.22,
+          "y": 652.23,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 2,
+          "c": 2,
+          "x": 299.86,
+          "y": 652.23,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 3,
+          "c": 0,
+          "x": 60,
+          "y": 620.13,
+          "w": 28.22,
+          "h": 32.1
+        },
+        {
+          "r": 3,
+          "c": 1,
+          "x": 88.22,
+          "y": 620.13,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 3,
+          "c": 2,
+          "x": 299.86,
+          "y": 620.13,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 4,
+          "c": 0,
+          "x": 60,
+          "y": 588.03,
+          "w": 28.22,
+          "h": 32.1
+        },
+        {
+          "r": 4,
+          "c": 1,
+          "x": 88.22,
+          "y": 588.03,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 4,
+          "c": 2,
+          "x": 299.86,
+          "y": 588.03,
+          "w": 211.64,
+          "h": 32.1
+        }
+      ],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b64",
+      "kind": "h3",
+      "part": 0,
+      "anchor": "",
+      "page": 9,
+      "x": 60,
+      "y": 549.31,
+      "w": 478.0,
+      "h": 14.95,
+      "y_top": 277.63,
+      "lines": [
+        {
+          "text": "D. The IMG GPS system",
+          "x": 60,
+          "baseline": 551.26
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b65",
+      "kind": "table",
+      "part": 0,
+      "anchor": "",
+      "page": 9,
+      "x": 60,
+      "y": 359.21,
+      "w": 451.5,
+      "h": 170.85,
+      "y_top": 311.83,
+      "lines": [],
+      "cells": [
+        {
+          "r": 0,
+          "c": 0,
+          "x": 60,
+          "y": 508.31,
+          "w": 28.22,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 1,
+          "x": 88.22,
+          "y": 508.31,
+          "w": 211.64,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 2,
+          "x": 299.86,
+          "y": 508.31,
+          "w": 211.64,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 0,
+          "x": 60,
+          "y": 476.21,
+          "w": 28.22,
+          "h": 32.1
+        },
+        {
+          "r": 1,
+          "c": 1,
+          "x": 88.22,
+          "y": 476.21,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 1,
+          "c": 2,
+          "x": 299.86,
+          "y": 476.21,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 2,
+          "c": 0,
+          "x": 60,
+          "y": 444.11,
+          "w": 28.22,
+          "h": 32.1
+        },
+        {
+          "r": 2,
+          "c": 1,
+          "x": 88.22,
+          "y": 444.11,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 2,
+          "c": 2,
+          "x": 299.86,
+          "y": 444.11,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 3,
+          "c": 0,
+          "x": 60,
+          "y": 401.66,
+          "w": 28.22,
+          "h": 42.45
+        },
+        {
+          "r": 3,
+          "c": 1,
+          "x": 88.22,
+          "y": 401.66,
+          "w": 211.64,
+          "h": 42.45
+        },
+        {
+          "r": 3,
+          "c": 2,
+          "x": 299.86,
+          "y": 401.66,
+          "w": 211.64,
+          "h": 42.45
+        },
+        {
+          "r": 4,
+          "c": 0,
+          "x": 60,
+          "y": 359.21,
+          "w": 28.22,
+          "h": 42.45
+        },
+        {
+          "r": 4,
+          "c": 1,
+          "x": 88.22,
+          "y": 359.21,
+          "w": 211.64,
+          "h": 42.45
+        },
+        {
+          "r": 4,
+          "c": 2,
+          "x": 299.86,
+          "y": 359.21,
+          "w": 211.64,
+          "h": 42.45
+        }
+      ],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b66",
+      "kind": "h3",
+      "part": 0,
+      "anchor": "",
+      "page": 9,
+      "x": 60,
+      "y": 320.49,
+      "w": 478.0,
+      "h": 14.95,
+      "y_top": 506.45,
+      "lines": [
+        {
+          "text": "E. Places and the network",
+          "x": 60,
+          "baseline": 322.44
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b67",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 9,
+      "x": 60,
+      "y": 292.34,
+      "w": 478.0,
+      "h": 23.0,
+      "y_top": 526.55,
+      "lines": [
+        {
+          "text": "Spark Technologies has the seven Condor locations: Kumli Facility, Urtakum Facility, Storm Camp,",
+          "x": 60,
+          "baseline": 305.34
+        },
+        {
+          "text": "Operations Laydown Area, Drilling Laydown Area, and the future Compressor Station and Urtakum Camp.",
+          "x": 60,
+          "baseline": 293.84
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b68",
+      "kind": "table",
+      "part": 0,
+      "anchor": "",
+      "page": 9,
+      "x": 60,
+      "y": 103.49,
+      "w": 451.5,
+      "h": 170.85,
+      "y_top": 567.55,
+      "lines": [],
+      "cells": [
+        {
+          "r": 0,
+          "c": 0,
+          "x": 60,
+          "y": 252.59,
+          "w": 28.22,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 1,
+          "x": 88.22,
+          "y": 252.59,
+          "w": 211.64,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 2,
+          "x": 299.86,
+          "y": 252.59,
+          "w": 211.64,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 0,
+          "x": 60,
+          "y": 220.49,
+          "w": 28.22,
+          "h": 32.1
+        },
+        {
+          "r": 1,
+          "c": 1,
+          "x": 88.22,
+          "y": 220.49,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 1,
+          "c": 2,
+          "x": 299.86,
+          "y": 220.49,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 2,
+          "c": 0,
+          "x": 60,
+          "y": 188.39,
+          "w": 28.22,
+          "h": 32.1
+        },
+        {
+          "r": 2,
+          "c": 1,
+          "x": 88.22,
+          "y": 188.39,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 2,
+          "c": 2,
+          "x": 299.86,
+          "y": 188.39,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 3,
+          "c": 0,
+          "x": 60,
+          "y": 145.94,
+          "w": 28.22,
+          "h": 42.45
+        },
+        {
+          "r": 3,
+          "c": 1,
+          "x": 88.22,
+          "y": 145.94,
+          "w": 211.64,
+          "h": 42.45
+        },
+        {
+          "r": 3,
+          "c": 2,
+          "x": 299.86,
+          "y": 145.94,
+          "w": 211.64,
+          "h": 42.45
+        },
+        {
+          "r": 4,
+          "c": 0,
+          "x": 60,
+          "y": 103.49,
+          "w": 28.22,
+          "h": 42.45
+        },
+        {
+          "r": 4,
+          "c": 1,
+          "x": 88.22,
+          "y": 103.49,
+          "w": 211.64,
+          "h": 42.45
+        },
+        {
+          "r": 4,
+          "c": 2,
+          "x": 299.86,
+          "y": 103.49,
+          "w": 211.64,
+          "h": 42.45
+        }
+      ],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b69",
+      "kind": "h3",
+      "part": 0,
+      "anchor": "",
+      "page": 9,
+      "x": 60,
+      "y": 64.77,
+      "w": 478.0,
+      "h": 14.95,
+      "y_top": 762.17,
+      "lines": [
+        {
+          "text": "F. Decisions",
+          "x": 60,
+          "baseline": 66.72
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b70",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 9,
+      "x": 60,
+      "y": 48.12,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 782.27,
+      "lines": [
+        {
+          "text": "These are choices, not documents. Spark Technologies can advise on each one.",
+          "x": 60,
+          "baseline": 49.62
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b71",
+      "kind": "table",
+      "part": 0,
+      "anchor": "",
+      "page": 10,
+      "x": 60,
+      "y": 611.04,
+      "w": 451.5,
+      "h": 170.85,
+      "y_top": 60.0,
+      "lines": [],
+      "cells": [
+        {
+          "r": 0,
+          "c": 0,
+          "x": 60,
+          "y": 760.14,
+          "w": 28.22,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 1,
+          "x": 88.22,
+          "y": 760.14,
+          "w": 211.64,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 2,
+          "x": 299.86,
+          "y": 760.14,
+          "w": 211.64,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 0,
+          "x": 60,
+          "y": 728.04,
+          "w": 28.22,
+          "h": 32.1
+        },
+        {
+          "r": 1,
+          "c": 1,
+          "x": 88.22,
+          "y": 728.04,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 1,
+          "c": 2,
+          "x": 299.86,
+          "y": 728.04,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 2,
+          "c": 0,
+          "x": 60,
+          "y": 695.94,
+          "w": 28.22,
+          "h": 32.1
+        },
+        {
+          "r": 2,
+          "c": 1,
+          "x": 88.22,
+          "y": 695.94,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 2,
+          "c": 2,
+          "x": 299.86,
+          "y": 695.94,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 3,
+          "c": 0,
+          "x": 60,
+          "y": 643.14,
+          "w": 28.22,
+          "h": 52.8
+        },
+        {
+          "r": 3,
+          "c": 1,
+          "x": 88.22,
+          "y": 643.14,
+          "w": 211.64,
+          "h": 52.8
+        },
+        {
+          "r": 3,
+          "c": 2,
+          "x": 299.86,
+          "y": 643.14,
+          "w": 211.64,
+          "h": 52.8
+        },
+        {
+          "r": 4,
+          "c": 0,
+          "x": 60,
+          "y": 611.04,
+          "w": 28.22,
+          "h": 32.1
+        },
+        {
+          "r": 4,
+          "c": 1,
+          "x": 88.22,
+          "y": 611.04,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 4,
+          "c": 2,
+          "x": 299.86,
+          "y": 611.04,
+          "w": 211.64,
+          "h": 32.1
+        }
+      ],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b72",
+      "kind": "h3",
+      "part": 0,
+      "anchor": "",
+      "page": 10,
+      "x": 60,
+      "y": 572.32,
+      "w": 478.0,
+      "h": 14.95,
+      "y_top": 254.62,
+      "lines": [
+        {
+          "text": "G. People and access",
+          "x": 60,
+          "baseline": 574.27
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b73",
+      "kind": "table",
+      "part": 0,
+      "anchor": "",
+      "page": 10,
+      "x": 60,
+      "y": 403.97,
+      "w": 451.5,
+      "h": 149.1,
+      "y_top": 288.82,
+      "lines": [],
+      "cells": [
+        {
+          "r": 0,
+          "c": 0,
+          "x": 60,
+          "y": 531.32,
+          "w": 28.22,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 1,
+          "x": 88.22,
+          "y": 531.32,
+          "w": 211.64,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 2,
+          "x": 299.86,
+          "y": 531.32,
+          "w": 211.64,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 0,
+          "x": 60,
+          "y": 499.22,
+          "w": 28.22,
+          "h": 32.1
+        },
+        {
+          "r": 1,
+          "c": 1,
+          "x": 88.22,
+          "y": 499.22,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 1,
+          "c": 2,
+          "x": 299.86,
+          "y": 499.22,
+          "w": 211.64,
+          "h": 32.1
+        },
+        {
+          "r": 2,
+          "c": 0,
+          "x": 60,
+          "y": 456.77,
+          "w": 28.22,
+          "h": 42.45
+        },
+        {
+          "r": 2,
+          "c": 1,
+          "x": 88.22,
+          "y": 456.77,
+          "w": 211.64,
+          "h": 42.45
+        },
+        {
+          "r": 2,
+          "c": 2,
+          "x": 299.86,
+          "y": 456.77,
+          "w": 211.64,
+          "h": 42.45
+        },
+        {
+          "r": 3,
+          "c": 0,
+          "x": 60,
+          "y": 403.97,
+          "w": 28.22,
+          "h": 52.8
+        },
+        {
+          "r": 3,
+          "c": 1,
+          "x": 88.22,
+          "y": 403.97,
+          "w": 211.64,
+          "h": 52.8
+        },
+        {
+          "r": 3,
+          "c": 2,
+          "x": 299.86,
+          "y": 403.97,
+          "w": 211.64,
+          "h": 52.8
+        }
+      ],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b74",
+      "kind": "body",
+      "part": 0,
+      "anchor": "",
+      "page": 10,
+      "x": 60,
+      "y": 371.47,
+      "w": 478.0,
+      "h": 11.5,
+      "y_top": 458.92,
+      "lines": [
+        {
+          "text": "Names can be covered on anything sent now.",
+          "x": 60,
+          "baseline": 372.97
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b75",
+      "kind": "table",
+      "part": 0,
+      "anchor": "",
+      "page": 11,
+      "x": 60,
+      "y": 184.29,
+      "w": 451.5,
+      "h": 597.6,
+      "y_top": 60.0,
+      "lines": [],
+      "cells": [
+        {
+          "r": 0,
+          "c": 0,
+          "x": 60,
+          "y": 760.14,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 1,
+          "x": 101.05,
+          "y": 760.14,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 0,
+          "c": 2,
+          "x": 331.93,
+          "y": 760.14,
+          "w": 179.57,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 0,
+          "x": 60,
+          "y": 738.39,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 1,
+          "x": 101.05,
+          "y": 738.39,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 1,
+          "c": 2,
+          "x": 331.93,
+          "y": 738.39,
+          "w": 179.57,
+          "h": 21.75
+        },
+        {
+          "r": 2,
+          "c": 0,
+          "x": 60,
+          "y": 716.64,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 2,
+          "c": 1,
+          "x": 101.05,
+          "y": 716.64,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 2,
+          "c": 2,
+          "x": 331.93,
+          "y": 716.64,
+          "w": 179.57,
+          "h": 21.75
+        },
+        {
+          "r": 3,
+          "c": 0,
+          "x": 60,
+          "y": 694.89,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 3,
+          "c": 1,
+          "x": 101.05,
+          "y": 694.89,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 3,
+          "c": 2,
+          "x": 331.93,
+          "y": 694.89,
+          "w": 179.57,
+          "h": 21.75
+        },
+        {
+          "r": 4,
+          "c": 0,
+          "x": 60,
+          "y": 673.14,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 4,
+          "c": 1,
+          "x": 101.05,
+          "y": 673.14,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 4,
+          "c": 2,
+          "x": 331.93,
+          "y": 673.14,
+          "w": 179.57,
+          "h": 21.75
+        },
+        {
+          "r": 5,
+          "c": 0,
+          "x": 60,
+          "y": 651.39,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 5,
+          "c": 1,
+          "x": 101.05,
+          "y": 651.39,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 5,
+          "c": 2,
+          "x": 331.93,
+          "y": 651.39,
+          "w": 179.57,
+          "h": 21.75
+        },
+        {
+          "r": 6,
+          "c": 0,
+          "x": 60,
+          "y": 629.64,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 6,
+          "c": 1,
+          "x": 101.05,
+          "y": 629.64,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 6,
+          "c": 2,
+          "x": 331.93,
+          "y": 629.64,
+          "w": 179.57,
+          "h": 21.75
+        },
+        {
+          "r": 7,
+          "c": 0,
+          "x": 60,
+          "y": 607.89,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 7,
+          "c": 1,
+          "x": 101.05,
+          "y": 607.89,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 7,
+          "c": 2,
+          "x": 331.93,
+          "y": 607.89,
+          "w": 179.57,
+          "h": 21.75
+        },
+        {
+          "r": 8,
+          "c": 0,
+          "x": 60,
+          "y": 586.14,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 8,
+          "c": 1,
+          "x": 101.05,
+          "y": 586.14,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 8,
+          "c": 2,
+          "x": 331.93,
+          "y": 586.14,
+          "w": 179.57,
+          "h": 21.75
+        },
+        {
+          "r": 9,
+          "c": 0,
+          "x": 60,
+          "y": 564.39,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 9,
+          "c": 1,
+          "x": 101.05,
+          "y": 564.39,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 9,
+          "c": 2,
+          "x": 331.93,
+          "y": 564.39,
+          "w": 179.57,
+          "h": 21.75
+        },
+        {
+          "r": 10,
+          "c": 0,
+          "x": 60,
+          "y": 542.64,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 10,
+          "c": 1,
+          "x": 101.05,
+          "y": 542.64,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 10,
+          "c": 2,
+          "x": 331.93,
+          "y": 542.64,
+          "w": 179.57,
+          "h": 21.75
+        },
+        {
+          "r": 11,
+          "c": 0,
+          "x": 60,
+          "y": 520.89,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 11,
+          "c": 1,
+          "x": 101.05,
+          "y": 520.89,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 11,
+          "c": 2,
+          "x": 331.93,
+          "y": 520.89,
+          "w": 179.57,
+          "h": 21.75
+        },
+        {
+          "r": 12,
+          "c": 0,
+          "x": 60,
+          "y": 499.14,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 12,
+          "c": 1,
+          "x": 101.05,
+          "y": 499.14,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 12,
+          "c": 2,
+          "x": 331.93,
+          "y": 499.14,
+          "w": 179.57,
+          "h": 21.75
+        },
+        {
+          "r": 13,
+          "c": 0,
+          "x": 60,
+          "y": 477.39,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 13,
+          "c": 1,
+          "x": 101.05,
+          "y": 477.39,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 13,
+          "c": 2,
+          "x": 331.93,
+          "y": 477.39,
+          "w": 179.57,
+          "h": 21.75
+        },
+        {
+          "r": 14,
+          "c": 0,
+          "x": 60,
+          "y": 455.64,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 14,
+          "c": 1,
+          "x": 101.05,
+          "y": 455.64,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 14,
+          "c": 2,
+          "x": 331.93,
+          "y": 455.64,
+          "w": 179.57,
+          "h": 21.75
+        },
+        {
+          "r": 15,
+          "c": 0,
+          "x": 60,
+          "y": 433.89,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 15,
+          "c": 1,
+          "x": 101.05,
+          "y": 433.89,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 15,
+          "c": 2,
+          "x": 331.93,
+          "y": 433.89,
+          "w": 179.57,
+          "h": 21.75
+        },
+        {
+          "r": 16,
+          "c": 0,
+          "x": 60,
+          "y": 412.14,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 16,
+          "c": 1,
+          "x": 101.05,
+          "y": 412.14,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 16,
+          "c": 2,
+          "x": 331.93,
+          "y": 412.14,
+          "w": 179.57,
+          "h": 21.75
+        },
+        {
+          "r": 17,
+          "c": 0,
+          "x": 60,
+          "y": 390.39,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 17,
+          "c": 1,
+          "x": 101.05,
+          "y": 390.39,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 17,
+          "c": 2,
+          "x": 331.93,
+          "y": 390.39,
+          "w": 179.57,
+          "h": 21.75
+        },
+        {
+          "r": 18,
+          "c": 0,
+          "x": 60,
+          "y": 358.29,
+          "w": 41.05,
+          "h": 32.1
+        },
+        {
+          "r": 18,
+          "c": 1,
+          "x": 101.05,
+          "y": 358.29,
+          "w": 230.88,
+          "h": 32.1
+        },
+        {
+          "r": 18,
+          "c": 2,
+          "x": 331.93,
+          "y": 358.29,
+          "w": 179.57,
+          "h": 32.1
+        },
+        {
+          "r": 19,
+          "c": 0,
+          "x": 60,
+          "y": 336.54,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 19,
+          "c": 1,
+          "x": 101.05,
+          "y": 336.54,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 19,
+          "c": 2,
+          "x": 331.93,
+          "y": 336.54,
+          "w": 179.57,
+          "h": 21.75
+        },
+        {
+          "r": 20,
+          "c": 0,
+          "x": 60,
+          "y": 314.79,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 20,
+          "c": 1,
+          "x": 101.05,
+          "y": 314.79,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 20,
+          "c": 2,
+          "x": 331.93,
+          "y": 314.79,
+          "w": 179.57,
+          "h": 21.75
+        },
+        {
+          "r": 21,
+          "c": 0,
+          "x": 60,
+          "y": 293.04,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 21,
+          "c": 1,
+          "x": 101.05,
+          "y": 293.04,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 21,
+          "c": 2,
+          "x": 331.93,
+          "y": 293.04,
+          "w": 179.57,
+          "h": 21.75
+        },
+        {
+          "r": 22,
+          "c": 0,
+          "x": 60,
+          "y": 271.29,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 22,
+          "c": 1,
+          "x": 101.05,
+          "y": 271.29,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 22,
+          "c": 2,
+          "x": 331.93,
+          "y": 271.29,
+          "w": 179.57,
+          "h": 21.75
+        },
+        {
+          "r": 23,
+          "c": 0,
+          "x": 60,
+          "y": 249.54,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 23,
+          "c": 1,
+          "x": 101.05,
+          "y": 249.54,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 23,
+          "c": 2,
+          "x": 331.93,
+          "y": 249.54,
+          "w": 179.57,
+          "h": 21.75
+        },
+        {
+          "r": 24,
+          "c": 0,
+          "x": 60,
+          "y": 227.79,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 24,
+          "c": 1,
+          "x": 101.05,
+          "y": 227.79,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 24,
+          "c": 2,
+          "x": 331.93,
+          "y": 227.79,
+          "w": 179.57,
+          "h": 21.75
+        },
+        {
+          "r": 25,
+          "c": 0,
+          "x": 60,
+          "y": 206.04,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 25,
+          "c": 1,
+          "x": 101.05,
+          "y": 206.04,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 25,
+          "c": 2,
+          "x": 331.93,
+          "y": 206.04,
+          "w": 179.57,
+          "h": 21.75
+        },
+        {
+          "r": 26,
+          "c": 0,
+          "x": 60,
+          "y": 184.29,
+          "w": 41.05,
+          "h": 21.75
+        },
+        {
+          "r": 26,
+          "c": 1,
+          "x": 101.05,
+          "y": 184.29,
+          "w": 230.88,
+          "h": 21.75
+        },
+        {
+          "r": 26,
+          "c": 2,
+          "x": 331.93,
+          "y": 184.29,
+          "w": 179.57,
+          "h": 21.75
+        }
+      ],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b76",
+      "kind": "kicker",
+      "part": 0,
+      "anchor": "how-we-move-forward",
+      "page": 12,
+      "x": 60,
+      "y": 756.41,
+      "w": 478.0,
+      "h": 26.0,
+      "y_top": 59.48,
+      "lines": [],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b77",
+      "kind": "page_title",
+      "part": 0,
+      "anchor": "",
+      "page": 12,
+      "x": 60,
+      "y": 719.42,
+      "w": 478.0,
+      "h": 29.9,
+      "y_top": 92.57,
+      "lines": [
+        {
+          "text": "Next steps",
+          "x": 60,
+          "baseline": 723.32
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b78",
+      "kind": "steps",
+      "part": 0,
+      "anchor": "",
+      "page": 12,
+      "x": 60,
+      "y": 529.13,
+      "w": 478.0,
+      "h": 176.78,
+      "y_top": 135.98,
+      "lines": [
+        {
+          "text": "01",
+          "x": 70.5,
+          "baseline": 678.81
+        },
+        {
+          "text": "Share what is",
+          "x": 70.5,
+          "baseline": 659.95
+        },
+        {
+          "text": "ready",
+          "x": 70.5,
+          "baseline": 647.3
+        },
+        {
+          "text": "Condor sends the",
+          "x": 70.5,
+          "baseline": 632.66
+        },
+        {
+          "text": "items that can go",
+          "x": 70.5,
+          "baseline": 621.73
+        },
+        {
+          "text": "now, with names",
+          "x": 70.5,
+          "baseline": 610.81
+        },
+        {
+          "text": "covered where",
+          "x": 70.5,
+          "baseline": 599.88
+        },
+        {
+          "text": "needed, and",
+          "x": 70.5,
+          "baseline": 588.96
+        },
+        {
+          "text": "confirms card tap or",
+          "x": 70.5,
+          "baseline": 578.03
+        },
+        {
+          "text": "face check.",
+          "x": 70.5,
+          "baseline": 567.11
+        },
+        {
+          "text": "02",
+          "x": 189.5,
+          "baseline": 678.81
+        },
+        {
+          "text": "Sign the",
+          "x": 189.5,
+          "baseline": 659.95
+        },
+        {
+          "text": "confidentiality",
+          "x": 189.5,
+          "baseline": 647.3
+        },
+        {
+          "text": "agreement",
+          "x": 189.5,
+          "baseline": 634.65
+        },
+        {
+          "text": "Spark Technologies",
+          "x": 189.5,
+          "baseline": 620.01
+        },
+        {
+          "text": "then receives the",
+          "x": 189.5,
+          "baseline": 609.08
+        },
+        {
+          "text": "remaining items,",
+          "x": 189.5,
+          "baseline": 598.16
+        },
+        {
+          "text": "including the driver",
+          "x": 189.5,
+          "baseline": 587.23
+        },
+        {
+          "text": "list and IMG",
+          "x": 189.5,
+          "baseline": 576.31
+        },
+        {
+          "text": "access, and checks",
+          "x": 189.5,
+          "baseline": 565.38
+        },
+        {
+          "text": "them against real",
+          "x": 189.5,
+          "baseline": 554.46
+        },
+        {
+          "text": "records.",
+          "x": 189.5,
+          "baseline": 543.53
+        },
+        {
+          "text": "03",
+          "x": 308.5,
+          "baseline": 678.81
+        },
+        {
+          "text": "Agree what is",
+          "x": 308.5,
+          "baseline": 659.95
+        },
+        {
+          "text": "fitted",
+          "x": 308.5,
+          "baseline": 647.3
+        },
+        {
+          "text": "Spark Technologies",
+          "x": 308.5,
+          "baseline": 632.66
+        },
+        {
+          "text": "and the Condor",
+          "x": 308.5,
+          "baseline": 621.73
+        },
+        {
+          "text": "maintenance",
+          "x": 308.5,
+          "baseline": 610.81
+        },
+        {
+          "text": "contact agree",
+          "x": 308.5,
+          "baseline": 599.88
+        },
+        {
+          "text": "readers or",
+          "x": 308.5,
+          "baseline": 588.96
+        },
+        {
+          "text": "cameras, vehicle by",
+          "x": 308.5,
+          "baseline": 578.03
+        },
+        {
+          "text": "vehicle. Nothing is",
+          "x": 308.5,
+          "baseline": 567.11
+        },
+        {
+          "text": "fitted before that",
+          "x": 308.5,
+          "baseline": 556.18
+        },
+        {
+          "text": "agreement.",
+          "x": 308.5,
+          "baseline": 545.26
+        },
+        {
+          "text": "04",
+          "x": 427.5,
+          "baseline": 678.81
+        },
+        {
+          "text": "Build and trial",
+          "x": 427.5,
+          "baseline": 659.95
+        },
+        {
+          "text": "The assignment",
+          "x": 427.5,
+          "baseline": 645.31
+        },
+        {
+          "text": "screen and the",
+          "x": 427.5,
+          "baseline": 634.38
+        },
+        {
+          "text": "driver check are",
+          "x": 427.5,
+          "baseline": 623.46
+        },
+        {
+          "text": "built, then tried on a",
+          "x": 427.5,
+          "baseline": 612.53
+        },
+        {
+          "text": "small group of",
+          "x": 427.5,
+          "baseline": 601.61
+        },
+        {
+          "text": "vehicles before the",
+          "x": 427.5,
+          "baseline": 590.68
+        },
+        {
+          "text": "rest of the fleet.",
+          "x": 427.5,
+          "baseline": 579.76
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": [
+        {
+          "x": 60.0,
+          "y": 529.13,
+          "w": 106.0,
+          "h": 176.78
+        },
+        {
+          "x": 179.0,
+          "y": 529.13,
+          "w": 106.0,
+          "h": 176.78
+        },
+        {
+          "x": 298.0,
+          "y": 529.13,
+          "w": 106.0,
+          "h": 176.78
+        },
+        {
+          "x": 417.0,
+          "y": 529.13,
+          "w": 106.0,
+          "h": 176.78
+        }
+      ]
+    },
+    {
+      "id": "b79",
+      "kind": "contact",
+      "part": 0,
+      "anchor": "",
+      "page": 12,
+      "x": 60,
+      "y": 452.13,
+      "w": 478.0,
+      "h": 45,
+      "y_top": 344.76,
+      "lines": [],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b80",
+      "kind": "kicker",
+      "part": 0,
+      "anchor": "why-spark-technologies",
+      "page": 13,
+      "x": 60,
+      "y": 756.41,
+      "w": 478.0,
+      "h": 26.0,
+      "y_top": 59.48,
+      "lines": [],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b81",
+      "kind": "compact_title",
+      "part": 0,
+      "anchor": "",
+      "page": 13,
+      "x": 60,
+      "y": 726.68,
+      "w": 478.0,
+      "h": 16.1,
+      "y_top": 99.11,
+      "lines": [
+        {
+          "text": "Why Choose Us",
+          "x": 60,
+          "baseline": 728.78
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    },
+    {
+      "id": "b82",
+      "kind": "cards",
+      "part": 0,
+      "anchor": "",
+      "page": 13,
+      "x": 60,
+      "y": 452.13,
+      "w": 478.0,
+      "h": 256.18,
+      "y_top": 133.58,
+      "lines": [
+        {
+          "text": "Regional Operations Expertise",
+          "x": 69.0,
+          "baseline": 690.68
+        },
+        {
+          "text": "Deep understanding of upstream and midstream",
+          "x": 69.0,
+          "baseline": 675.65
+        },
+        {
+          "text": "operations, HSE obligations, and the reporting",
+          "x": 69.0,
+          "baseline": 664.72
+        },
+        {
+          "text": "standards used across Gulf energy assets.",
+          "x": 69.0,
+          "baseline": 653.8
+        },
+        {
+          "text": "End-to-End Delivery",
+          "x": 304.5,
+          "baseline": 690.68
+        },
+        {
+          "text": "We own the full delivery lifecycle from discovery",
+          "x": 304.5,
+          "baseline": 675.65
+        },
+        {
+          "text": "and build through to implementation, training,",
+          "x": 304.5,
+          "baseline": 664.72
+        },
+        {
+          "text": "and ongoing support \u2014 with no dependency on",
+          "x": 304.5,
+          "baseline": 653.8
+        },
+        {
+          "text": "third-party vendors.",
+          "x": 304.5,
+          "baseline": 642.87
+        },
+        {
+          "text": "AI Built for Operations",
+          "x": 69.0,
+          "baseline": 596.39
+        },
+        {
+          "text": "Purpose-built AI systems trained on operational",
+          "x": 69.0,
+          "baseline": 581.36
+        },
+        {
+          "text": "data. Not generic tools repurposed \u2014 every",
+          "x": 69.0,
+          "baseline": 570.44
+        },
+        {
+          "text": "model is designed for the domain.",
+          "x": 69.0,
+          "baseline": 559.51
+        },
+        {
+          "text": "Speed to Value",
+          "x": 304.5,
+          "baseline": 596.39
+        },
+        {
+          "text": "Structured delivery with clear milestones.",
+          "x": 304.5,
+          "baseline": 581.36
+        },
+        {
+          "text": "Condor Energy sees measurable results at",
+          "x": 304.5,
+          "baseline": 570.44
+        },
+        {
+          "text": "every stage before committing to the next.",
+          "x": 304.5,
+          "baseline": 559.51
+        },
+        {
+          "text": "Outcome Guarantee",
+          "x": 69.0,
+          "baseline": 513.03
+        },
+        {
+          "text": "We back our delivery with measurable KPIs. If",
+          "x": 69.0,
+          "baseline": 498.0
+        },
+        {
+          "text": "outcomes are not met, we keep working until",
+          "x": 69.0,
+          "baseline": 487.08
+        },
+        {
+          "text": "they are.",
+          "x": 69.0,
+          "baseline": 476.15
+        },
+        {
+          "text": "Data Security & Sovereignty",
+          "x": 304.5,
+          "baseline": 513.03
+        },
+        {
+          "text": "All data remains within Condor Energy's",
+          "x": 304.5,
+          "baseline": 498.0
+        },
+        {
+          "text": "infrastructure. Role-based access controls,",
+          "x": 304.5,
+          "baseline": 487.08
+        },
+        {
+          "text": "encryption at rest and in transit, and full audit",
+          "x": 304.5,
+          "baseline": 476.15
+        },
+        {
+          "text": "trails as standard.",
+          "x": 304.5,
+          "baseline": 465.23
+        }
+      ],
+      "cells": [],
+      "nodes": [],
+      "cards": [
+        {
+          "x": 60.0,
+          "y": 629.77,
+          "w": 222,
+          "h": 78.53
+        },
+        {
+          "x": 295.5,
+          "y": 629.77,
+          "w": 222,
+          "h": 78.53
+        },
+        {
+          "x": 60.0,
+          "y": 546.41,
+          "w": 222,
+          "h": 67.61
+        },
+        {
+          "x": 295.5,
+          "y": 546.41,
+          "w": 222,
+          "h": 67.61
+        },
+        {
+          "x": 60.0,
+          "y": 452.13,
+          "w": 222,
+          "h": 78.53
+        },
+        {
+          "x": 295.5,
+          "y": 452.13,
+          "w": 222,
+          "h": 78.53
+        }
+      ]
+    },
+    {
+      "id": "b89",
+      "kind": "contact",
+      "part": 0,
+      "anchor": "",
+      "page": 13,
+      "x": 60,
+      "y": 375.98,
+      "w": 478.0,
+      "h": 45,
+      "y_top": 420.91,
+      "lines": [],
+      "cells": [],
+      "nodes": [],
+      "cards": []
+    }
+  ]
+}

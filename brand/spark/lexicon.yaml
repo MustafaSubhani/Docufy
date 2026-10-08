@@ -1,0 +1,15 @@
+locale: en-GB
+note: Preferences taken from the ADICC proposal (specialising, mobilisation, formalised, programme, itemised).
+prefer:
+  - {use: specialising, avoid: specializing}
+  - {use: analyse, avoid: analyze}
+  - {use: analysed, avoid: analyzed}
+  - {use: itemised, avoid: itemized}
+  - {use: formalised, avoid: formalized}
+  - {use: mobilisation, avoid: mobilization}
+  - {use: organised, avoid: organized}
+  - {use: organiser, avoid: organizer}
+  - {use: programme, avoid: program}
+  - {use: licence, avoid: license}
+  - {use: favour, avoid: favor}
+  - {use: centre, avoid: center}

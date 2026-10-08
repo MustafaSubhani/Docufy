@@ -13,12 +13,16 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from spark_docs.docx_export import build_docx
+from spark_docs.ir import document_from_parse, to_gfm, to_spark_markdown
 from spark_docs.parser import parse_many, parse_markdown
 from spark_docs.pdf import build_pdf
 from spark_docs.sections import apply_company_sections
 
 
 def main(argv: list[str] | None = None) -> int:
+    argv = sys.argv[1:] if argv is None else list(argv)
+    if argv and argv[0] == "edit":
+        return _edit_cli(argv[1:])
     parser = argparse.ArgumentParser(
         prog="create_doc",
         description="Render markdown or pasted text as a Spark Technologies branded document.",
@@ -38,9 +42,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--date", help="Cover date.")
     parser.add_argument(
         "--format",
-        choices=["pdf", "docx", "both"],
+        choices=["pdf", "docx", "both", "spark", "gfm"],
         default=None,
-        help="Output format. Defaults to pdf, or docx when --docx is set / --output ends in .docx.",
+        help="Output format. Defaults to pdf, or docx when --docx is set / --output ends in .docx. spark writes Spark markdown; gfm writes plain Markdown.",
     )
     parser.add_argument("--docx", action="store_true", help="Write a .docx file (with PDF unless --format docx).")
     parser.add_argument("--docx-only", action="store_true", help="Write only a Word document, no PDF.")
@@ -49,7 +53,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--company-intro",
         action="store_true",
-        help="Insert the Spark company intro (Who We Are / Solution Areas) after the first section.",
+        help="Insert the Spark company intro (Who We Are / Solution Areas) before the first section.",
     )
     parser.add_argument(
         "--company-outro",
@@ -143,7 +147,7 @@ def main(argv: list[str] | None = None) -> int:
             fmt = "pdf"
 
     stem = slug(meta.title)
-    default_ext = ".docx" if fmt == "docx" else ".pdf"
+    default_ext = {"docx": ".docx", "spark": ".spark.md", "gfm": ".gfm.md"}.get(fmt, ".pdf")
     out_path = Path(args.output) if args.output else ROOT / "output" / f"{stem}{default_ext}"
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -153,6 +157,17 @@ def main(argv: list[str] | None = None) -> int:
     if fmt in {"docx", "both"}:
         docx_path = out_path if out_path.suffix.lower() == ".docx" else out_path.with_suffix(".docx")
         print(f"DOCX {build_docx(meta, blocks, docx_path)}")
+    if fmt in {"spark", "gfm"}:
+        md_path = out_path if out_path.suffix.lower() == ".md" else out_path.with_suffix(
+            ".spark.md" if fmt == "spark" else ".gfm.md"
+        )
+        doc = document_from_parse(meta, blocks)
+        if fmt == "spark":
+            md_path.write_text(to_spark_markdown(doc), encoding="utf-8")
+        else:
+            assets = md_path.with_name(md_path.stem + "_files")
+            md_path.write_text(to_gfm(doc, asset_dir=assets), encoding="utf-8")
+        print(f"MD   {md_path}")
     return 0
 
 
@@ -174,6 +189,151 @@ def resolve_sources(sources: list[str]) -> list[Path]:
         else:
             raise SystemExit(f"Not found: {src}")
     return paths
+
+
+def _edit_cli(argv: list[str]) -> int:
+    """py create_doc.py edit doc.md --block b4 --instruction \"shorten this\""""
+    from spark_agent.edit import (
+        EditRequest,
+        EditScope,
+        ImageRef,
+        accept,
+        apply_edit,
+        lock_block,
+        manual_edit,
+        read_doc,
+        write_doc,
+    )
+    from spark_agent.llm import Router
+
+    ap = argparse.ArgumentParser(prog="create_doc edit")
+    ap.add_argument("doc")
+    ap.add_argument("--block")
+    ap.add_argument("--section")
+    ap.add_argument("--quote", help="Text to find. The edit replaces that range.")
+    ap.add_argument("--ask", help="For example: shorten the second paragraph of Overview")
+    ap.add_argument("--instruction", default="")
+    ap.add_argument("--intent", default="rewrite")
+    ap.add_argument("--apply-to", choices=["block", "section", "all_of_type", "save_as_variant"], default="block")
+    ap.add_argument("--image", action="append", default=[], help="Reference image for a style edit")
+    ap.add_argument("--unlock-brand", action="store_true", help="Keep measured colors instead of the Spark palette")
+    ap.add_argument("--vision", action="store_true", help="Ask the vision model to read a style attachment")
+    ap.add_argument("--variants", type=int, default=1)
+    ap.add_argument("--pick", type=int, default=1)
+    ap.add_argument("--undo", action="store_true")
+    ap.add_argument("--redo", action="store_true")
+    ap.add_argument("--lock")
+    ap.add_argument("--unlock")
+    ap.add_argument("--manual", help="Block id to replace by hand")
+    ap.add_argument("--replace", help="New text for --manual")
+    ap.add_argument("--tweak", action="store_true")
+    ap.add_argument("--remake", action="store_true")
+    ap.add_argument("--node", action="append", default=[])
+    args = ap.parse_args(argv)
+    path = Path(args.doc)
+    doc, history = read_doc(path)
+    if args.undo:
+        history.undo()
+        _show_current(path, history)
+        print("undone")
+        return 0
+    if args.redo:
+        history.redo()
+        _show_current(path, history)
+        print("redone")
+        return 0
+    before_text = path.read_text(encoding="utf-8")
+    before = doc.model_copy(deep=True)
+    note = args.instruction or args.ask or "edit"
+    if args.lock or args.unlock:
+        lock_block(doc, args.lock or args.unlock, locked=bool(args.lock))
+        write_doc(path, doc, history, note, before, before_text)
+        print(("locked " if args.lock else "unlocked ") + (args.lock or args.unlock))
+        return 0
+    if args.manual:
+        from spark_agent.memory import note_correction
+
+        previous = ""
+        for part in before.parts:
+            for section in part.sections:
+                for block in section.blocks:
+                    if block.id == args.manual:
+                        previous = str(block.data.get("text") or "")
+        manual_edit(doc, args.manual, args.replace or "")
+        note_correction(previous, args.replace or "", component="para")
+        write_doc(path, doc, history, note, before, before_text)
+        print(f"updated {args.manual}")
+        return 0
+    scope, instruction = _cli_scope(doc, args)
+    if scope is None:
+        return 2
+    intent = "tweak_diagram" if args.tweak else "regenerate_diagram" if args.remake else args.intent
+    if args.image and intent == "rewrite":
+        intent = "restyle"
+    if args.node:
+        scope = EditScope(kind="diagram_nodes", ids=[scope.ids[0], *args.node])
+    request = EditRequest(
+        scope=scope,
+        instruction=instruction,
+        intent=intent,
+        attachments=[ImageRef(path=path) for path in args.image],
+        apply_to=args.apply_to,
+        variants=args.variants,
+        brand_lock=not args.unlock_brand,
+    )
+    result = apply_edit(doc, request, Router() if intent != "restyle" or args.vision else None)
+    if result.choices:
+        print("which one?")
+        for choice in result.choices:
+            print(f"  - {choice}")
+        return 2
+    chosen = accept(result, args.pick)
+    for note in result.notes:
+        print(note)
+    for item in result.suggestions:
+        print(f"suggestion {item.block_id}: {item.message}")
+    if result.diff:
+        print(result.diff)
+    write_doc(path, chosen, history, instruction, doc, before_text)
+    print(f"accepted variant {args.pick}")
+    return 0
+
+
+def _show_current(path: Path, history) -> None:
+    doc, written = history.current()
+    path.write_text(written or "", encoding="utf-8")
+    return doc
+
+
+def _cli_scope(doc, args):
+    from spark_agent.edit import EditScope, locate_quote, resolve_phrase
+
+    if args.ask:
+        found = resolve_phrase(doc, args.ask)
+        if found.choices:
+            print("which one?")
+            for choice in found.choices:
+                print(f"  - {choice}")
+            return None, args.ask
+        if found.scope is None:
+            raise SystemExit(f"could not find a scope in: {args.ask}")
+        return found.scope, args.instruction or args.ask
+    if args.quote:
+        found = locate_quote(doc, args.quote)
+        if found.choices:
+            print("which one?")
+            for choice in found.choices:
+                print(f"  - {choice}")
+            return None, args.quote
+        if found.scope is None:
+            raise SystemExit(f"could not find {args.quote!r}")
+        return found.scope, args.instruction or f"edit {args.quote}"
+    if args.section:
+        return EditScope(kind="section", ids=[args.section]), args.instruction
+    if args.block:
+        kind = "diagram" if args.tweak or args.remake else "block"
+        return EditScope(kind=kind, ids=[args.block]), args.instruction
+    raise SystemExit("name a scope with --block, --section, --quote, or --ask")
 
 
 def slug(title: str) -> str:

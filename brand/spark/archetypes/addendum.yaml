@@ -1,0 +1,14 @@
+id: addendum
+aliases: [addendum_technical]
+doc_type: ADDENDUM
+spark_content: false
+description: Technical addendum. The A1 to A7 pattern as its own document.
+slots:
+  - {id: cover, required: true, component: addendum}
+  - {id: purpose, kicker: Purpose and Scope, required: true, components: [para, table]}
+  - {id: architecture, kicker: Architecture, required: true, components: [table, diagram]}
+  - {id: stack, kicker: Technology Stack, required: true, components: [table]}
+  - {id: pipeline, kicker: AI Pipeline, required: true, components: [diagram, para]}
+  - {id: security, kicker: Security, required: true, components: [table, list]}
+  - {id: risks, kicker: Risks, required: true, components: [table]}
+  - {id: conclusion, kicker: Technical Conclusion, required: true, components: [para]}

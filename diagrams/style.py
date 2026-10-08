@@ -83,8 +83,10 @@ RADIUS = 8
 STROKE_W = 0.5
 EDGE_W = 2.0
 ARROW = 9.0            # arrowhead length
-HEADER_SIZE = 14       # plain-text column headers ("Inputs", "Processing pipeline")
+HEADER_SIZE = 13       # lane labels above a column ("Inputs", "Module 1")
 HEADER_COLOR = "#A3A29C"
+BAND_GAP = 28          # extra air above a full-width band so a merge arrow fits
+MAX_SCENE_H = 700      # taller than this, a top-to-bottom diagram is tried left-to-right
 GRID_COL_GAP = 30
 GRID_ROW_GAP = 14
 GRID_MARGIN = 16
@@ -111,3 +113,29 @@ def resolve_ramp(category: str | None) -> str:
     if c in RAMPS:
         return c
     return CATEGORY_RAMP.get(c, "gray")
+
+
+def push_font(choice: str | None):
+    """Measure and draw with a specific face. Returns the previous paths, or None if unchanged."""
+    global FONT_REGULAR, FONT_BOLD
+    if not choice or choice == "auto":
+        return None
+    paths = pick_font(choice)
+    if paths == (FONT_REGULAR, FONT_BOLD):
+        return None
+    previous = (FONT_REGULAR, FONT_BOLD)
+    FONT_REGULAR, FONT_BOLD = paths
+    from .scene import font as measure_font
+
+    measure_font.cache_clear()
+    return previous
+
+
+def pop_font(token) -> None:
+    global FONT_REGULAR, FONT_BOLD
+    if not token:
+        return
+    FONT_REGULAR, FONT_BOLD = token
+    from .scene import font as measure_font
+
+    measure_font.cache_clear()

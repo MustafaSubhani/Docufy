@@ -23,6 +23,19 @@ py create_doc.py file.md --no-spark-content       # internal doc: strip company 
 
 Syntax reference: `.cursor/skills/spark-documents/SKILL.md`.
 
+## Smart Convert (agent)
+
+Turns any markdown into template-correct Spark markdown, then PDF. The model only plans structure; source text, numbers, links, images and diagrams are copied unchanged.
+
+```bash
+py -m spark_agent convert input/WALL_SEGMENTATION_REPORT.md          # local Ollama (config/models.yaml, profile dev)
+py -m spark_agent convert file.md --profile claude --docx            # once an Anthropic key is set
+py -m spark_agent convert file.md --no-llm                           # heading-based plan, no model
+py -m spark_agent usage                                              # token usage per run
+```
+
+Dev profile uses `ollama/qwen2.5-coder:7b` with a 16k context. Pull `qwen3:8b` and point `config/models.yaml` at it for better planning. API profiles run section planning in parallel.
+
 ## Verify against the template
 
 ```bash

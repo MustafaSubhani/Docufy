@@ -12,7 +12,13 @@ from diagrams.render import render_png
 from diagrams.spec import Diagram
 
 ROOT = Path(__file__).resolve().parents[2]
-PAIRS = {"p06_estimation": "p06_1.jpeg"}
+PAIRS = {
+    "p06_estimation": "p06_1.jpeg",
+    "p08_schedule": "p08_1.jpeg",
+    "p14_platform": "p14_1.jpeg",
+    "p24_architecture": "p24_1.jpeg",
+    "p27_pipeline": "p27_1.jpeg",
+}
 
 
 def trim(im: Image.Image) -> Image.Image:

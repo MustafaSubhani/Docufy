@@ -2,13 +2,16 @@
 
 from __future__ import annotations
 
+import json
 import re
 from html import escape
 from pathlib import Path
 
 import yaml
 
+from .glyphs import safe
 from .images import resolve_path as resolve_image_path
+from .links import resolve_blocks
 from .mermaid import ASSET_SCALE, diagram_orientation
 from .mermaid import render as render_mermaid
 from .theme import DEFAULT_CONFIDENTIAL, Meta, merge_contact
@@ -22,6 +25,7 @@ IMAGE_RE = re.compile(r"^!\[([^\]]*)\]\((.+?)\)\s*(?:\{([^}]*)\})?\s*$")
 CONTAINER_START = re.compile(r"^:::([A-Za-z0-9_-]+)(.*)$")
 FLAGS_RE = re.compile(r"\s*\{([^{}]*)\}\s*$")
 PAGEBREAK_RE = re.compile(r"^(?:<!--\s*pagebreak\s*-->|\\newpage|\\pagebreak)$", re.I)
+STYLE_COMMENT_RE = re.compile(r"^<!--\s*spark-style\s+(\{.*\})\s*-->$")
 FLAG_ALIASES = {
     "accent": "accent",
     "purple": "accent",
@@ -46,7 +50,7 @@ def parse_markdown(text: str, source_dir: Path | None = None) -> tuple[Meta, lis
     body = maybe_promote_plain(body)
     src = source_dir or Path(".")
     roots = _asset_roots(meta, src)
-    blocks = parse_blocks(body.split("\n"), source_dir=src, asset_roots=roots)
+    blocks = resolve_blocks(parse_blocks(body.split("\n"), source_dir=src, asset_roots=roots))
     if meta.show_contact and not any(b.get("kind") == "contact" for b in blocks):
         blocks.append({"kind": "contact"})
     return meta, blocks
@@ -109,6 +113,18 @@ def split_frontmatter(text: str) -> tuple[Meta, str]:
         inner_logo=bool(data.get("inner_logo", False)),
         inner_footer=bool(data.get("inner_footer", False)),
         top_bar=bool(data.get("top_bar", False)),
+        strip_spark_content=bool(data.get("strip_spark_content", False)),
+        archetype=str(data.get("archetype") or ""),
+        industry=str(data.get("industry") or ""),
+        spark_content_explicit=any(
+            key in data
+            for key in (
+                "include_spark_content",
+                "include_company_intro",
+                "include_company_outro",
+                "strip_spark_content",
+            )
+        ),
     )
     raw_roots = data.get("asset_roots") or data.get("asset_root")
     if isinstance(raw_roots, str):
@@ -195,6 +211,20 @@ def parse_blocks(
             continue
 
         if stripped.startswith("<!--"):
+            style = STYLE_COMMENT_RE.match(stripped)
+            if style and blocks:
+                try:
+                    payload = json.loads(style.group(1))
+                except json.JSONDecodeError:
+                    payload = None
+                if isinstance(payload, dict) and blocks[-1].get("kind") != "pagebreak":
+                    if payload.get("variant"):
+                        blocks[-1]["variant"] = str(payload["variant"])
+                    overrides = payload.get("style_overrides")
+                    if isinstance(overrides, dict):
+                        blocks[-1]["style_overrides"] = overrides
+                    i += 1
+                    continue
             while i < n and "-->" not in lines[i]:
                 i += 1
             i += 1
@@ -222,6 +252,13 @@ def parse_blocks(
             if i < n:
                 i += 1
             source = "\n".join(code)
+            if lang.lower() == "chart":
+                from spark_docs.charts import render_chart_source
+
+                png = render_chart_source(source)
+                if png:
+                    blocks.append({"kind": "image", "alt": "Chart", "path": str(png), "asset_scale": ASSET_SCALE})
+                    continue
             if lang.lower() in {"mermaid", "mmd", "diagram"}:
                 spec = claude_diagram_spec(source, lang.lower())
                 if spec is not None:
@@ -508,23 +545,70 @@ def split_callout_title(text: str) -> tuple[str, list[dict]]:
     return title, blocks
 
 
+def separator_line(line: str) -> bool:
+    return bool(re.match(r"^\|?\s*:?-{3,}", line.strip().replace(" ", "")))
+
+
+def table_gap_continues(lines: list[str], i: int) -> bool:
+    """A blank line at i is inside one table, rather than the gap before the next table."""
+    nxt = i + 1
+    if nxt >= len(lines) or not lines[nxt].strip().startswith("|"):
+        return False
+    if separator_line(lines[nxt]):
+        return True
+    after = nxt + 1
+    if after < len(lines) and not lines[after].strip():
+        after += 1
+    if after < len(lines) and separator_line(lines[after]):
+        return False
+    return True
+
+
+def tighten_tables(text: str) -> str:
+    """Drop blank lines that were inserted between the rows of one table."""
+    lines = text.split("\n")
+    out: list[str] = []
+    fence = False
+    i = 0
+    while i < len(lines):
+        stripped = lines[i].strip()
+        if stripped.startswith("```"):
+            fence = not fence
+        if not fence and stripped == "" and table_gap_continues(lines, i):
+            i += 1
+            continue
+        out.append(lines[i])
+        i += 1
+    return "\n".join(out)
+
+
 def looks_like_table(lines: list[str], i: int) -> bool:
     line = lines[i].strip()
     if "|" not in line:
         return False
     if line.startswith("|") or line.count("|") >= 2:
-        if i + 1 < len(lines) and re.match(r"^\s*\|?\s*:?-{3,}", lines[i + 1]):
+        j = i + 1
+        if j < len(lines) and not lines[j].strip() and table_gap_continues(lines, j):
+            j += 1
+        if j < len(lines) and re.match(r"^\s*\|?\s*:?-{3,}", lines[j]):
             return True
-        if i + 1 < len(lines) and "|" in lines[i + 1]:
+        if j < len(lines) and "|" in lines[j]:
             return True
     return False
 
 
 def read_table(lines: list[str], i: int) -> tuple[dict, int]:
     rows: list[list[str]] = []
-    while i < len(lines) and "|" in lines[i] and lines[i].strip():
+    while i < len(lines):
+        if not lines[i].strip():
+            if table_gap_continues(lines, i):
+                i += 1
+                continue
+            break
+        if "|" not in lines[i]:
+            break
         raw = lines[i].strip()
-        if re.match(r"^\|?\s*:?-{3,}", raw.replace(" ", "")):
+        if separator_line(raw):
             i += 1
             continue
         cells = [c.strip() for c in raw.strip("|").split("|")]
@@ -593,6 +677,39 @@ def read_paragraph(lines: list[str], i: int) -> tuple[str, int]:
     return " ".join(parts).strip(), i
 
 
+_STYLE_TAG = re.compile(r"<(/?)(b|i|u)>")
+
+
+def balance_tags(xml: str) -> str:
+    """Close and reopen b, i, and u so they nest. Markdown like **bold *both** italic* overlaps otherwise."""
+    out: list[str] = []
+    stack: list[str] = []
+    last = 0
+    for match in _STYLE_TAG.finditer(xml):
+        out.append(xml[last : match.start()])
+        last = match.end()
+        closing, name = match.group(1) == "/", match.group(2)
+        if not closing:
+            stack.append(name)
+            out.append(f"<{name}>")
+            continue
+        if name not in stack:
+            continue
+        reopen = []
+        while stack:
+            top = stack.pop()
+            out.append(f"</{top}>")
+            if top == name:
+                break
+            reopen.append(top)
+        for tag in reversed(reopen):
+            stack.append(tag)
+            out.append(f"<{tag}>")
+    out.append(xml[last:])
+    out.extend(f"</{tag}>" for tag in reversed(stack))
+    return re.sub(r"<(b|i|u)></\1>", "", "".join(out))
+
+
 def inline_xml(text: str) -> str:
     """Convert markdown inline markup to ReportLab paragraph XML."""
     if not text:
@@ -617,15 +734,27 @@ def inline_xml(text: str) -> str:
         url = m.group(0).rstrip(".,;)")
         return stash(f'<a href="{escape(url, quote=True)}" color="#6B4EFF"><u>{escape(url)}</u></a>')
 
-    work = text
+    def angle_sub(m: re.Match) -> str:
+        url = m.group(1)
+        return stash(f'<a href="{escape(url, quote=True)}" color="#6B4EFF"><u>{escape(url)}</u></a>')
+
+    def name_sub(m: re.Match) -> str:
+        return stash(f'<a name="{m.group(1)}"/>')
+
+    work = safe(text)
     work = re.sub(r"`([^`]+)`", code_sub, work)
     work = re.sub(r"!\[([^\]]*)\]\(([^)]+)\)", r"\1", work)
+    work = re.sub(r"<(https?://[^>\s]+)>", angle_sub, work)
+    work = re.sub(r"\[#([A-Za-z0-9_-]+)\]", name_sub, work)
     work = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", link_sub, work)
     work = re.sub(r"(?<![(\[])(?<![\w/])https?://[^\s\])<>\"']+", bare_url_sub, work)
     work = escape(work)
+    work = re.sub(r"\*\*\*(.+?)\*\*\*", r"<b><i>\1</i></b>", work)
+    work = re.sub(r"___(.+?)___", r"<b><i>\1</i></b>", work)
     work = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", work)
     work = re.sub(r"__(.+?)__", r"<b>\1</b>", work)
     work = re.sub(r"(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)", r"<i>\1</i>", work)
+    work = balance_tags(work)
     for idx, value in enumerate(placeholders):
         work = work.replace(f"@@P{idx}@@", value)
     work = work.replace("—", "—").replace("–", "–")

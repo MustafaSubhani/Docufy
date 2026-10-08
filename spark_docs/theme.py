@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 
+import yaml
 from reportlab.lib.colors import HexColor
 from reportlab.lib.pagesizes import A4
 
@@ -46,18 +47,14 @@ FONT_ITALIC = "Arial-Italic"
 FONT_BOLD_ITALIC = "Arial-BoldItalic"
 FONT_MONO = "Courier"
 
-DEFAULT_CONFIDENTIAL = (
-    "This document is confidential and intended solely for the named recipient. "
-    "It contains commercially sensitive information and must not be shared, "
-    "reproduced, or distributed without prior written consent from Spark Technologies."
-)
+def _brand_facts() -> dict:
+    path = ROOT / "brand" / "spark" / "facts.yaml"
+    return yaml.safe_load(path.read_text(encoding="utf-8"))
 
-DEFAULT_CONTACT = {
-    "email": "contact@sparktechnologies.ai",
-    "phone": "+971 56 956 8061",
-    "website": "sparktechnologies.ai",
-    "address": "Office 705, New Century City Tower, Port Saeed, Dubai, UAE",
-}
+
+_FACTS = _brand_facts()
+DEFAULT_CONFIDENTIAL = str(_FACTS["confidential"]["client"]).strip()
+DEFAULT_CONTACT = {key: _FACTS["company"][key] for key in ("email", "phone", "website", "address")}
 
 
 @dataclass
@@ -84,6 +81,9 @@ class Meta:
     inner_footer: bool = False
     top_bar: bool = False
     asset_roots: list[str] = field(default_factory=list)
+    archetype: str = ""
+    industry: str = ""
+    spark_content_explicit: bool = False
 
     def has_cover(self) -> bool:
         return bool(self.title.strip())

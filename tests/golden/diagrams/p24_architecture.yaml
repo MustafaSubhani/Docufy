@@ -1,0 +1,38 @@
+# ADICC page 24 — addendum architecture. DejaVu Sans.
+layout: rows
+font: dejavu
+nodes:
+  - {id: h_in, title: ADICC inputs, shape: label, row: 0}
+  - {id: pdf, title: PDF drawings, subtitle: DWG · scanned sets, category: blue, row: 1}
+  - {id: p6, title: P6 schedules, subtitle: XER / XML export, category: blue, row: 1}
+  - {id: docs, title: Contracts & docs, subtitle: FIDIC · SharePoint · drives, category: blue, row: 1}
+  - {id: found, title: Shared foundation layer, subtitle: Data ingestion · user auth · role management · audit trail · API layer, category: purple, shape: band, row: 2}
+  - {id: m1, title: Module 1, subtitle: Estimation & Quantity Takeoff, category: teal, row: 3}
+  - {id: m2, title: Module 2, subtitle: Schedule Risk & Controls, category: teal, row: 3}
+  - {id: m3, title: Module 3, subtitle: Contract Management, category: teal, row: 3}
+  - {id: m4, title: Module 4, subtitle: Telegram Document Bot, category: teal, row: 3}
+  - {id: dash, title: Unified dashboard, subtitle: Single project view · role-based access · unified audit trail, category: green, shape: band, row: 4}
+  - {id: h_sys, title: ADICC systems integration, shape: label, row: 5}
+  - {id: erp, title: ERP, subtitle: Takeoffs · KPIs · reports, category: blue, row: 6}
+  - {id: p6s, title: Primavera P6, subtitle: Schedule data sync, category: blue, row: 6}
+  - {id: store, title: Document store, subtitle: SharePoint · OneDrive, category: blue, row: 6}
+edges:
+  - {from: pdf, to: found}
+  - {from: p6, to: found}
+  - {from: docs, to: found}
+  - {from: found, to: m1}
+  - {from: found, to: m2}
+  - {from: found, to: m3}
+  - {from: found, to: m4}
+  - {from: m1, to: dash}
+  - {from: m2, to: dash}
+  - {from: m3, to: dash}
+  - {from: m4, to: dash}
+  - {from: dash, to: erp}
+  - {from: dash, to: p6s}
+  - {from: dash, to: store}
+legend:
+  - {category: blue, label: Inputs / systems}
+  - {category: purple, label: Foundation}
+  - {category: teal, label: Modules}
+  - {category: green, label: Dashboard & systems}

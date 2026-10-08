@@ -28,7 +28,7 @@ def test_switch_on_adds_intro_outro_and_renumbers():
     meta, blocks = parse_markdown(DOC)
     meta.include_company_intro = meta.include_company_outro = True
     out = apply_company_sections(meta, blocks)
-    assert headings(out) == ["01  Executive Summary", "02  About Spark Technologies", "03  Solution Overview", "04  Why Spark Technologies"]
+    assert headings(out) == ["01  About Spark Technologies", "02  Executive Summary", "03  Solution Overview", "04  Why Spark Technologies"]
     text = " ".join(str(b) for b in out)
     assert "ACME sees measurable results" in text and "ACME's infrastructure" in text
     assert "{{" not in text

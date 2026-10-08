@@ -11,7 +11,7 @@ show_contact: true
 footer: Spark Technologies  |  Confidential
 contact:
   email: contact@sparktechnologies.ai
-  phone: "+971 58 958 8081"
+  phone: "+971 56 956 8061"
   website: sparktechnologies.ai
   address: Office 705, New Century City Tower, Port Saeed, Dubai, UAE
 ---

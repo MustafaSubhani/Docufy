@@ -1,0 +1,60 @@
+# ADICC page 27 — four module pipelines into one dashboard. DejaVu Sans.
+layout: rows
+font: dejavu
+nodes:
+  - {id: found, title: Shared foundation layer, subtitle: Ingestion framework · application logic · unified dashboard · ADICC systems integration, category: blue, shape: band, row: 0}
+  - {id: h1, title: Module 1, subtitle: Estimation, shape: label, row: 1}
+  - {id: h2, title: Module 2, subtitle: Scheduling, shape: label, row: 1}
+  - {id: h3, title: Module 3, subtitle: Contracts, shape: label, row: 1}
+  - {id: h4, title: Module 4, subtitle: Telegram Bot, shape: label, row: 1}
+  - {id: draw, title: Drawing ingestion, category: blue, row: 2}
+  - {id: p6, title: P6 export, category: amber, row: 2}
+  - {id: contract, title: Contract ingestion, category: blue, row: 2}
+  - {id: tg, title: Telegram query, category: blue, row: 2}
+  - {id: detect, title: Element detection, category: purple, row: 3}
+  - {id: integ, title: Integrity check, category: amber, row: 3}
+  - {id: clause, title: Clause parse, category: purple, row: 3}
+  - {id: vec, title: Vector search, category: purple, row: 3}
+  - {id: qty, title: Quantity calc, category: purple, row: 4}
+  - {id: qsra, title: AI QSRA, category: purple, row: 4}
+  - {id: flag, title: Risk flagging, category: purple, row: 4}
+  - {id: rag, title: RAG pipeline, category: green, row: 4}
+  - {id: cost, title: Cost mapping, category: green, row: 5}
+  - {id: mile, title: Milestone forecast, category: green, row: 5}
+  - {id: claims, title: Claims & EoT, category: amber, row: 5}
+  - {id: cited, title: Cited response, category: green, row: 5}
+  - {id: boq, title: BOQ output, category: green, row: 6}
+  - {id: riskrep, title: Risk report, category: green, row: 6}
+  - {id: arb, title: Arbitration bundle, category: green, row: 6}
+  - {id: audit, title: Audit log, category: green, row: 6}
+  - {id: dash, title: Unified dashboard, subtitle: Single project view · role-based access · one audit trail · ADICC systems integration, category: green, shape: band, row: 7}
+edges:
+  - {from: found, to: draw}
+  - {from: found, to: p6}
+  - {from: found, to: contract}
+  - {from: found, to: tg}
+  - {from: draw, to: detect}
+  - {from: detect, to: qty}
+  - {from: qty, to: cost}
+  - {from: cost, to: boq}
+  - {from: p6, to: integ}
+  - {from: integ, to: qsra}
+  - {from: qsra, to: mile}
+  - {from: mile, to: riskrep}
+  - {from: contract, to: clause}
+  - {from: clause, to: flag}
+  - {from: flag, to: claims}
+  - {from: claims, to: arb}
+  - {from: tg, to: vec}
+  - {from: vec, to: rag}
+  - {from: rag, to: cited}
+  - {from: cited, to: audit}
+  - {from: boq, to: dash, route: bus}
+  - {from: riskrep, to: dash, route: bus}
+  - {from: arb, to: dash, route: bus}
+  - {from: audit, to: dash, route: bus}
+legend:
+  - {category: blue, label: Foundation / ingestion}
+  - {category: purple, label: AI processing}
+  - {category: amber, label: Claims / validation}
+  - {category: green, label: Output}

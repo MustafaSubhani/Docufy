@@ -1,0 +1,30 @@
+# ADICC page 8 — schedule risk pipeline. Segoe UI, matching the Windows Claude export.
+layout: grid
+font: segoe
+nodes:
+  - {id: h_in, title: Input, shape: label, row: 0, col: 0}
+  - {id: h_proc, title: Processing pipeline, shape: label, row: 0, col: 1, colspan: 3}
+  - {id: p6, title: P6 schedule, subtitle: XER / XML, category: gray, row: 1, col: 0}
+  - {id: integ, title: Integrity check, subtitle: DCMA + AI logic gaps, category: amber, row: 1, col: 1}
+  - {id: risk, title: AI risk analysis, subtitle: QSRA · GCC data, category: purple, row: 1, col: 2}
+  - {id: path, title: Driving path, subtitle: Risk flow · ranking, category: purple, row: 1, col: 3}
+  - {id: mile, title: Milestone forecast, subtitle: P50 · P70 · P80, category: teal, row: 1, col: 4}
+  - {id: h_out, title: Outputs, shape: label, row: 2, col: 4}
+  - {id: noreb, title: No rebuild required, subtitle: Works with existing P6 export, category: gray, row: 3, col: 1, colspan: 2}
+  - {id: warn, title: Early warning, subtitle: Threshold alerts, category: teal, row: 3, col: 4}
+  - {id: nla, title: Natural language agent, subtitle: Query risk and what-if in plain English, category: gray, row: 4, col: 2, colspan: 2}
+  - {id: report, title: Risk report, subtitle: ADICC format, category: teal, row: 4, col: 4}
+  - {id: pbi, title: Power BI, subtitle: Executive dashboard, category: teal, row: 5, col: 4}
+edges:
+  - {from: p6, to: integ}
+  - {from: integ, to: risk}
+  - {from: risk, to: path}
+  - {from: path, to: mile}
+  - {from: mile, to: warn}
+  - {from: warn, to: report}
+  - {from: report, to: pbi}
+legend:
+  - {category: amber, label: Validation}
+  - {category: purple, label: AI analysis}
+  - {category: teal, label: Forecast & output}
+  - {category: gray, label: Platform capabilities}

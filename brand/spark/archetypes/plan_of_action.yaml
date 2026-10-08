@@ -1,0 +1,10 @@
+id: plan_of_action
+doc_type: PLAN
+spark_content: false
+confidential: internal
+description: Plan of action with phases, owners, and a timeline.
+slots:
+  - {id: cover, required: true, component: cover}
+  - {id: objective, kicker: Objective, required: true, components: [para]}
+  - {id: phases, kicker: Phases, required: true, components: [steps, roadmap]}
+  - {id: owners, kicker: Owners, required: true, components: [table]}

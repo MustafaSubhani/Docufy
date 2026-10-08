@@ -1,0 +1,24 @@
+version: 1
+company:
+  name: Spark Technologies
+  tagline: Full Spectrum AI
+  email: contact@sparktechnologies.ai
+  phone: "+971 56 956 8061"
+  website: sparktechnologies.ai
+  address: Office 705, New Century City Tower, Port Saeed, Dubai, UAE
+  headquarters: Dubai, UAE
+  experience: 10+ years in software development and technology delivery
+  ai_focus: 1.5+ years focused exclusively on Enterprise AI solutions
+products:
+  - Spark Hire
+  - Leadsreach
+  - CircleVoice
+  - Funnel Flow
+industries:
+  - construction
+  - oil_and_gas
+  - fleet
+  - generic
+confidential:
+  client: "This document is confidential and intended solely for the named recipient. It contains commercially sensitive information and must not be shared, reproduced, or distributed without prior written consent from Spark Technologies."
+  internal: "This document is confidential and intended for Spark Technologies staff. Do not circulate it outside the company."
